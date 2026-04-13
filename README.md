@@ -8,6 +8,11 @@ AP Biology
 <a href="ap-bio-quiz-2.html">AP Bio Quiz 2</a>
 <br>
 <br>
+AP Chinese
+<br>
+<a href="ap-chinese-quiz-1.html">AP Chinese Quiz 1</a>
+<br>
+<br>
 AP Lang
 <br>
 <a href="ap-lang-quiz-1.html">AP Lang Quiz 1</a>
