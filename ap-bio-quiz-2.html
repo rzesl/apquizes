@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced AP Biology Mastery Quiz</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; background-color: #f4f7f6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .quiz-container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .question { margin-bottom: 25px; display: none; }
+        .question.active { display: block; }
+        .options { list-style: none; padding: 0; }
+        .option-btn { display: block; width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; background: #fff; cursor: pointer; text-align: left; transition: 0.2s; }
+        .option-btn:hover { background: #e9ecef; }
+        .feedback { margin-top: 15px; padding: 15px; border-radius: 6px; display: none; font-weight: bold; }
+        .correct { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .incorrect { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        #next-btn, #results-btn { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; display: none; margin-top: 10px; }
+        #score-board { text-align: center; display: none; }
+        .progress { font-size: 0.9em; color: #666; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div id="quiz">
+        <div class="progress">Question <span id="current-num">1</span> of 20</div>
+        <div id="question-content"></div>
+        <div id="feedback" class="feedback"></div>
+        <button id="next-btn">Next Question</button>
+        <button id="results-btn">Show Results</button>
+    </div>
+
+    <div id="score-board">
+        <h2>Quiz Complete!</h2>
+        <p id="final-score"></p>
+        <button onclick="location.reload()">Restart Quiz</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        {
+            q: "A mutation in the promoter region of a gene prevents the binding of RNA polymerase. Which of the following is the most likely immediate effect?",
+            a: ["Translation will be inhibited.", "DNA replication will cease.", "Transcription of the gene will not occur.", "The protein will be folded incorrectly."],
+            correct: 2,
+            reason: "The promoter is the specific DNA sequence where RNA polymerase binds to initiate transcription. Without binding, mRNA cannot be synthesized."
+        },
+        {
+            q: "During oxidative phosphorylation, a toxin that increases the permeability of the inner mitochondrial membrane to protons ($H^+$) would likely result in:",
+            a: ["Increased ATP production.", "A decrease in the proton gradient and less ATP synthesis.", "Increased oxygen production.", "Inhibition of the Krebs cycle."],
+            correct: 1,
+            reason: "ATP synthesis depends on the chemiosmotic gradient. Leaking protons bypass ATP synthase, decoupling the electron transport chain from ATP production."
+        },
+        {
+            q: "In a population in Hardy-Weinberg equilibrium, the frequency of a recessive allele (q) is 0.3. What is the frequency of the heterozygous genotype?",
+            a: ["0.09", "0.49", "0.42", "0.21"],
+            correct: 2,
+            reason: "Using $2pq$: $p = 1 - 0.3 = 0.7$. $2(0.7)(0.3) = 0.42$."
+        },
+        {
+            q: "Which of the following best explains why water moves up through the xylem of a tall tree?",
+            a: ["Active transport by root cells.", "High pressure in the leaves pushing water down.", "Cohesion-tension theory driven by transpiration.", "Gravity acting on the water column."],
+            correct: 2,
+            reason: "Evaporation of water from leaves (transpiration) creates negative pressure, pulling water up due to hydrogen bonding (cohesion) between molecules."
+        },
+        {
+            q: "A researcher observes that a specific hormone triggers a cell response only when a G-protein coupled receptor is active. If a non-hydrolyzable analog of GTP is introduced, what happens?",
+            a: ["The signal is immediately terminated.", "The G-protein remains constitutively active.", "The receptor becomes unresponsive to the hormone.", "The cell undergoes apoptosis."],
+            correct: 1,
+            reason: "G-proteins are 'off' when bound to GDP and 'on' when bound to GTP. If GTP cannot be hydrolyzed to GDP, the protein cannot turn itself off."
+        },
+        {
+            q: "Which molecular evidence best supports the claim that all organisms share a common ancestor?",
+            a: ["All organisms contain chloroplasts.", "All organisms use the same 20 amino acids and a nearly universal genetic code.", "All organisms have linear chromosomes.", "All organisms perform aerobic respiration."],
+            correct: 1,
+            reason: "The universality of the genetic code (codons coding for specific amino acids) is the strongest evidence of a shared evolutionary origin."
+        },
+        {
+            q: "In the lac operon, what is the role of allolactose?",
+            a: ["It binds to the promoter to recruit RNA polymerase.", "It acts as an inducer by binding to the repressor and inactivating it.", "It acts as a corepressor.", "It breaks down lactose into glucose."],
+            correct: 1,
+            reason: "Allolactose binds to the repressor protein, changing its shape so it can no longer bind to the operator, allowing transcription."
+        },
+        {
+            q: "A diploid cell has 10 chromosomes ($2n=10$). How many sister chromatids are present during metaphase of mitosis?",
+            a: ["5", "10", "20", "40"],
+            correct: 2,
+            reason: "During prophase and metaphase, each of the 10 chromosomes consists of two sister chromatids. $10 \times 2 = 20$."
+        },
+        {
+            q: "Which of the following is true of enzymes?",
+            a: ["They increase the Gibbs free energy ($\Delta G$) of a reaction.", "They lower the activation energy ($E_a$).", "They are consumed during the reaction.", "They change the equilibrium constant of a reaction."],
+            correct: 1,
+            reason: "Enzymes are catalysts; they provide an alternative pathway with a lower activation energy but do not change the overall free energy change."
+        },
+        {
+            q: "If a segment of DNA is 30% Adenine, what percentage is Guanine?",
+            a: ["20%", "30%", "70%", "40%"],
+            correct: 0,
+            reason: "By Chargaff's Rule, $A=T$ (30%+30%=60%). The remaining 40% is divided equally between C and G. So, $G=20%$."
+        },
+        {
+            q: "An inhibitor binds to the active site of an enzyme, preventing substrate binding. This is an example of:",
+            a: ["Allosteric inhibition.", "Noncompetitive inhibition.", "Competitive inhibition.", "Feedback inhibition."],
+            correct: 2,
+            reason: "Competitive inhibitors compete directly with the substrate for the active site."
+        },
+        {
+            q: "Which process creates the most genetic variation in sexually reproducing organisms?",
+            a: ["Binary fission.", "Mitosis.", "Independent assortment and crossing over during meiosis.", "DNA replication."],
+            correct: 2,
+            reason: "Meiosis reshuffles alleles through crossing over (Prophase I) and independent assortment (Metaphase I)."
+        },
+        {
+            q: "In photosynthesis, the light-dependent reactions occur in the __________, while the Calvin cycle occurs in the __________.",
+            a: ["Stroma; Thylakoid", "Thylakoid; Stroma", "Cytoplasm; Mitochondria", "Mitochondria; Chloroplast"],
+            correct: 1,
+            reason: "Chlorophyll in the thylakoid membranes captures light; the stroma contains the enzymes for carbon fixation."
+        },
+        {
+            q: "What is the primary function of the contractile vacuole in freshwater protists?",
+            a: ["Digestion of food.", "Storage of genetic material.", "Osmoregulation (expelling excess water).", "Cellular respiration."],
+            correct: 2,
+            reason: "Freshwater is hypotonic to the protist; water constantly enters the cell. The vacuole prevents lysis by pumping it out."
+        },
+        {
+            q: "A signaling molecule that acts on the same cell that secreted it is called:",
+            a: ["Paracrine.", "Endocrine.", "Autocrine.", "Synaptic."],
+            correct: 2,
+            reason: "Autocrine signals target the self; paracrine targets neighbors; endocrine travels through the blood."
+        },
+        {
+            q: "Which of the following is a characteristic of p53?",
+            a: ["It stimulates the cell cycle regardless of DNA damage.", "It is a tumor suppressor gene that can induce apoptosis.", "It is an oncogene.", "It speeds up the S phase."],
+            correct: 1,
+            reason: "p53 acts as 'guardian of the genome,' stopping the cell cycle or triggering cell death if DNA is damaged."
+        },
+        {
+            q: "During DNA replication, the lagging strand is synthesized in short pieces called:",
+            a: ["Primers.", "Leading fragments.", "Okazaki fragments.", "Introns."],
+            correct: 2,
+            reason: "DNA polymerase can only synthesize in the 5' to 3' direction, requiring discontinuous fragments on the lagging strand."
+        },
+        {
+            q: "In the electron transport chain, what is the final electron acceptor?",
+            a: ["$CO_2$", "$H_2O$", "$O_2$", "NAD+"],
+            correct: 2,
+            reason: "Oxygen accepts the spent electrons and protons to form water."
+        },
+        {
+            q: "Endosymbiotic theory is supported by which evidence regarding mitochondria?",
+            a: ["They have their own circular DNA and double membranes.", "They can live independently outside the cell.", "They are found in all prokaryotes.", "They produce glucose."],
+            correct: 0,
+            reason: "Mitochondria and chloroplasts have circular DNA and ribosomes similar to bacteria, suggesting they were once free-living prokaryotes."
+        },
+        {
+            q: "A fruit fly with genotype $GgLl$ is crossed with $ggll$. The offspring are: 45% $GgLl$, 45% $ggll$, 5% $Ggll$, 5% $ggLl$. This suggests:",
+            a: ["Independent assortment.", "The genes are linked.", "Incomplete dominance.", "Sex-linked inheritance."],
+            correct: 1,
+            reason: "The high frequency of parental phenotypes and low frequency of recombinants indicates the genes are close together on the same chromosome."
+        }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionContent = document.getElementById('question-content');
+    const feedback = document.getElementById('feedback');
+    const nextBtn = document.getElementById('next-btn');
+    const resultsBtn = document.getElementById('results-btn');
+    const scoreBoard = document.getElementById('score-board');
+    const quizDiv = document.getElementById('quiz');
+
+    function loadQuestion() {
+        const data = quizData[currentQuestion];
+        document.getElementById('current-num').innerText = currentQuestion + 1;
+        feedback.style.display = 'none';
+        nextBtn.style.display = 'none';
+        
+        let html = `<h3>${data.q}</h3><ul class="options">`;
+        data.a.forEach((opt, index) => {
+            html += `<li><button class="option-btn" onclick="checkAnswer(${index})">${opt}</button></li>`;
+        });
+        html += `</ul>`;
+        questionContent.innerHTML = html;
+    }
+
+    window.checkAnswer = function(index) {
+        const data = quizData[currentQuestion];
+        const buttons = document.querySelectorAll('.option-btn');
+        buttons.forEach(btn => btn.disabled = true);
+
+        feedback.style.display = 'block';
+        if (index === data.correct) {
+            score++;
+            feedback.innerHTML = "Correct! " + data.reason;
+            feedback.className = "feedback correct";
+        } else {
+            feedback.innerHTML = `Incorrect. The correct answer was: ${data.a[data.correct]}. <br><small>${data.reason}</small>`;
+            feedback.className = "feedback incorrect";
+        }
+
+        if (currentQuestion < quizData.length - 1) {
+            nextBtn.style.display = 'block';
+        } else {
+            resultsBtn.style.display = 'block';
+        }
+    };
+
+    nextBtn.addEventListener('click', () => {
+        currentQuestion++;
+        loadQuestion();
+    });
+
+    resultsBtn.addEventListener('click', () => {
+        quizDiv.style.display = 'none';
+        scoreBoard.style.display = 'block';
+        document.getElementById('final-score').innerText = `You scored ${score} out of ${quizData.length}`;
+    });
+
+    loadQuestion();
+</script>
+
+</body>
+</html>
