@@ -1,0 +1,556 @@
+ None selected 
+
+Skip to content
+Using Irelands Mail with screen readers
+
+Conversations
+me
+quiz site url
+ - https://rzesl.github.io/apquizes/
+ 
+6:01 AM
+ 
+Program Policies
+Powered by Google
+Last account activity: 17 minutes ago
+Details
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Lang MCQ Practice Quiz</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #faf8f3;
+    --ink: #1a1814;
+    --ink-muted: #6b6860;
+    --ink-faint: #b0aca4;
+    --accent: #2e5fa3;
+    --accent-light: #e8eef8;
+    --success: #1e6b45;
+    --success-light: #e6f4ec;
+    --danger: #9b2020;
+    --danger-light: #fbeaea;
+    --border: #e2ded6;
+    --card-bg: #ffffff;
+    --serif: 'Lora', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .page-header h1 {
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+
+  .page-header p {
+    font-size: 14px;
+    color: var(--ink-muted);
+  }
+
+  .quiz-card {
+    max-width: 700px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem 2.25rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+  }
+
+  /* Progress */
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.75rem;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 3px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  .progress-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-faint);
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* Passage */
+  .passage {
+    background: var(--cream);
+    border-left: 3px solid var(--accent);
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    font-family: var(--serif);
+    font-size: 14px;
+    line-height: 1.85;
+    color: var(--ink);
+  }
+
+  /* Question */
+  .question-text {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    font-weight: 400;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    color: var(--ink);
+  }
+
+  /* Options */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    background: var(--card-bg);
+    text-align: left;
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink);
+    transition: border-color 0.15s, background 0.15s;
+    width: 100%;
+  }
+
+  .opt:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .opt .badge {
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-muted);
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+
+  .opt.correct {
+    border-color: var(--success);
+    background: var(--success-light);
+  }
+  .opt.correct .badge {
+    background: var(--success);
+    color: #fff;
+    border-color: var(--success);
+  }
+
+  .opt.wrong {
+    border-color: var(--danger);
+    background: var(--danger-light);
+  }
+  .opt.wrong .badge {
+    background: var(--danger);
+    color: #fff;
+    border-color: var(--danger);
+  }
+
+  .opt:disabled { cursor: default; }
+
+  /* Feedback */
+  .feedback {
+    display: none;
+    font-size: 14px;
+    line-height: 1.65;
+    padding: 0.85rem 1.1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+  }
+  .feedback.correct {
+    background: var(--success-light);
+    color: var(--success);
+    border: 1px solid #b3d9c4;
+  }
+  .feedback.wrong {
+    background: var(--danger-light);
+    color: var(--danger);
+    border: 1px solid #f2bfbf;
+  }
+  .feedback strong { font-weight: 600; }
+
+  /* Nav */
+  .nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .score-tally {
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+
+  .btn-next {
+    padding: 0.55rem 1.4rem;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .btn-next:hover { background: #2d2b28; }
+  .btn-next:active { transform: scale(0.97); }
+  .btn-next:disabled { background: var(--ink-faint); cursor: default; }
+
+  /* Score screen */
+  .score-screen {
+    text-align: center;
+    padding: 1rem 0;
+  }
+  .score-ring {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+  }
+  .score-pct {
+    font-family: var(--serif);
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .score-sub {
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+  .score-verdict {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+  .score-detail {
+    font-size: 14px;
+    color: var(--ink-muted);
+    margin-bottom: 1.75rem;
+  }
+  .score-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-width: 280px;
+    margin: 0 auto 2rem;
+  }
+  .score-cell {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.8rem;
+  }
+  .score-cell .n { font-size: 1.5rem; font-weight: 600; font-family: var(--serif); }
+  .score-cell .l { font-size: 12px; color: var(--ink-muted); }
+  .score-cell.c .n { color: var(--success); }
+  .score-cell.w .n { color: var(--danger); }
+  .btn-restart {
+    padding: 0.6rem 1.75rem;
+    background: transparent;
+    border: 1.5px solid var(--ink);
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--ink);
+    transition: background 0.15s;
+  }
+  .btn-restart:hover { background: var(--cream); }
+
+  @media (max-width: 520px) {
+    .quiz-card { padding: 1.5rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <h1>AP Language &amp; Composition</h1>
+  <p>Multiple Choice Practice — 10 Questions</p>
+</header>
+
+<div class="quiz-card" id="quizCard"></div>
+
+<script>
+const questions = [
+  {
+    passage: 'The following passage is an excerpt from a 1963 speech by John F. Kennedy at American University: "What kind of peace do I mean and what kind of a peace do we seek? Not a Pax Americana enforced on the world by American weapons of war. Not the peace of the grave or the security of the slave. I am talking about genuine peace—the kind of peace that makes life on Earth worth living—and the kind that enables men and nations to grow, and to hope, and build a better life for their children."',
+    question: "Which of the following best describes the rhetorical strategy Kennedy uses in the first three sentences of the excerpt?",
+    options: [
+      "He employs anaphora to systematically eliminate potential misinterpretations of his argument.",
+      "He uses alliteration to create a memorable auditory effect that reinforces his central claim.",
+      "He relies on logos by presenting statistical evidence about the limitations of military peace.",
+      "He appeals to ethos by invoking his credentials as Commander-in-Chief."
+    ],
+    correct: 0,
+    explanation: "Kennedy repeats the structure \"Not a...\" / \"Not the...\" at the start of successive clauses — this is anaphora. He uses it to preemptively refute definitions of peace he does NOT mean, clarifying his argument before stating his affirmative vision."
+  },
+  {
+    passage: 'From a 2019 essay on urban planning: "Cities are not machines to be engineered; they are ecosystems to be cultivated. The planner who arrives with blueprints and bulldozers, certain of the city\'s dysfunction, often destroys what she cannot yet understand. Jane Jacobs watched this happen on Hudson Street. She understood that the sidewalk ballet — the greengrocer opening his shop, the children released from school, the night-owl returning home — was not disorder. It was a finely tuned choreography that no planner\'s grid could replicate."',
+    question: "The author's use of the phrase \"sidewalk ballet\" is best understood as an example of:",
+    options: [
+      "An allusion to the work of a classical choreographer.",
+      "A metaphor that reframes urban street life as complex, ordered, and aesthetic.",
+      "Personification attributing human desires to an abstract concept.",
+      "Hyperbole used to mock the naivety of urban planners."
+    ],
+    correct: 1,
+    explanation: '"Sidewalk ballet" is a metaphor comparing the everyday rhythms of city life to ballet — an art form associated with order, grace, and practiced coordination. It reframes what planners call "disorder" as intricate, valuable choreography.'
+  },
+  {
+    passage: null,
+    question: "In AP Lang argument analysis, the term \"concession\" refers to which of the following?",
+    options: [
+      "A logical fallacy in which a speaker overgeneralizes from limited evidence.",
+      "An acknowledgment that the opposing viewpoint has some validity before reasserting one's own claim.",
+      "A rhetorical appeal that relies primarily on the speaker's credibility.",
+      "A structural technique in which the thesis is withheld until the conclusion."
+    ],
+    correct: 1,
+    explanation: "A concession is when a writer or speaker acknowledges the merit or partial truth of an opposing view. Effective arguers often concede narrow points to demonstrate fairness and then pivot to why their overall position still holds."
+  },
+  {
+    passage: "From Rachel Carson's <em>Silent Spring</em> (1962): \"The history of life on earth has been a history of interaction between living things and their surroundings. To a large degree, the physical form and the habits of the earth's vegetation and its animal life have been molded by the environment. Considering the whole span of earthly time, the opposite effect, in which life actually modifies its surroundings, has been relatively slight. Only within the moment of time represented by the present century has one species — man — acquired significant power to alter the nature of his world.\"",
+    question: "The phrase \"the moment of time represented by the present century\" primarily functions to:",
+    options: [
+      "Celebrate human technological progress by contrasting it with prior millennia.",
+      "Minimize the significance of recent environmental changes to reassure readers.",
+      "Dramatize how brief and sudden humanity's disruptive impact is relative to geological time.",
+      "Establish Carson's ethos as a scientist by invoking historical evidence."
+    ],
+    correct: 2,
+    explanation: "Carson deliberately uses the word \"moment\" to compress the entire modern era into an almost imperceptible sliver of geological time. This emphasizes that humanity's power to alter nature is shockingly abrupt — creating urgency and alarm rather than celebration."
+  },
+  {
+    passage: null,
+    question: "A student writing a synthesis essay cites a government report, a personal memoir, and an op-ed to support a single claim about housing policy. The most significant risk of this approach is:",
+    options: [
+      "That synthesis essays are expected to use only primary sources.",
+      "That the sources may represent different levels of reliability and require careful qualification.",
+      "That government reports are never considered valid in academic writing.",
+      "That using three sources violates AP synthesis conventions, which require two."
+    ],
+    correct: 1,
+    explanation: "Sources carry different levels of authority: a government report may be data-driven but politically motivated; a memoir is highly personal; an op-ed is explicitly opinion. The risk is not using varied sources, but failing to acknowledge their differing reliability and bias when synthesizing them together."
+  },
+  {
+    passage: "From Frederick Douglass's 1852 speech, \"What to the Slave is the Fourth of July?\": \"This Fourth July is <em>yours</em>, not <em>mine</em>. You may rejoice, I must mourn. To drag a man in fetters into the grand illuminated temple of liberty, and call upon him to join you in joyous anthems, were inhuman mockery and sacrilegious irony.\"",
+    question: "Douglass's use of second- and first-person pronouns (\"yours\" / \"mine,\" \"you\" / \"I\") primarily serves to:",
+    options: [
+      "Express personal grief in order to generate sympathy from a hostile audience.",
+      "Establish a sharp contrast between the experiences of free citizens and enslaved people, exposing the hypocrisy of the celebration.",
+      "Appeal to logos by constructing a syllogism about the nature of freedom.",
+      "Employ apostrophe by addressing an absent third party who cannot respond."
+    ],
+    correct: 1,
+    explanation: "By splitting pronouns sharply — yours/mine, you/I — Douglass draws a vivid line between two Americas inhabiting the same moment. The device underscores the Fourth of July's hypocrisy: a celebration of liberty that excludes millions in bondage."
+  },
+  {
+    passage: null,
+    question: "Which of the following sentences most clearly demonstrates the use of a periodic sentence?",
+    options: [
+      '"The storm arrived at midnight and flooded the lower fields."',
+      '"Despite the warnings from meteorologists, the refusal of local officials to act, and the growing alarm of residents, the levees held."',
+      '"She ran, she stumbled, she fell — and then she got up."',
+      '"Floods are dangerous; therefore, we must prepare."'
+    ],
+    correct: 1,
+    explanation: "A periodic sentence withholds its main clause until the end, building suspense through subordinate elements first. Option B loads three qualifying phrases before finally delivering the main clause (\"the levees held\"), creating tension and emphasis on the resolution."
+  },
+  {
+    passage: 'From a student\'s argument essay: "Social media companies claim they connect communities, but the evidence tells a different story. A 2021 study found that heavy social media use correlates with increased loneliness in adults. Furthermore, former employees of these companies have testified that engagement algorithms are deliberately designed to provoke outrage, not connection. The gap between the companies\' stated mission and their actual product design is not an oversight — it is a business model."',
+    question: "The student's argument in this paragraph is primarily organized around which of the following structures?",
+    options: [
+      "Cause and effect: showing that loneliness causes social media use.",
+      "Narration: recounting events in chronological sequence.",
+      "Claim, evidence, and commentary: asserting a position, supporting it with data and testimony, then interpreting its significance.",
+      "Comparison and contrast: weighing the merits of different social media platforms."
+    ],
+    correct: 2,
+    explanation: "The paragraph opens with a claim (social media doesn't connect people), provides two pieces of evidence (study + employee testimony), and closes with pointed commentary interpreting the evidence's significance (it's a deliberate business model). This is the classic claim-evidence-commentary structure."
+  },
+  {
+    passage: "From Virginia Woolf's essay \"Professions for Women\" (1931): \"Killing the Angel in the House was part of the occupation of a woman writer. But to continue the story of my professional experiences. I made one pound ten and six by my first review; and I bought a cat — a beautiful cat, a Persian cat, which very soon involved me in bitter disputes with my neighbors.\"",
+    question: "The abrupt shift from the metaphorical \"killing the Angel in the House\" to the mundane detail of buying a cat is best described as:",
+    options: [
+      "An example of syllepsis, linking two grammatically parallel but logically mismatched ideas.",
+      "A deliberate tonal shift (from the serious to the comic) that enacts the freedom from propriety Woolf is arguing for.",
+      "A logical non sequitur that weakens Woolf's overall argument.",
+      "An appeal to pathos designed to make readers sympathize with the difficulties of pet ownership."
+    ],
+    correct: 1,
+    explanation: "Woolf's pivot from high-minded feminist metaphor to the comic domesticity of a Persian cat causing neighbor disputes is deliberate. The tonal whiplash itself performs the freedom she's describing — a woman writer who can be serious and absurd on her own terms, unbound by angelic propriety."
+  },
+  {
+    passage: null,
+    question: "In the AP Lang rhetorical analysis essay, the most effective body paragraphs will:",
+    options: [
+      "Identify as many rhetorical devices as possible to demonstrate comprehensive knowledge.",
+      "Summarize the content of the passage to ensure the reader understands the author's argument.",
+      "Analyze how specific rhetorical choices contribute to the author's purpose, using textual evidence to support claims.",
+      "Evaluate whether the author's argument is logically valid using the student's own independent research."
+    ],
+    correct: 2,
+    explanation: "AP readers reward analysis over identification or summary. Strong body paragraphs select evidence, name the technique, and — most critically — explain how and why that technique advances the author's purpose. Merely listing devices without explaining their effect earns little credit."
+  }
+];
+
+let current = 0, score = 0, answered = false, results = [];
+const letters = ['A','B','C','D'];
+
+function render() {
+  const card = document.getElementById('quizCard');
+  if (current >= questions.length) { renderScore(card); return; }
+  const q = questions[current];
+  const pct = Math.round((current / questions.length) * 100);
+
+  card.innerHTML = `
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <span class="progress-label">${current + 1} / ${questions.length}</span>
+    </div>
+    ${q.passage ? `<div class="passage">${q.passage}</div>` : ''}
+    <p class="question-text">${q.question}</p>
+    <div class="options" id="opts">
+      ${q.options.map((opt, i) => `
+        <button class="opt" data-i="${i}" onclick="choose(${i})">
+          <span class="badge">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="feedback" id="fb"></div>
+    <div class="nav-row">
+      <span class="score-tally">Score: ${score} / ${current}</span>
+      <button class="btn-next" id="nxt" onclick="next()" disabled>${current === questions.length - 1 ? 'See results →' : 'Next →'}</button>
+    </div>
+  `;
+  answered = false;
+}
+
+function choose(i) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const isCorrect = i === q.correct;
+  if (isCorrect) score++;
+  results.push(isCorrect);
+
+  document.querySelectorAll('.opt').forEach((btn, idx) => {
+    btn.disabled = true;
+    if (idx === q.correct) btn.classList.add('correct');
+    if (idx === i && !isCorrect) btn.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('fb');
+  fb.style.display = 'block';
+  fb.className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+  fb.innerHTML = `<strong>${isCorrect ? 'Correct.' : 'Incorrect.'}</strong> ${q.explanation}`;
+  document.getElementById('nxt').disabled = false;
+}
+
+function next() { current++; render(); }
+
+function renderScore(card) {
+  const pct = Math.round((score / questions.length) * 100);
+  const wrong = questions.length - score;
+  let verdict;
+  if (pct >= 80) verdict = 'Strong work — you\'re well prepared.';
+  else if (pct >= 60) verdict = 'Good foundation — review the missed questions.';
+  else verdict = 'Keep practicing — revisit rhetorical analysis fundamentals.';
+
+  card.innerHTML = `
+    <div class="score-screen">
+      <div class="score-ring">
+        <div class="score-pct">${pct}%</div>
+        <div class="score-sub">score</div>
+      </div>
+      <p class="score-verdict">${verdict}</p>
+      <p class="score-detail">${score} correct out of ${questions.length} questions</p>
+      <div class="score-grid">
+        <div class="score-cell c"><div class="n">${score}</div><div class="l">Correct</div></div>
+        <div class="score-cell w"><div class="n">${wrong}</div><div class="l">Incorrect</div></div>
+      </div>
+      <button class="btn-restart" onclick="restart()">Retake quiz</button>
+    </div>
+  `;
+}
+
+function restart() { current = 0; score = 0; answered = false; results = []; render(); }
+
+render();
+</script>
+</body>
+</html>
+ap_lang_quiz.html
+Displaying ap_lang_quiz.html.
