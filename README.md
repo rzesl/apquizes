@@ -6,4 +6,4 @@ AP Biology
 <br>
 AP Lang
 <br>
-<a href="ap-lang-quiz-1.html">AP Bio Quiz 1</a>
+<a href="ap-lang-quiz-1.html">AP Lang Quiz 1</a>
