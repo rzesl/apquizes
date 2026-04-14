@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Biology Unit 1: Chemistry of Life Quiz</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --bg-color: #ecf0f1;
+            --card-bg: #ffffff;
+            --text-color: #333;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .quiz-container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        .progress-container {
+            margin-bottom: 20px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            height: 10px;
+            width: 100%;
+        }
+        .progress-bar {
+            height: 10px;
+            background-color: var(--secondary-color);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        .question-wrapper {
+            display: none;
+        }
+        .question-wrapper.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .question-text {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .options-list {
+            list-style: none;
+            padding: 0;
+        }
+        .option-item {
+            background-color: #f8f9fa;
+            border: 2px solid #ddd;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.05em;
+        }
+        .option-item:hover:not(.disabled) {
+            background-color: #e3f2fd;
+            border-color: var(--secondary-color);
+        }
+        .option-item.correct {
+            background-color: #d5f5e3;
+            border-color: var(--success-color);
+            color: #1e8449;
+        }
+        .option-item.incorrect {
+            background-color: #fadbd8;
+            border-color: var(--danger-color);
+            color: #b03a2e;
+        }
+        .option-item.disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        .feedback-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            font-weight: 500;
+        }
+        .controls {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn {
+            padding: 12px 25px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover:not(:disabled) {
+            background-color: #2980b9;
+        }
+        .btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        #results-screen {
+            display: none;
+            text-align: center;
+        }
+        .final-score {
+            font-size: 3em;
+            color: var(--primary-color);
+            margin: 20px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div id="quiz-screen">
+        <h1>Unit 1: Chemistry of Life</h1>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <div id="questions-container"></div>
+
+        <div class="controls">
+            <span id="question-counter">Question 1 / 20</span>
+            <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Next Question</button>
+        </div>
+    </div>
+
+    <div id="results-screen">
+        <h1>Quiz Complete!</h1>
+        <div class="final-score" id="score-display"></div>
+        <h3 id="feedback-message"></h3>
+        <p>Review the specific properties of water, macromolecule structure, and bonding types to master AP Biology Unit 1.</p>
+        <button class="btn" onclick="location.reload()" style="margin-top: 20px;">Retake Quiz</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        q: "A double-stranded DNA molecule is analyzed and found to contain 30% adenine. What is the expected percentage of cytosine in this molecule?",
+        options: ["20%", "30%", "40%", "70%"],
+        answer: 0,
+        explanation: "According to Chargaff's rules, A pairs with T, and G pairs with C. If A = 30%, then T = 30% (totaling 60%). The remaining 40% must be divided equally between guanine and cytosine, meaning C = 20%."
+    },
+    {
+        q: "Starch and cellulose are both polymers of glucose, yet humans can easily digest starch but not cellulose. Which of the following best explains this difference?",
+        options: [
+            "Starch is a lipid, while cellulose is a carbohydrate.",
+            "Starch contains alpha-glycosidic linkages, while cellulose contains beta-glycosidic linkages.",
+            "Cellulose is highly branched, while starch is strictly linear.",
+            "Starch is held together by peptide bonds that enzymes can easily break."
+        ],
+        answer: 1,
+        explanation: "Humans possess enzymes capable of hydrolyzing the alpha-glycosidic linkages found in starch. We lack the enzymes necessary to break the beta-glycosidic linkages in cellulose, which have a different 3D geometry."
+    },
+    {
+        q: "Which of the following interactions is primarily responsible for the formation of a protein's secondary structure, such as an alpha-helix or beta-pleated sheet?",
+        options: [
+            "Peptide bonds between adjacent amino acids",
+            "Hydrophobic interactions between R-groups",
+            "Hydrogen bonding between the oxygen and hydrogen atoms of the polypeptide backbone",
+            "Disulfide bridges between cysteine residues"
+        ],
+        answer: 2,
+        explanation: "Secondary structure is determined by hydrogen bonds forming between the amino groups and carboxyl groups of the polypeptide backbone, not interactions involving the R-groups (which dictate tertiary structure)."
+    },
+    {
+        q: "How does the specific heat of water influence biological systems?",
+        options: [
+            "It allows water to dissolve a wide variety of nonpolar substances.",
+            "It prevents large bodies of water from undergoing extreme temperature fluctuations, stabilizing aquatic environments.",
+            "It causes water to expand upon freezing, breaking down rocks to form soil.",
+            "It facilitates the rapid evaporation of sweat to cool terrestrial organisms."
+        ],
+        answer: 1,
+        explanation: "Water has a high specific heat due to hydrogen bonding. It can absorb or release large amounts of heat with only a slight change in its own temperature, making marine and coastal climates highly stable."
+    },
+    {
+        q: "A mutation occurs that substitutes a nonpolar amino acid with a strongly polar amino acid deep within the core of a folded globular protein. What is the most likely outcome?",
+        options: [
+            "The protein will fold more tightly due to increased hydrogen bonding in the core.",
+            "The protein's primary structure will be altered, but its tertiary structure will remain identical.",
+            "The protein will likely denature or misfold because polar groups are energetically unfavorable in the hydrophobic core.",
+            "The protein will embed itself into the hydrophobic tails of the cell membrane."
+        ],
+        answer: 2,
+        explanation: "Globular proteins fold such that hydrophobic (nonpolar) amino acids are tucked inside the core away from water, while hydrophilic (polar) amino acids face the aqueous environment. A polar amino acid forced into the core disrupts this hydrophobic collapse."
+    },
+    {
+        q: "If you were to synthesize a polypeptide comprising 150 amino acids, how many molecules of water would be produced during this dehydration synthesis?",
+        options: ["149", "150", "151", "None, water is consumed, not produced."],
+        answer: 0,
+        explanation: "In dehydration synthesis, linking two monomers produces one water molecule. To link 150 amino acids together in a single chain, 149 peptide bonds must be formed, releasing 149 water molecules."
+    },
+    {
+        q: "Which functional group is highly polar, can act as a weak acid by donating a proton, and is a defining characteristic of amino acids?",
+        options: ["Hydroxyl group (-OH)", "Sulfhydryl group (-SH)", "Carboxyl group (-COOH)", "Carbonyl group (-C=O)"],
+        answer: 2,
+        explanation: "The carboxyl group (-COOH) is acidic because it can release a hydrogen ion (H+) into solution, becoming -COO-. All amino acids contain at least one carboxyl group and one amino group."
+    },
+    {
+        q: "During DNA replication, enzymes must break the bonds holding the two strands of the double helix together. Which type of bond is being broken?",
+        options: ["Covalent phosphodiester bonds", "Ionic bonds", "Hydrogen bonds", "Peptide bonds"],
+        answer: 2,
+        explanation: "The two strands of DNA are held together by relatively weak hydrogen bonds between complementary nitrogenous bases (A-T and G-C). The sugar-phosphate backbone is held together by strong covalent phosphodiester bonds."
+    },
+    {
+        q: "Phospholipids are described as amphipathic molecules. What structural feature gives them this property?",
+        options: [
+            "They contain both carbon-carbon single bonds and double bonds.",
+            "They have a hydrophilic phosphate head and hydrophobic fatty acid tails.",
+            "They can act as both an acid and a base in aqueous solutions.",
+            "They contain both nucleic acids and amino acids in their structure."
+        ],
+        answer: 1,
+        explanation: "Amphipathic molecules have both hydrophilic (water-loving) and hydrophobic (water-fearing) regions. In phospholipids, the phosphate group is polar and hydrophilic, while the hydrocarbon tails are nonpolar and hydrophobic."
+    },
+    {
+        q: "Organisms belonging to the same species live in cold environments. To maintain cell membrane fluidity at low temperatures, their cells likely modify their phospholipids by:",
+        options: [
+            "Increasing the length of the fatty acid tails.",
+            "Increasing the proportion of saturated fatty acids in the membrane.",
+            "Increasing the proportion of unsaturated fatty acids in the membrane.",
+            "Replacing phosphate groups with hydroxyl groups."
+        ],
+        answer: 2,
+        explanation: "Unsaturated fatty acids contain cis-double bonds that create 'kinks' in the hydrocarbon chain. These kinks prevent the phospholipids from packing too closely together, keeping the membrane fluid in freezing temperatures."
+    },
+    {
+        q: "What structural difference distinguishes RNA nucleotides from DNA nucleotides?",
+        options: [
+            "RNA contains a pentose sugar with a hydroxyl (-OH) group on the 2' carbon, whereas DNA has a hydrogen (-H) atom on the 2' carbon.",
+            "RNA utilizes thymine instead of uracil.",
+            "DNA nucleotides are linked by peptide bonds, whereas RNA nucleotides are linked by phosphodiester bonds.",
+            "DNA contains a hexose sugar, whereas RNA contains a pentose sugar."
+        ],
+        answer: 0,
+        explanation: "The sugar in RNA is ribose (which has an -OH on the 2' carbon), whereas the sugar in DNA is deoxyribose (which lacks the oxygen on the 2' carbon, hence 'deoxy')."
+    },
+    {
+        q: "Which property of water allows a plant to draw water up from its roots to its leaves?",
+        options: [
+            "High specific heat capacity",
+            "Capillary action driven by cohesion and adhesion",
+            "The lower density of solid water compared to liquid water",
+            "Water's role as a universal solvent"
+        ],
+        answer: 1,
+        explanation: "Transpiration relies on cohesion (water molecules hydrogen bonding to each other) and adhesion (water molecules hydrogen bonding to the cell walls of the xylem) to pull water up against gravity."
+    },
+    {
+        q: "Which of the following describes the quaternary structure of a protein?",
+        options: [
+            "The sequence of amino acids inherited from DNA.",
+            "The localized folding of the polypeptide chain into alpha helices.",
+            "The overall 3D shape of a single polypeptide chain.",
+            "The aggregation and interaction of two or more independent polypeptide chains."
+        ],
+        answer: 3,
+        explanation: "Quaternary structure only applies to proteins made of multiple polypeptide subunits (like hemoglobin, which has four). It describes how these separate chains interact to form a functional macromolecule."
+    },
+    {
+        q: "A researcher limits the supply of bioavailable nitrogen to a culture of growing cells. The synthesis of which of the following macromolecules will be most directly affected?",
+        options: ["Carbohydrates and Lipids", "Proteins and Nucleic Acids", "Lipids and Proteins", "Carbohydrates and Nucleic Acids"],
+        answer: 1,
+        explanation: "Nitrogen is a fundamental component of amino groups in proteins and the nitrogenous bases in nucleic acids (DNA and RNA). Carbohydrates and most lipids only contain Carbon, Hydrogen, and Oxygen."
+    },
+    {
+        q: "Which of the following accurately describes the structure of a steroid?",
+        options: [
+            "A long hydrocarbon chain bonded to a glycerol molecule.",
+            "A polymer of amino acids folded into a globular shape.",
+            "A lipid molecule consisting of four fused carbon rings.",
+            "A nitrogenous base bonded to a ribose sugar."
+        ],
+        answer: 2,
+        explanation: "Steroids (like cholesterol, testosterone, and estrogen) are lipids characterized by a carbon skeleton consisting of four fused rings. They are highly nonpolar."
+    },
+    {
+        q: "Why do some DNA molecules require higher temperatures to denature (melt) than others?",
+        options: [
+            "They are longer molecules and therefore heavier.",
+            "They contain a higher proportion of Guanine and Cytosine base pairs.",
+            "They are tightly wound around histone proteins.",
+            "They contain more purines than pyrimidines."
+        ],
+        answer: 1,
+        explanation: "Guanine and Cytosine pairs are held together by three hydrogen bonds, while Adenine and Thymine pairs share only two. DNA with a higher G-C content has more total hydrogen bonds and requires more thermal energy to separate the strands."
+    },
+    {
+        q: "When a protein denatures due to extreme heat, which level of its structural organization remains unaffected?",
+        options: ["Primary structure", "Secondary structure", "Tertiary structure", "Quaternary structure"],
+        answer: 0,
+        explanation: "Denaturation disrupts the weak interactions (hydrogen bonds, van der Waals forces, ionic bonds) that hold secondary, tertiary, and quaternary structures together. The primary structure (sequence of amino acids) is held together by strong covalent peptide bonds, which are not broken by heat."
+    },
+    {
+        q: "Chaperonins (chaperone proteins) are cellular structures that assist in which biological process?",
+        options: [
+            "Synthesizing lipids for the cell membrane",
+            "Guiding the proper folding of newly synthesized proteins",
+            "Transporting mRNA out of the nucleus",
+            "Hydrolyzing defective macromolecules"
+        ],
+        answer: 1,
+        explanation: "Chaperonins provide an isolated environment within the cell that allows a polypeptide chain to fold properly into its tertiary structure, protected from disruptive interactions with other cellular molecules."
+    },
+    {
+        q: "An enzyme operates best at a pH of 7. What is most likely happening to the enzyme if placed in an environment with a pH of 2?",
+        options: [
+            "The enzyme will work faster due to the high concentration of H+ ions.",
+            "The enzyme will undergo hydrolysis and be broken into individual amino acids.",
+            "The enzyme's shape will change because excess H+ ions disrupt ionic bonds and hydrogen bonds.",
+            "The enzyme will permanently bind to its substrate."
+        ],
+        answer: 2,
+        explanation: "A severe change in pH introduces excess H+ (acid) or OH- (base) ions, which interfere with the charged R-groups of amino acids. This disrupts the ionic and hydrogen bonds holding the protein's tertiary structure, causing denaturation."
+    },
+    {
+        q: "Which of the following best states the role of sulfur in biology?",
+        options: [
+            "It is a central component of the phosphate backbone in DNA.",
+            "It forms disulfide bridges that stabilize the tertiary structure of proteins.",
+            "It is the main atom involved in transferring energy via ATP.",
+            "It replaces carbon as the backbone in anaerobic organisms."
+        ],
+        answer: 1,
+        explanation: "The amino acid cysteine contains a sulfhydryl (-SH) group. Two cysteine monomers can form a strong covalent disulfide bond (-S-S-) which acts like a rivet, heavily stabilizing the 3D shape (tertiary structure) of proteins."
+    }
+];
+
+let currentQuestionIndex = 0;
+let score = 0;
+let answered = false;
+
+function initQuiz() {
+    const container = document.getElementById('questions-container');
+    
+    quizData.forEach((item, qIndex) => {
+        const questionEl = document.createElement('div');
+        questionEl.className = `question-wrapper ${qIndex === 0 ? 'active' : ''}`;
+        questionEl.id = `question-${qIndex}`;
+        
+        let optionsHtml = '';
+        item.options.forEach((opt, oIndex) => {
+            optionsHtml += `<li class="option-item" id="q${qIndex}-o${oIndex}" onclick="checkAnswer(${qIndex}, ${oIndex})">${String.fromCharCode(65 + oIndex)}. ${opt}</li>`;
+        });
+
+        questionEl.innerHTML = `
+            <div class="question-text">${qIndex + 1}. ${item.q}</div>
+            <ul class="options-list">${optionsHtml}</ul>
+            <div class="feedback-box" id="feedback-${qIndex}"></div>
+        `;
+        
+        container.appendChild(questionEl);
+    });
+    
+    updateProgress();
+}
+
+function checkAnswer(qIndex, selectedOptionIndex) {
+    if (answered) return; 
+    answered = true;
+    
+    const correctOptionIndex = quizData[qIndex].answer;
+    const feedbackBox = document.getElementById(`feedback-${qIndex}`);
+    const nextBtn = document.getElementById('next-btn');
+    
+    // Disable all options
+    for (let i = 0; i < quizData[qIndex].options.length; i++) {
+        document.getElementById(`q${qIndex}-o${i}`).classList.add('disabled');
+    }
+    
+    if (selectedOptionIndex === correctOptionIndex) {
+        document.getElementById(`q${qIndex}-o${selectedOptionIndex}`).classList.add('correct');
+        feedbackBox.innerHTML = `<strong>Correct!</strong> ${quizData[qIndex].explanation}`;
+        feedbackBox.style.backgroundColor = '#d5f5e3';
+        feedbackBox.style.color = '#1e8449';
+        score++;
+    } else {
+        document.getElementById(`q${qIndex}-o${selectedOptionIndex}`).classList.add('incorrect');
+        document.getElementById(`q${qIndex}-o${correctOptionIndex}`).classList.add('correct');
+        feedbackBox.innerHTML = `<strong>Incorrect.</strong> ${quizData[qIndex].explanation}`;
+        feedbackBox.style.backgroundColor = '#fadbd8';
+        feedbackBox.style.color = '#b03a2e';
+    }
+    
+    feedbackBox.style.display = 'block';
+    nextBtn.disabled = false;
+}
+
+function nextQuestion() {
+    document.getElementById(`question-${currentQuestionIndex}`).classList.remove('active');
+    currentQuestionIndex++;
+    
+    if (currentQuestionIndex < quizData.length) {
+        document.getElementById(`question-${currentQuestionIndex}`).classList.add('active');
+        document.getElementById('question-counter').innerText = `Question ${currentQuestionIndex + 1} / ${quizData.length}`;
+        document.getElementById('next-btn').disabled = true;
+        answered = false;
+        updateProgress();
+    } else {
+        showResults();
+    }
+}
+
+function updateProgress() {
+    const progress = ((currentQuestionIndex) / quizData.length) * 100;
+    document.getElementById('progress-bar').style.width = `${progress}%`;
+}
+
+function showResults() {
+    document.getElementById('quiz-screen').style.display = 'none';
+    document.getElementById('results-screen').style.display = 'block';
+    
+    const percentage = Math.round((score / quizData.length) * 100);
+    document.getElementById('score-display').innerText = `${score} / ${quizData.length} (${percentage}%)`;
+    
+    const feedbackMsg = document.getElementById('feedback-message');
+    if (percentage >= 90) {
+        feedbackMsg.innerText = "Exceptional! You have a firm grasp of the Chemistry of Life.";
+    } else if (percentage >= 75) {
+        feedbackMsg.innerText = "Great job! You're well on your way to mastering Unit 1.";
+    } else if (percentage >= 60) {
+        feedbackMsg.innerText = "Good effort. Reviewing macromolecule structures will help boost your score.";
+    } else {
+        feedbackMsg.innerText = "Keep studying! Focus on functional groups, water properties, and bonding.";
+    }
+}
+
+// Initialize the quiz on load
+initQuiz();
+</script>
+
+</body>
+</html>
