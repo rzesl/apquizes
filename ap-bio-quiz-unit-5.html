@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Biology Unit 5 Quiz: Heredity</title>
+    <style>
+        :root {
+            --primary: #5b2c6f;
+            --secondary: #8e44ad;
+            --correct: #27ae60;
+            --incorrect: #c0392b;
+            --bg: #f9f9f9;
+            --text: #2c3e50;
+            --card-bg: #ffffff;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--card-bg);
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 15px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        .progress-bar-bg {
+            background-color: #ecf0f1;
+            border-radius: 8px;
+            height: 12px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            background-color: var(--secondary);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        .question-box {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .question-box.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .q-text {
+            font-size: 1.25em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #dde1e5;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.05em;
+            transition: all 0.2s ease;
+        }
+        .option:hover:not(.locked) {
+            background: #f4ecf7;
+            border-color: var(--secondary);
+        }
+        .option.correct {
+            background: #eafaf1;
+            border-color: var(--correct);
+            color: #1d8348;
+        }
+        .option.incorrect {
+            background: #fdedec;
+            border-color: var(--incorrect);
+            color: #922b21;
+        }
+        .option.locked {
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            font-size: 1.05em;
+            line-height: 1.5;
+            border-left: 5px solid;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .q-counter {
+            font-weight: 600;
+            color: #7f8c8d;
+        }
+        .btn {
+            padding: 12px 25px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover:not(:disabled) {
+            background-color: #4a235a;
+        }
+        .btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        #result-screen {
+            display: none;
+            text-align: center;
+        }
+        .score-display {
+            font-size: 4.5em;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="quiz-ui">
+        <h1>Unit 5: Heredity</h1>
+        <div class="subtitle">Meiosis, Mendelian, and Non-Mendelian Genetics</div>
+        
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+
+        <div id="quiz-container"></div>
+
+        <div class="controls">
+            <div class="q-counter" id="q-counter">Question 1 / 20</div>
+            <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Next Question</button>
+            <button class="btn" id="finish-btn" onclick="showResults()" style="display:none;">Finish Quiz</button>
+        </div>
+    </div>
+
+    <div id="result-screen">
+        <h1>Quiz Complete!</h1>
+        <div class="score-display" id="final-score"></div>
+        <h2 id="commentary" style="color: var(--text);"></h2>
+        <p>Review independent assortment, linkage, pedigrees, and chromosomal inheritance patterns to master Unit 5.</p>
+        <button class="btn" onclick="location.reload()" style="margin-top: 20px;">Restart Quiz</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        q: "A cell with a diploid number of 2n=46 undergoes meiosis. A nondisjunction event occurs during meiosis II in one of the secondary spermatocytes. What will be the chromosome numbers of the four resulting gametes?",
+        opts: [
+            "A. 24, 24, 22, 22",
+            "B. 23, 23, 23, 23",
+            "C. 47, 47, 45, 45",
+            "D. 23, 23, 24, 22"
+        ],
+        ans: 3, // D
+        exp: "Nondisjunction in Meiosis II means sister chromatids fail to separate in one cell. The other secondary spermatocyte divides normally (yielding two gametes with 23). The affected one produces one gamete with an extra chromosome (24) and one missing a chromosome (22)."
+    },
+    {
+        q: "In Labrador retrievers, the *B* allele confers black coat color and *b* confers brown. The *E* allele allows pigment deposition, while *e* prevents it (resulting in a yellow coat). Two heterozygous dogs (*BbEe*) are crossed. What fraction of their offspring is expected to be yellow?",
+        opts: [
+            "A. 1/16",
+            "B. 3/16",
+            "C. 4/16 (or 1/4)",
+            "D. 9/16"
+        ],
+        ans: 2, // C
+        exp: "This is a classic example of epistasis. The *ee* genotype overrides the *B/b* locus. In a dihybrid cross (BbEe x BbEe), 1/4 (or 4/16) of the offspring will be homozygous recessive for *e* (*ee*) and therefore yellow."
+    },
+    {
+        q: "Genes A and B are linked and 15 map units apart. An individual with the genotype *AaBb* (in trans/repulsion phase, *Ab/aB*) is test-crossed with an *aabb* individual. What percentage of the offspring will have the genotype *aabb*?",
+        opts: [
+            "A. 42.5%",
+            "B. 85%",
+            "C. 15%",
+            "D. 7.5%"
+        ],
+        ans: 3, // D
+        exp: "Since the genes are in trans phase (*Ab* and *aB* on the chromosomes), the recombinant gametes will be *AB* and *ab*. The total recombination frequency is 15%, meaning *AB* and *ab* gametes each make up 7.5%. A testcross provides *ab* gametes, so the *aabb* offspring matches the *ab* gamete frequency: 7.5%."
+    },
+    {
+        q: "A trait determined by mitochondrial DNA is discovered in a family. A male exhibiting this trait marries a female who does not have the trait. What is the probability that their sons will inherit the trait?",
+        opts: [
+            "A. 0%",
+            "B. 25%",
+            "C. 50%",
+            "D. 100%"
+        ],
+        ans: 0, // A
+        exp: "Mitochondrial DNA is inherited strictly maternally (from the mother) in humans because the egg provides the cytoplasm for the zygote. A father cannot pass mitochondrial traits to his offspring."
+    },
+    {
+        q: "Hemophilia is an X-linked recessive disorder. A carrier woman and a normal man have a son. What is the probability that the son has hemophilia?",
+        opts: [
+            "A. 0%",
+            "B. 25%",
+            "C. 50%",
+            "D. 100%"
+        ],
+        ans: 2, // C
+        exp: "The son inherits his Y chromosome from his father. He inherits his X chromosome from his mother, who is a carrier (X^H X^h). He has a 50% chance of inheriting the X^h allele, resulting in hemophilia."
+    },
+    {
+        q: "Hydrangea plants of the identical genetic clone can produce blue flowers in acidic soil and pink flowers in basic soil. This is an example of:",
+        opts: [
+            "A. Epistasis",
+            "B. Polygenic inheritance",
+            "C. Codominance",
+            "D. Phenotypic plasticity"
+        ],
+        ans: 3, // D
+        exp: "Phenotypic plasticity occurs when individuals with the exact same genotype exhibit different phenotypes in response to environmental conditions (like soil pH)."
+    },
+    {
+        q: "Which of the following events occurs uniquely during Prophase I of meiosis and contributes significantly to genetic variation?",
+        opts: [
+            "A. Separation of sister chromatids",
+            "B. Formation of the synaptonemal complex and crossing over",
+            "C. Condensation of chromatin into chromosomes",
+            "D. Alignment of chromosomes along the metaphase plate"
+        ],
+        ans: 1, // B
+        exp: "Crossing over (homologous recombination) occurs only in Prophase I of meiosis when homologous chromosomes pair up (synapsis). This exchanges genetic material and creates new allele combinations."
+    },
+    {
+        q: "Mendel's Law of Independent Assortment is most directly explained by the behavior of chromosomes during:",
+        opts: [
+            "A. Anaphase II of meiosis",
+            "B. Prophase I of meiosis",
+            "C. Metaphase I of meiosis",
+            "D. Telophase I of meiosis"
+        ],
+        ans: 2, // C
+        exp: "During Metaphase I, homologous chromosome pairs align along the metaphase plate randomly. The orientation of one pair is independent of the orientation of any other pair, explaining independent assortment."
+    },
+    {
+        q: "In a pedigree, two unaffected parents have a daughter affected by a rare genetic disorder. What is the most likely mode of inheritance?",
+        opts: [
+            "A. Autosomal dominant",
+            "B. X-linked recessive",
+            "C. X-linked dominant",
+            "D. Autosomal recessive"
+        ],
+        ans: 3, // D
+        exp: "If unaffected parents have an affected child, the trait must be recessive (parents are carriers). Since it's a daughter, it cannot be X-linked recessive, because an affected daughter (X^a X^a) would require an affected father (X^a Y). Thus, it must be autosomal recessive."
+    },
+    {
+        q: "In a genetic cross, you expect a 9:3:3:1 phenotypic ratio among 160 offspring. How many offspring are expected to have the phenotype corresponding to the '1' in the ratio?",
+        opts: [
+            "A. 1",
+            "B. 10",
+            "C. 30",
+            "D. 90"
+        ],
+        ans: 1, // B
+        exp: "The '1' in the 9:3:3:1 ratio represents the double homozygous recessive phenotype, which occurs in 1 out of every 16 offspring. 1/16 of 160 is 10."
+    },
+    {
+        q: "A man with type AB blood and a woman with type O blood have children. Which of the following blood types is IMPOSSIBLE for their biological children to have?",
+        opts: [
+            "A. Type A",
+            "B. Type B",
+            "C. Both Type A and Type B",
+            "D. Type AB and Type O"
+        ],
+        ans: 3, // D
+        exp: "The man (I^A I^B) can pass on either the A or B allele. The woman (ii) can only pass on the O allele. Therefore, all children must be genetically I^A i (Type A) or I^B i (Type B). It is impossible for them to be AB or O."
+    },
+    {
+        q: "Human skin color is determined by at least three unlinked genes with additive effects. This pattern of inheritance is known as:",
+        opts: [
+            "A. Pleiotropy",
+            "B. Epistasis",
+            "C. Polygenic inheritance",
+            "D. Codominance"
+        ],
+        ans: 2, // C
+        exp: "Polygenic inheritance occurs when a single phenotype is controlled by two or more genes, usually resulting in a continuous spectrum of traits (like height or skin color)."
+    },
+    {
+        q: "In mice, the yellow coat color allele (Y) is dominant to the gray coat allele (y). However, the homozygous dominant genotype (YY) is embryonic lethal. If two yellow mice are crossed, what phenotypic ratio is expected among the live offspring?",
+        opts: [
+            "A. 1 Yellow : 1 Gray",
+            "B. 3 Yellow : 1 Gray",
+            "C. 2 Yellow : 1 Gray",
+            "D. All Yellow"
+        ],
+        ans: 2, // C
+        exp: "A cross between two yellow mice (Yy x Yy) produces a genotypic ratio of 1 YY : 2 Yy : 1 yy. Because YY is lethal and never born, the live offspring are 2 Yy (Yellow) and 1 yy (Gray), creating a 2:1 ratio."
+    },
+    {
+        q: "You have a plant exhibiting a dominant phenotype but unknown genotype. To determine its genotype, you perform a testcross. The offspring show a 1:1 ratio of dominant to recessive phenotypes. What was the genotype of the unknown plant?",
+        opts: [
+            "A. Homozygous dominant",
+            "B. Homozygous recessive",
+            "C. Heterozygous",
+            "D. Hemizygous"
+        ],
+        ans: 2, // C
+        exp: "A testcross involves crossing the unknown dominant individual with a homozygous recessive individual. If the unknown was homozygous dominant, all offspring would show the dominant trait. Since the offspring showed a 1:1 ratio, the unknown parent must be heterozygous."
+    },
+    {
+        q: "The maximum recombination frequency that can be observed between two genes on the same chromosome in a single cross is:",
+        opts: [
+            "A. 100%",
+            "B. 50%",
+            "C. 25%",
+            "D. 0%"
+        ],
+        ans: 1, // B
+        exp: "A recombination frequency of 50% indicates that the genes are assorting independently, either because they are on different chromosomes or so far apart on the same chromosome that crossing over occurs almost virtually every time."
+    },
+    {
+        q: "During anaphase I of meiosis, which of the following structures separate and move to opposite poles?",
+        opts: [
+            "A. Sister chromatids",
+            "B. Homologous chromosomes",
+            "C. Tetrads",
+            "D. Centromeres"
+        ],
+        ans: 1, // B
+        exp: "In Meiosis I, the homologous chromosomes separate from each other, reducing the ploidy of the cell from diploid to haploid. Sister chromatids do not separate until Anaphase II."
+    },
+    {
+        q: "Marfan syndrome is caused by a single gene mutation but results in a wide array of phenotypic effects, including tall stature, long limbs, and cardiovascular issues. This is an example of:",
+        opts: [
+            "A. Polygenic inheritance",
+            "B. Incomplete dominance",
+            "C. Pleiotropy",
+            "D. Epistasis"
+        ],
+        ans: 2, // C
+        exp: "Pleiotropy occurs when one single gene influences multiple, seemingly unrelated phenotypic traits."
+    },
+    {
+        q: "Calico coat color in cats is the result of X-chromosome inactivation. What is the expected sex of a normal calico cat, and why?",
+        opts: [
+            "A. Male, because the Y chromosome carries the color gene.",
+            "B. Female, because females have two X chromosomes, one of which is randomly inactivated in each cell.",
+            "C. Male, because testosterone triggers X-inactivation.",
+            "D. Female, because the trait is mitochondrial."
+        ],
+        ans: 1, // B
+        exp: "The gene for orange/black coat color is on the X chromosome. A female cat (XX) can be heterozygous, carrying both colors. Random X-inactivation (forming Barr bodies) in different cells leads to the patchy tortoise-shell or calico pattern. Normal males (XY) only have one X and can only be one color."
+    },
+    {
+        q: "In a trihybrid cross (AaBbCc x AaBbCc), what is the probability of producing an offspring with the genotype AabbCC?",
+        opts: [
+            "A. 1/8",
+            "B. 1/16",
+            "C. 1/64",
+            "D. 1/32"
+        ],
+        ans: 3, // D
+        exp: "Using the product rule: The probability of Aa is 1/2. The probability of bb is 1/4. The probability of CC is 1/4. Multiplying these together: 1/2 * 1/4 * 1/4 = 1/32."
+    },
+    {
+        q: "In plants, variegated leaves (green and white patches) are often determined by the chloroplast DNA. If a flower on a completely green branch is pollinated by pollen from a variegated branch, what will be the phenotype of the resulting offspring?",
+        opts: [
+            "A. All completely green",
+            "B. All variegated",
+            "C. 3 Green : 1 Variegated",
+            "D. All completely white"
+        ],
+        ans: 0, // A
+        exp: "Chloroplasts, like mitochondria, are inherited maternally via the ovule (egg). Since the flower receiving the pollen is on a completely green branch, it provides only green chloroplasts to the zygote, making all offspring completely green."
+    }
+];
+
+let currIdx = 0;
+let score = 0;
+let hasGuessed = false;
+
+function buildQuiz() {
+    const container = document.getElementById('quiz-container');
+    quizData.forEach((qObj, i) => {
+        const qBox = document.createElement('div');
+        qBox.className = `question-box ${i === 0 ? 'active' : ''}`;
+        qBox.id = `qbox-${i}`;
+        
+        let optsHTML = '';
+        qObj.opts.forEach((optText, oIdx) => {
+            optsHTML += `<li class="option" id="o-${i}-${oIdx}" onclick="selectAnswer(${i}, ${oIdx})">${optText}</li>`;
+        });
+
+        qBox.innerHTML = `
+            <div class="q-text">${i + 1}. ${qObj.q}</div>
+            <ul class="options-list">${optsHTML}</ul>
+            <div class="feedback" id="feedback-${i}"></div>
+        `;
+        container.appendChild(qBox);
+    });
+    updateProgressBar();
+}
+
+function selectAnswer(qIdx, selectedOIdx) {
+    if (hasGuessed) return;
+    hasGuessed = true;
+    
+    const correctOIdx = quizData[qIdx].ans;
+    const feedbackEl = document.getElementById(`feedback-${qIdx}`);
+    const nextBtn = document.getElementById('next-btn');
+    const finishBtn = document.getElementById('finish-btn');
+    
+    // Lock options
+    for(let i = 0; i < 4; i++){
+        document.getElementById(`o-${qIdx}-${i}`).classList.add('locked');
+    }
+
+    if (selectedOIdx === correctOIdx) {
+        document.getElementById(`o-${qIdx}-${selectedOIdx}`).classList.add('correct');
+        feedbackEl.innerHTML = `<strong>Correct!</strong> ${quizData[qIdx].exp}`;
+        feedbackEl.style.borderColor = "var(--correct)";
+        feedbackEl.style.backgroundColor = '#eafaf1';
+        feedbackEl.style.color = '#1d8348';
+        score++;
+    } else {
+        document.getElementById(`o-${qIdx}-${selectedOIdx}`).classList.add('incorrect');
+        document.getElementById(`o-${qIdx}-${correctOIdx}`).classList.add('correct');
+        feedbackEl.innerHTML = `<strong>Incorrect.</strong> ${quizData[qIdx].exp}`;
+        feedbackEl.style.borderColor = "var(--incorrect)";
+        feedbackEl.style.backgroundColor = '#fdedec';
+        feedbackEl.style.color = '#922b21';
+    }
+    
+    feedbackEl.style.display = 'block';
+
+    if (currIdx === quizData.length - 1) {
+        finishBtn.style.display = 'inline-block';
+        nextBtn.style.display = 'none';
+    } else {
+        nextBtn.disabled = false;
+    }
+}
+
+function nextQuestion() {
+    document.getElementById(`qbox-${currIdx}`).classList.remove('active');
+    currIdx++;
+    document.getElementById(`qbox-${currIdx}`).classList.add('active');
+    
+    document.getElementById('q-counter').innerText = `Question ${currIdx + 1} / ${quizData.length}`;
+    document.getElementById('next-btn').disabled = true;
+    hasGuessed = false;
+    updateProgressBar();
+}
+
+function updateProgressBar() {
+    const progress = (currIdx / quizData.length) * 100;
+    document.getElementById('progress-bar').style.width = progress + '%';
+}
+
+function showResults() {
+    document.getElementById('quiz-ui').style.display = 'none';
+    const res = document.getElementById('result-screen');
+    res.style.display = 'block';
+    
+    const pct = Math.round((score / quizData.length) * 100);
+    document.getElementById('final-score').innerText = `${score} / ${quizData.length} (${pct}%)`;
+    
+    const comm = document.getElementById('commentary');
+    if (pct >= 90) {
+        comm.innerText = "Exceptional work! You have mastered Heredity.";
+    } else if (pct >= 75) {
+        comm.innerText = "Great job! You have a solid grasp on Mendelian and Non-Mendelian genetics.";
+    } else if (pct >= 60) {
+        comm.innerText = "Good effort. Review recombination frequencies, linkage maps, and epistasis.";
+    } else {
+        comm.innerText = "Keep studying! Make sure to practice probability rules and doing Punnett Squares for dihybrid crosses.";
+    }
+}
+
+// Initialize
+buildQuiz();
+</script>
+
+</body>
+</html>
