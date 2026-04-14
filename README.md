@@ -17,6 +17,8 @@ AP Biology
 <br>
 <a href="ap-bio-quiz-unit-5.html">AP Bio Quiz - Unit 5 - Heredity</a>
 <br>
+<a href="ap-bio-quiz-unit-6.html">AP Bio Quiz - Unit 6 - Gene Expression & Regulation</a>
+<br>
 <br>
 AP Chinese
 <br>
