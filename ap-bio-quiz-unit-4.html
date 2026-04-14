@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Biology Unit 4 Quiz: Cell Communication & Cell Cycle</title>
+    <style>
+        :root {
+            --primary: #2980b9;
+            --secondary: #3498db;
+            --correct: #27ae60;
+            --incorrect: #e74c3c;
+            --bg: #f4f7f6;
+            --text: #2c3e50;
+            --card-bg: #ffffff;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 10px;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 25px;
+        }
+        .progress-bar-bg {
+            background-color: #ecf0f1;
+            border-radius: 8px;
+            height: 10px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            background-color: var(--secondary);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .question-box {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .question-box.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .q-text {
+            font-size: 1.25em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #dde1e5;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.05em;
+            transition: all 0.2s ease;
+        }
+        .option:hover:not(.locked) {
+            background: #eaf2f8;
+            border-color: var(--secondary);
+        }
+        .option.correct {
+            background: #eafaf1;
+            border-color: var(--correct);
+            color: #1d8348;
+        }
+        .option.incorrect {
+            background: #fdedec;
+            border-color: var(--incorrect);
+            color: #922b21;
+        }
+        .option.locked {
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            font-size: 1.05em;
+            line-height: 1.5;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .q-counter {
+            font-weight: 600;
+            color: #7f8c8d;
+        }
+        .btn {
+            padding: 12px 25px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover:not(:disabled) {
+            background-color: #1f618d;
+        }
+        .btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        #result-screen {
+            display: none;
+            text-align: center;
+        }
+        .score-display {
+            font-size: 4em;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="quiz-ui">
+        <h1>Unit 4: Cell Communication & Cell Cycle</h1>
+        <div class="subtitle">20 Hard AP-Style Multiple Choice Questions</div>
+        
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+
+        <div id="quiz-container"></div>
+
+        <div class="controls">
+            <div class="q-counter" id="q-counter">Question 1 / 20</div>
+            <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Next Question</button>
+            <button class="btn" id="finish-btn" onclick="showResults()" style="display:none;">Finish Quiz</button>
+        </div>
+    </div>
+
+    <div id="result-screen">
+        <h1>Quiz Complete!</h1>
+        <div class="score-display" id="final-score"></div>
+        <h2 id="commentary" style="color: var(--text);"></h2>
+        <p>Review the concepts of signal transduction pathways, secondary messengers, and cell cycle checkpoints to master Unit 4.</p>
+        <button class="btn" onclick="location.reload()" style="margin-top: 20px;">Restart Quiz</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        q: "Which of the following is true regarding G-protein coupled receptors (GPCRs)?",
+        opts: [
+            "A. They form dimers upon ligand binding.",
+            "B. They allow ions to flow against their concentration gradient.",
+            "C. They have intrinsic kinase activity.",
+            "D. They undergo a conformational change that allows them to exchange GDP for GTP on an associated G-protein."
+        ],
+        ans: 3, // D
+        exp: "When a ligand binds to a GPCR, the receptor changes shape and activates an associated G-protein by causing it to discard GDP and bind GTP."
+    },
+    {
+        q: "The fluctuations in the activity of maturation-promoting factor (MPF) during the cell cycle are most directly correlated with the concentration of:",
+        opts: [
+            "A. Cyclin-dependent kinases (CDKs)",
+            "B. Cyclin",
+            "C. ATP",
+            "D. p53"
+        ],
+        ans: 1, // B
+        exp: "CDK concentrations remain relatively stable throughout the cell cycle. MPF activity fluctuates primarily because the concentration of its required partner, cyclin, rises during S and G2 phases and falls abruptly during mitosis."
+    },
+    {
+        q: "What is the primary function of a protein phosphatase in a signal transduction pathway?",
+        opts: [
+            "A. To amplify the signal by activating multiple target proteins.",
+            "B. To inactivate protein kinases and turn off the signal transduction.",
+            "C. To add phosphate groups to target proteins.",
+            "D. To act as a second messenger molecule."
+        ],
+        ans: 1, // B
+        exp: "Phosphatases remove phosphate groups from proteins (dephosphorylation). In signaling pathways, this usually serves to turn off kinases, thus terminating the signal."
+    },
+    {
+        q: "During which phase of mitosis do the sister chromatids separate and move towards opposite poles?",
+        opts: [
+            "A. Prophase",
+            "B. Metaphase",
+            "C. Anaphase",
+            "D. Telophase"
+        ],
+        ans: 2, // C
+        exp: "During anaphase, cohesin proteins are cleaved, allowing sister chromatids to separate. Motor proteins then walk the chromosomes along microtubules toward the cell poles."
+    },
+    {
+        q: "Adenylyl cyclase has the opposite effect on cAMP concentrations as which of the following enzymes?",
+        opts: [
+            "A. Protein kinase A",
+            "B. Phosphorylase",
+            "C. Phosphodiesterase",
+            "D. Phospholipase C"
+        ],
+        ans: 2, // C
+        exp: "Adenylyl cyclase synthesizes cAMP from ATP, increasing cellular cAMP levels. Phosphodiesterase converts cAMP to AMP, effectively destroying the second messenger and decreasing its concentration."
+    },
+    {
+        q: "The G1 checkpoint is often considered the most important checkpoint in the cell cycle. A cell that fails to pass this checkpoint will most likely:",
+        opts: [
+            "A. Proceed directly to the S phase to repair DNA damage.",
+            "B. Undergo immediate apoptosis.",
+            "C. Continue to the G2 phase without replicating its DNA.",
+            "D. Enter a non-dividing state known as the G0 phase."
+        ],
+        ans: 3, // D
+        exp: "If a cell does not receive the go-ahead signal at the G1 checkpoint (the restriction point), it will typically exit the cell cycle and switch to a nondividing state called G0. Most cells in the human body are in G0."
+    },
+    {
+        q: "Apoptosis can be triggered by internal or external signals. Which of the following is a classic morphological feature of a cell undergoing apoptosis?",
+        opts: [
+            "A. Cellular swelling and lysis.",
+            "B. Release of cellular contents into the extracellular matrix, causing severe inflammation.",
+            "C. Blebbing of the plasma membrane and DNA fragmentation.",
+            "D. Rapid division of the nucleus without cytokinesis."
+        ],
+        ans: 2, // C
+        exp: "Apoptosis is programmed cell death. It involves the controlled breakdown of the cell, including DNA fragmentation and membrane 'blebbing' (forming small vesicles that are safely consumed by phagocytes without causing inflammation)."
+    },
+    {
+        q: "Which feature uniquely distinguishes receptor tyrosine kinases (RTKs) from G-protein coupled receptors?",
+        opts: [
+            "A. They act as ion channels when open.",
+            "B. They bind hydrophilic ligands.",
+            "C. They require dimerization and autophosphorylation to become fully active.",
+            "D. They rely exclusively on cAMP as a second messenger."
+        ],
+        ans: 2, // C
+        exp: "Upon ligand binding, RTK monomers pair up (dimerize). This dimerization activates their kinase domains, causing each monomer to phosphorylate the tyrosine residues on the tail of the other monomer (autophosphorylation)."
+    },
+    {
+        q: "A mutation in the *Ras* gene that causes the Ras protein to be locked in its GTP-bound state would most likely result in:",
+        opts: [
+            "A. Immediate cell death due to apoptosis.",
+            "B. Continuous, uncontrolled cell division.",
+            "C. An inability of the cell to respond to growth factors.",
+            "D. Arrest of the cell cycle at the M checkpoint."
+        ],
+        ans: 1, // B
+        exp: "Ras is a G-protein that relays signals from growth factor receptors to a cascade of protein kinases. If it is stuck in the active (GTP-bound) state, it continuously signals the cell to divide, which is a hallmark of many cancers."
+    },
+    {
+        q: "Synaptic signaling between neurons is an example of what type of cell communication?",
+        opts: [
+            "A. Endocrine signaling",
+            "B. Autocrine signaling",
+            "C. Paracrine signaling",
+            "D. Juxtacrine signaling"
+        ],
+        ans: 2, // C
+        exp: "Paracrine signaling involves cells communicating over short distances. In synaptic signaling, a nerve cell releases neurotransmitter molecules into a synapse, stimulating the target cell very close by."
+    },
+    {
+        q: "The mitotic spindle plays a critical role in the separation of chromosomes. Which of the following drugs would most directly disrupt anaphase?",
+        opts: [
+            "A. A drug that inhibits DNA polymerase.",
+            "B. A drug that prevents the breakdown of the nuclear envelope.",
+            "C. A drug that inhibits the production of cyclins.",
+            "D. A drug that prevents the depolymerization of microtubules."
+        ],
+        ans: 3, // D
+        exp: "During anaphase, kinetochore microtubules shorten primarily by depolymerization at their kinetochore ends. A drug that prevents depolymerization would stall chromosome separation."
+    },
+    {
+        q: "The extreme conservation of signaling pathways, such as those involving GPCRs, across diverse eukaryotic taxa suggests that:",
+        opts: [
+            "A. These pathways evolved independently in multiple lineages.",
+            "B. These pathways evolved very early in the history of life and provided a significant survival advantage.",
+            "C. Eukaryotes frequently exchange genetic information regarding these pathways via horizontal gene transfer.",
+            "D. Only a single type of receptor is capable of transmitting signals into a cell."
+        ],
+        ans: 1, // B
+        exp: "Highly conserved biological systems imply that they evolved in a common ancestor long ago and were retained because they were critically important for survival and function."
+    },
+    {
+        q: "Steroid hormones, such as testosterone, differ from protein hormones because they:",
+        opts: [
+            "A. Require a second messenger cascade to elicit a response.",
+            "B. Bind exclusively to receptors on the plasma membrane.",
+            "C. Travel exclusively through the lymphatic system.",
+            "D. Cross the plasma membrane and bind to intracellular receptors to act as transcription factors."
+        ],
+        ans: 3, // D
+        exp: "Steroid hormones are nonpolar (lipid-soluble). They pass directly through the hydrophobic core of the plasma membrane and bind to intracellular receptors in the cytoplasm or nucleus to regulate gene expression."
+    },
+    {
+        q: "Which of the following events occurs during the S phase of the cell cycle?",
+        opts: [
+            "A. DNA replication.",
+            "B. Separation of sister chromatids.",
+            "C. Reformation of the nuclear envelope.",
+            "D. Condensation of chromatin into visible chromosomes."
+        ],
+        ans: 0, // A
+        exp: "The 'S' stands for Synthesis. During this phase of interphase, the cell replicates its entire genome, resulting in chromosomes consisting of two identical sister chromatids."
+    },
+    {
+        q: "Signal amplification is a crucial aspect of many signal transduction pathways. Which of the following best represents an amplification step?",
+        opts: [
+            "A. The binding of a single ligand to a single receptor.",
+            "B. The exchange of GDP for GTP on a single G-protein.",
+            "C. The activation of multiple target proteins by a single active protein kinase.",
+            "D. The entry of a steroid hormone-receptor complex into the nucleus."
+        ],
+        ans: 2, // C
+        exp: "In a phosphorylation cascade, a single active kinase can phosphorylate and activate hundreds of downstream targets. This drastically multiplies the initial signal at each catalytic step."
+    },
+    {
+        q: "The M-phase checkpoint (spindle checkpoint) is designed to ensure that:",
+        opts: [
+            "A. All DNA has been completely replicated without errors.",
+            "B. The cell has grown to a sufficient size before division.",
+            "C. DNA is free from damage and mutations.",
+            "D. All kinetochores are properly attached to spindle microtubules."
+        ],
+        ans: 3, // D
+        exp: "The M checkpoint occurs during metaphase. The cell delays anaphase until every single chromosome is appropriately aligned and attached to spindle fibers from both poles, preventing nondisjunction."
+    },
+    {
+        q: "Plasmodesmata in plant cells and gap junctions in animal cells are functionally similar in that they:",
+        opts: [
+            "A. Both are formed by specialized proteins called connexins.",
+            "B. Both are primarily responsible for maintaining tissue structure and rigidity.",
+            "C. Both allow for direct cytoplasmic connections and exchange of materials between adjacent cells.",
+            "D. Both serve as receptors for long-distance endocrine signals."
+        ],
+        ans: 2, // C
+        exp: "Both of these structures create direct channels between adjacent cells, allowing small molecules, ions, and signaling molecules to pass directly from one cytoplasm to another without crossing a membrane (juxtacrine signaling)."
+    },
+    {
+        q: "The p53 protein acts as a tumor suppressor. Which of the following is a normal function of functional p53?",
+        opts: [
+            "A. Halting the cell cycle at the G1 checkpoint if DNA damage is detected.",
+            "B. Stimulating angiogenesis to provide nutrients to dividing cells.",
+            "C. Acting as a continuous positive regulator of CDKs.",
+            "D. Degrading the extracellular matrix to allow for metastasis."
+        ],
+        ans: 0, // A
+        exp: "p53 acts as a guardian of the genome. If DNA is damaged, p53 halts the cell cycle to allow for repair, or triggers apoptosis if the damage is unrepairable, thereby preventing the replication of mutated DNA."
+    },
+    {
+        q: "In pathways involving phospholipase C, the cleavage of PIP2 produces IP3 and DAG. What is the immediate direct effect of IP3?",
+        opts: [
+            "A. It directly phosphorylates target proteins in the cytoplasm.",
+            "B. It activates adenylyl cyclase to produce cAMP.",
+            "C. It binds to ligand-gated channels on the endoplasmic reticulum, releasing calcium ions.",
+            "D. It opens sodium channels on the plasma membrane to depolarize the cell."
+        ],
+        ans: 2, // C
+        exp: "IP3 (inositol trisphosphate) is a water-soluble second messenger. It diffuses through the cytosol and binds to IP3-gated calcium channels on the ER, causing them to open and flood the cytosol with Ca2+."
+    },
+    {
+        q: "During prometaphase, which structures must the spindle microtubules attach to in order to maneuver the chromosomes?",
+        opts: [
+            "A. Centrosomes",
+            "B. Centrioles",
+            "C. Telomeres",
+            "D. Kinetochores"
+        ],
+        ans: 3, // D
+        exp: "Kinetochores are specialized protein complexes that assemble on the centromere of each chromatid. Spindle microtubules must attach to kinetochores to pull the sister chromatids apart."
+    }
+];
+
+let currIdx = 0;
+let score = 0;
+let hasGuessed = false;
+
+function buildQuiz() {
+    const container = document.getElementById('quiz-container');
+    quizData.forEach((qObj, i) => {
+        const qBox = document.createElement('div');
+        qBox.className = `question-box ${i === 0 ? 'active' : ''}`;
+        qBox.id = `qbox-${i}`;
+        
+        let optsHTML = '';
+        qObj.opts.forEach((optText, oIdx) => {
+            optsHTML += `<li class="option" id="o-${i}-${oIdx}" onclick="selectAnswer(${i}, ${oIdx})">${optText}</li>`;
+        });
+
+        qBox.innerHTML = `
+            <div class="q-text">${i + 1}. ${qObj.q}</div>
+            <ul class="options-list">${optsHTML}</ul>
+            <div class="feedback" id="feedback-${i}"></div>
+        `;
+        container.appendChild(qBox);
+    });
+    updateProgressBar();
+}
+
+function selectAnswer(qIdx, selectedOIdx) {
+    if (hasGuessed) return;
+    hasGuessed = true;
+    
+    const correctOIdx = quizData[qIdx].ans;
+    const feedbackEl = document.getElementById(`feedback-${qIdx}`);
+    const nextBtn = document.getElementById('next-btn');
+    const finishBtn = document.getElementById('finish-btn');
+    
+    // Lock all options for this question
+    for(let i = 0; i < 4; i++){
+        document.getElementById(`o-${qIdx}-${i}`).classList.add('locked');
+    }
+
+    if (selectedOIdx === correctOIdx) {
+        document.getElementById(`o-${qIdx}-${selectedOIdx}`).classList.add('correct');
+        feedbackEl.innerHTML = `<strong>Correct!</strong> ${quizData[qIdx].exp}`;
+        feedbackEl.style.backgroundColor = '#eafaf1';
+        feedbackEl.style.color = '#1d8348';
+        score++;
+    } else {
+        document.getElementById(`o-${qIdx}-${selectedOIdx}`).classList.add('incorrect');
+        document.getElementById(`o-${qIdx}-${correctOIdx}`).classList.add('correct');
+        feedbackEl.innerHTML = `<strong>Incorrect.</strong> ${quizData[qIdx].exp}`;
+        feedbackEl.style.backgroundColor = '#fdedec';
+        feedbackEl.style.color = '#922b21';
+    }
+    
+    feedbackEl.style.display = 'block';
+
+    if (currIdx === quizData.length - 1) {
+        finishBtn.style.display = 'inline-block';
+        nextBtn.style.display = 'none';
+    } else {
+        nextBtn.disabled = false;
+    }
+}
+
+function nextQuestion() {
+    document.getElementById(`qbox-${currIdx}`).classList.remove('active');
+    currIdx++;
+    document.getElementById(`qbox-${currIdx}`).classList.add('active');
+    
+    document.getElementById('q-counter').innerText = `Question ${currIdx + 1} / ${quizData.length}`;
+    document.getElementById('next-btn').disabled = true;
+    hasGuessed = false;
+    updateProgressBar();
+}
+
+function updateProgressBar() {
+    const progress = (currIdx / quizData.length) * 100;
+    document.getElementById('progress-bar').style.width = progress + '%';
+}
+
+function showResults() {
+    document.getElementById('quiz-ui').style.display = 'none';
+    const res = document.getElementById('result-screen');
+    res.style.display = 'block';
+    
+    const pct = Math.round((score / quizData.length) * 100);
+    document.getElementById('final-score').innerText = `${score} / ${quizData.length} (${pct}%)`;
+    
+    const comm = document.getElementById('commentary');
+    if (pct >= 90) {
+        comm.innerText = "Exceptional work! You have mastered Unit 4.";
+    } else if (pct >= 75) {
+        comm.innerText = "Great job! You have a solid grasp on cellular signaling and the cell cycle.";
+    } else if (pct >= 60) {
+        comm.innerText = "Good effort. Make sure to review the specific roles of kinases, cyclins, and second messengers.";
+    } else {
+        comm.innerText = "Keep reviewing! Focus on the steps of signal transduction (Reception, Transduction, Response) and cell cycle regulation.";
+    }
+}
+
+// Initialize
+buildQuiz();
+</script>
+
+</body>
+</html>
