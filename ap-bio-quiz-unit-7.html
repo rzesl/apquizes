@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Biology Unit 7 Quiz: Natural Selection</title>
+    <style>
+        :root {
+            --primary: #27ae60;
+            --secondary: #2ecc71;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --correct: #27ae60;
+            --incorrect: #e74c3c;
+            --white: #ffffff;
+            --bg: #f4f7f6;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 850px;
+            width: 100%;
+            background: var(--white);
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: var(--dark);
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 15px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        .progress-wrapper {
+            background: var(--light);
+            border-radius: 8px;
+            height: 12px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: var(--primary);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        .question-box {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .question-box.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .q-text {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: var(--dark);
+        }
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .option {
+            background: #fdfdfd;
+            border: 2px solid #dde1e5;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.05em;
+        }
+        .option:hover:not(.locked) {
+            border-color: var(--primary);
+            background: #f0fbf4;
+        }
+        .option.correct {
+            background: #e9f7ef;
+            border-color: var(--correct);
+            color: #186a3b;
+            font-weight: 500;
+        }
+        .option.incorrect {
+            background: #fdedec;
+            border-color: var(--incorrect);
+            color: #7b241c;
+            font-weight: 500;
+        }
+        .option.locked {
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+        .feedback {
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 8px;
+            display: none;
+            font-size: 1.05em;
+            font-weight: 400;
+            line-height: 1.5;
+            border-left: 5px solid;
+            background: #fafafa;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            border-top: 2px solid #ecf0f1;
+            padding-top: 20px;
+        }
+        .counter {
+            font-weight: 600;
+            color: #7f8c8d;
+            font-size: 1.05em;
+        }
+        button {
+            padding: 12px 28px;
+            border: none;
+            background: var(--dark);
+            color: var(--white);
+            border-radius: 6px;
+            font-size: 1.05em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover:not(:disabled) {
+            background: var(--primary);
+        }
+        button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        #results {
+            display: none;
+            text-align: center;
+        }
+        .score {
+            font-size: 4.5em;
+            color: var(--primary);
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .commentary {
+            font-size: 1.2em;
+            color: var(--dark);
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="quiz-ui">
+        <h1>Unit 7: Natural Selection</h1>
+        <div class="subtitle">Evolution, Population Genetics, Speciation, and the Origins of Life</div>
+        
+        <div class="progress-wrapper">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <div id="q-container"></div>
+
+        <div class="controls">
+            <div class="counter" id="q-counter">Question 1 / 20</div>
+            <button id="next-btn" onclick="nextQ()" disabled>Next Question</button>
+            <button id="finish-btn" onclick="showResults()" style="display:none;">Finish Quiz</button>
+        </div>
+    </div>
+
+    <div id="results">
+        <h1>Quiz Completed!</h1>
+        <div class="score" id="final-score"></div>
+        <div class="commentary" id="commentary"></div>
+        <button onclick="location.reload()">Retake Quiz</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        q: "In a population of 1000 fruit flies, 90 exhibit the recessive trait for white eyes. Assuming the population is in Hardy-Weinberg equilibrium, what is the frequency of the dominant allele in this population?",
+        opts: [
+            "A. 0.09",
+            "B. 0.30",
+            "C. 0.49",
+            "D. 0.70"
+        ],
+        ans: 3, // D
+        exp: "The frequency of the recessive phenotype (q²) is 90/1000 = 0.09. Therefore, the frequency of the recessive allele (q) is the square root of 0.09, which is 0.3. Since p + q = 1, the frequency of the dominant allele (p) is 1 - 0.3 = 0.70."
+    },
+    {
+        q: "Which of the following scenarios is the best example of stabilizing selection?",
+        opts: [
+            "A. Dark-colored peppered moths surviving better than light-colored moths in industrialized, sooty environments.",
+            "B. A population of finches in which birds with very large beaks and very small beaks survive better than those with medium-sized beaks.",
+            "C. Human birth weights heavily skewed toward the 6-8 pound range, as very small or very large babies have higher mortality rates.",
+            "D. Male peacocks with extremely large and colorful tail feathers mating more frequently than those with dull feathers."
+        ],
+        ans: 2, // C
+        exp: "Stabilizing selection favors the intermediate variants in a population and acts against extreme phenotypes, reducing phenotypic variation. Human birth weight is a classic example."
+    },
+    {
+        q: "The endosymbiotic theory proposes that mitochondria and chloroplasts originated as free-living prokaryotes. Which of the following is NOT a piece of evidence supporting this theory?",
+        opts: [
+            "A. Mitochondria and chloroplasts contain their own circular, bacteria-like DNA.",
+            "B. Both organelles replicate independently of the host cell through a process similar to binary fission.",
+            "C. Both organelles contain 70S ribosomes, which are characteristic of prokaryotes.",
+            "D. Chloroplasts possess a single-membrane structure that is completely identical to the host cell's central vacuole."
+        ],
+        ans: 3, // D
+        exp: "Chloroplasts (and mitochondria) possess a double membrane, not a single membrane. The inner membrane is homologous to the original prokaryote's plasma membrane, while the outer membrane represents the host cell's engulfing vesicle."
+    },
+    {
+        q: "The wings of birds and the wings of insects serve the same function (flight) but evolved independently from different ancestral structures. This makes them:",
+        opts: [
+            "A. Homologous structures resulting from divergent evolution.",
+            "B. Vestigial structures resulting from punctuated equilibrium.",
+            "C. Analogous structures resulting from convergent evolution.",
+            "D. Synapomorphies resulting from adaptive radiation."
+        ],
+        ans: 2, // C
+        exp: "Analogous structures share a common function but not a common evolutionary origin. They arise through convergent evolution when different lineages face similar environmental selective pressures."
+    },
+    {
+        q: "Two sympatric species of frogs, *Rana boylii* and *Rana aurora*, inhabit the same streams but do not interbreed because *R. boylii* mates in late spring and *R. aurora* mates in late winter. This is an example of:",
+        opts: [
+            "A. Habitat isolation",
+            "B. Temporal isolation",
+            "C. Behavioral isolation",
+            "D. Mechanical isolation"
+        ],
+        ans: 1, // B
+        exp: "Temporal isolation is a prezygotic reproductive barrier that occurs when two species mate at different times of the day, different seasons, or different years, preventing their gametes from mixing."
+    },
+    {
+        q: "In plants, polyploidy (having more than two complete sets of chromosomes) can lead to the sudden formation of a new, reproductively isolated species within the same geographic area as the parent species. This is a mechanism of:",
+        opts: [
+            "A. Allopatric speciation",
+            "B. Sympatric speciation",
+            "C. Directional selection",
+            "D. Parapatric speciation"
+        ],
+        ans: 1, // B
+        exp: "Sympatric speciation occurs when a new species emerges without geographic isolation. Polyploidy is a common mechanism of sympatric speciation in plants because the polyploid offspring can no longer cross-pollinate with diploid parent plants."
+    },
+    {
+        q: "What does a branching node on a phylogenetic tree represent?",
+        opts: [
+            "A. A speciation event where a single ancestral lineage diverged into two or more distinct descendant lineages.",
+            "B. A point where two distinct species hybridized to form a new species.",
+            "C. The extinction of a specific trait within a clade.",
+            "D. The development of an analogous structure due to a change in environment."
+        ],
+        ans: 0, // A
+        exp: "A node (branch point) represents the most recent common ancestor of the descendant lineages. It signifies a speciation event where an ancestral population split into independent evolutionary paths."
+    },
+    {
+        q: "The RNA World hypothesis posits that RNA, rather than DNA, was the first genetic material on early Earth. Which property of RNA best supports this hypothesis?",
+        opts: [
+            "A. RNA is significantly more chemically stable than DNA.",
+            "B. RNA forms a more rigid double helix, protecting it from UV radiation.",
+            "C. RNA can both store genetic information and act as a catalyst (ribozyme) for chemical reactions.",
+            "D. RNA is found exclusively in prokaryotic organisms."
+        ],
+        ans: 2, // C
+        exp: "For life to begin, a molecule needed to store information and catalyze its own replication. RNA can do both (as mRNA/tRNA for information, and ribozymes for catalysis), making it an excellent candidate for the earliest biological molecule."
+    },
+    {
+        q: "A small group of birds is blown off course during a storm and colonizes a remote, uninhabited island. By chance, their allele frequencies for beak shape are significantly different from the large mainland population. This evolutionary event is known as:",
+        opts: [
+            "A. The bottleneck effect",
+            "B. The founder effect",
+            "C. Gene flow",
+            "D. Disruptive selection"
+        ],
+        ans: 1, // B
+        exp: "The founder effect is a type of genetic drift that occurs when a few individuals become isolated from a larger population. The new population's gene pool is not reflective of the original population simply due to the small, random sample of founders."
+    },
+    {
+        q: "If a population is in Hardy-Weinberg equilibrium and the frequency of the recessive allele (q) is 0.4, what proportion of the population is expected to be heterozygous for the trait?",
+        opts: [
+            "A. 0.16",
+            "B. 0.36",
+            "C. 0.48",
+            "D. 0.60"
+        ],
+        ans: 2, // C
+        exp: "If q = 0.4, then p (the dominant allele frequency) must be 1 - 0.4 = 0.6. The frequency of heterozygotes in the population is calculated as 2pq. 2 * 0.6 * 0.4 = 0.48."
+    },
+    {
+        q: "The persistence of the deadly sickle-cell allele at relatively high frequencies in populations where malaria is endemic is best explained by:",
+        opts: [
+            "A. Directional selection favoring the mutant allele in all environments.",
+            "B. Disruptive selection acting against individuals with normal hemoglobin.",
+            "C. Negative frequency-dependent selection.",
+            "D. Balanced polymorphism maintained by heterozygote advantage."
+        ],
+        ans: 3, // D
+        exp: "Heterozygotes (carrying one normal allele and one sickle allele) are resistant to the worst effects of malaria but do not suffer severe sickle-cell anemia. Because they survive and reproduce more successfully than either homozygote in these environments, both alleles are maintained in the population."
+    },
+    {
+        q: "Two species of frogs successfully mate and produce offspring, but the tadpoles are frail, fail to develop properly, and die before reaching reproductive age. This is an example of:",
+        opts: [
+            "A. A prezygotic barrier known as gametic isolation.",
+            "B. A postzygotic barrier known as reduced hybrid viability.",
+            "C. A postzygotic barrier known as hybrid breakdown.",
+            "D. A prezygotic barrier known as mechanical isolation."
+        ],
+        ans: 1, // B
+        exp: "Because a zygote was successfully formed, it is a postzygotic barrier. Since the hybrid offspring fail to develop or survive long enough to reproduce, it is specifically 'reduced hybrid viability'."
+    },
+    {
+        q: "The classic Miller-Urey experiment (1953) provided evidence that:",
+        opts: [
+            "A. DNA was definitively the first genetic material to evolve.",
+            "B. Eukaryotic cells evolved from the engulfment of aerobic prokaryotes.",
+            "C. Complex organic molecules, such as amino acids, could be synthesized abiotically from inorganic precursors under early Earth conditions.",
+            "D. Free oxygen (O2) was abundant in the primordial atmosphere."
+        ],
+        ans: 2, // C
+        exp: "Miller and Urey simulated the reducing conditions of early Earth (water, methane, ammonia, hydrogen, and electrical sparks). Within days, the apparatus synthesized several organic compounds, including amino acids, proving abiotic synthesis was possible."
+    },
+    {
+        q: "Which of the following is true regarding mass extinctions in Earth's history?",
+        opts: [
+            "A. They are usually followed by a sudden, prolonged decrease in speciation rates.",
+            "B. They open up vast ecological niches, often leading to rapid adaptive radiation of the surviving lineages.",
+            "C. They have only occurred once in Earth's history (the Cretaceous-Paleogene extinction that killed the dinosaurs).",
+            "D. They primarily eliminate species that are poorly adapted to their standard, unchanging environment."
+        ],
+        ans: 1, // B
+        exp: "Mass extinctions wipe out large portions of biodiversity, leaving numerous ecological niches empty. Surviving organisms can quickly diversify into these new roles, a process known as adaptive radiation (e.g., the rise of mammals after the dinosaurs)."
+    },
+    {
+        q: "In a cladogram of terrestrial vertebrates, the presence of hair and mammary glands distinguishes mammals from reptiles and amphibians. For the mammalian clade, hair is considered a:",
+        opts: [
+            "A. Shared ancestral character",
+            "B. Shared derived character (synapomorphy)",
+            "C. Homoplasy resulting from convergent evolution",
+            "D. Vestigial trait"
+        ],
+        ans: 1, // B
+        exp: "A shared derived character (synapomorphy) is an evolutionary novelty unique to a particular clade. Since hair evolved in the mammalian lineage and is not present in the older ancestors (like early reptiles), it is a derived trait that defines the clade."
+    },
+    {
+        q: "The exchange of alleles between two distinct populations due to the migration of fertile individuals or gametes is known as:",
+        opts: [
+            "A. Genetic drift",
+            "B. Gene flow",
+            "C. Natural selection",
+            "D. Nonrandom mating"
+        ],
+        ans: 1, // B
+        exp: "Gene flow tends to reduce genetic differences between populations over time. It occurs when individuals physically move to a new population and reproduce, introducing their alleles into the new gene pool."
+    },
+    {
+        q: "Modern whales possess small, non-functional pelvic bones deeply embedded in their tissue. These bones are best described as:",
+        opts: [
+            "A. Essential structures required for modern aquatic reproduction.",
+            "B. Analogous structures to the pelvic bones of fish.",
+            "C. Vestigial structures, which are remnants of functional limbs inherited from their terrestrial tetrapod ancestors.",
+            "D. Novel adaptations that recently evolved to assist in deep-sea diving."
+        ],
+        ans: 2, // C
+        exp: "Vestigial structures are historical remnants of traits that served a critical function in the organism's ancestors. Whales evolved from four-legged land mammals, and their pelvic bones are evolutionary 'leftovers' from that terrestrial past."
+    },
+    {
+        q: "Carbon-14 has a half-life of 5,730 years. A paleontologist analyzes a fossilized bone and determines that it contains exactly 1/8th of the Carbon-14 expected in a living organism. Approximately how old is the fossil?",
+        opts: [
+            "A. 5,730 years",
+            "B. 11,460 years",
+            "C. 17,190 years",
+            "D. 22,920 years"
+        ],
+        ans: 2, // C
+        exp: "If a sample has 1/8th of its original isotope, it has undergone 3 half-lives (1/2 * 1/2 * 1/2 = 1/8). 3 half-lives multiplied by 5,730 years per half-life equals 17,190 years."
+    },
+    {
+        q: "In the context of evolutionary biology, an organism's 'fitness' is best defined and measured by:",
+        opts: [
+            "A. Its physical strength, speed, and overall size relative to competitors.",
+            "B. Its total lifespan relative to the average lifespan of the population.",
+            "C. Its ability to efficiently metabolize food and avoid predators.",
+            "D. Its relative ability to survive and contribute viable, fertile offspring to the next generation's gene pool."
+        ],
+        ans: 3, // D
+        exp: "Evolutionary (or Darwinian) fitness is not strictly about physical strength or longevity; it is a measure of reproductive success. An organism is only 'fit' if it successfully passes its alleles on to future generations."
+    },
+    {
+        q: "The vast diversity of modern dog breeds, from Chihuahuas to Great Danes, arose from the gray wolf in just a few thousand years. This rapid morphological divergence is primarily the result of:",
+        opts: [
+            "A. Natural selection occurring in vastly different global climates.",
+            "B. Extremely high rates of spontaneous mutation triggered by environmental toxins.",
+            "C. The bottleneck effect drastically shifting allele frequencies after the ice age.",
+            "D. Artificial selection, wherein humans selectively bred individuals possessing desirable traits."
+        ],
+        ans: 3, // D
+        exp: "Artificial selection is the intentional breeding of plants or animals by humans. By selecting which wolves/dogs reproduced based on desired traits (size, temperament, hunting ability), humans rapidly directed their evolution."
+    }
+];
+
+let currQ = 0;
+let score = 0;
+let hasAnswered = false;
+
+function initQuiz() {
+    const container = document.getElementById('q-container');
+    quizData.forEach((data, index) => {
+        const qBox = document.createElement('div');
+        qBox.className = `question-box ${index === 0 ? 'active' : ''}`;
+        qBox.id = `q-${index}`;
+        
+        let optsHtml = '';
+        data.opts.forEach((opt, oIdx) => {
+            optsHtml += `<li class="option" id="o-${index}-${oIdx}" onclick="checkAns(${index}, ${oIdx})">${opt}</li>`;
+        });
+
+        qBox.innerHTML = `
+            <div class="q-text">${index + 1}. ${data.q}</div>
+            <ul class="options-list">${optsHtml}</ul>
+            <div class="feedback" id="fb-${index}"></div>
+        `;
+        container.appendChild(qBox);
+    });
+    updateProgress();
+}
+
+function checkAns(qIdx, selectedOIdx) {
+    if (hasAnswered) return;
+    hasAnswered = true;
+    
+    const correctOIdx = quizData[qIdx].ans;
+    const feedback = document.getElementById(`fb-${qIdx}`);
+    const nextBtn = document.getElementById('next-btn');
+    const finishBtn = document.getElementById('finish-btn');
+    
+    for(let i=0; i<4; i++){
+        document.getElementById(`o-${qIdx}-${i}`).classList.add('locked');
+    }
+
+    if (selectedOIdx === correctOIdx) {
+        document.getElementById(`o-${qIdx}-${selectedOIdx}`).classList.add('correct');
+        feedback.innerHTML = `<strong>Correct!</strong> ${quizData[qIdx].exp}`;
+        feedback.style.borderColor = "var(--correct)";
+        feedback.style.color = "#186a3b";
+        score++;
+    } else {
+        document.getElementById(`o-${qIdx}-${selectedOIdx}`).classList.add('incorrect');
+        document.getElementById(`o-${qIdx}-${correctOIdx}`).classList.add('correct');
+        feedback.innerHTML = `<strong>Incorrect.</strong> ${quizData[qIdx].exp}`;
+        feedback.style.borderColor = "var(--incorrect)";
+        feedback.style.color = "#7b241c";
+    }
+    
+    feedback.style.display = 'block';
+
+    if (currQ === quizData.length - 1) {
+        finishBtn.style.display = 'block';
+        nextBtn.style.display = 'none';
+    } else {
+        nextBtn.disabled = false;
+    }
+}
+
+function nextQ() {
+    document.getElementById(`q-${currQ}`).classList.remove('active');
+    currQ++;
+    document.getElementById(`q-${currQ}`).classList.add('active');
+    
+    document.getElementById('q-counter').innerText = `Question ${currQ + 1} / ${quizData.length}`;
+    document.getElementById('next-btn').disabled = true;
+    hasAnswered = false;
+    updateProgress();
+}
+
+function updateProgress() {
+    const prog = (currQ / quizData.length) * 100;
+    document.getElementById('progress-bar').style.width = prog + '%';
+}
+
+function showResults() {
+    document.getElementById('quiz-ui').style.display = 'none';
+    const res = document.getElementById('results');
+    res.style.display = 'block';
+    
+    const pct = Math.round((score / quizData.length) * 100);
+    document.getElementById('final-score').innerText = `${score} / ${quizData.length} (${pct}%)`;
+    
+    const comm = document.getElementById('commentary');
+    if (pct >= 90) comm.innerText = "Fantastic! You have a mastery-level understanding of Natural Selection and Evolution.";
+    else if (pct >= 75) comm.innerText = "Great work! You have a solid grasp of evolutionary concepts, speciation, and population genetics.";
+    else if (pct >= 60) comm.innerText = "Good effort. Review Hardy-Weinberg calculations, cladograms, and types of selection.";
+    else comm.innerText = "Keep studying! Focus on distinguishing between prezygotic/postzygotic barriers and the mechanisms of genetic drift vs gene flow.";
+}
+
+initQuiz();
+</script>
+
+</body>
+</html>
