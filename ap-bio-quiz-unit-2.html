@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Biology Unit 2: Cell Structure & Function Quiz</title>
+    <style>
+        :root {
+            --primary: #16a085;
+            --secondary: #1abc9c;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --correct: #27ae60;
+            --incorrect: #c0392b;
+            --text: #34495e;
+            --white: #ffffff;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: var(--dark);
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        .quiz-info {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-bottom: 25px;
+        }
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        .question-container {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .question-container.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .question-text {
+            font-size: 1.25em;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 25px;
+        }
+        .options {
+            list-style-type: none;
+            padding: 0;
+        }
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #bdc3c7;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.05em;
+            transition: all 0.2s;
+        }
+        .option:hover:not(.disabled) {
+            background: #e8f8f5;
+            border-color: var(--secondary);
+        }
+        .option.correct {
+            background: #d5f5e3;
+            border-color: var(--correct);
+            color: #1e8449;
+            font-weight: 600;
+        }
+        .option.incorrect {
+            background: #fadbd8;
+            border-color: var(--incorrect);
+            color: #922b21;
+            font-weight: 600;
+        }
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            font-size: 1.05em;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .q-counter {
+            font-weight: bold;
+            color: var(--dark);
+        }
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            background-color: var(--primary);
+            color: white;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover:not(:disabled) {
+            background-color: #117a65;
+        }
+        button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        #result-screen {
+            display: none;
+            text-align: center;
+        }
+        .score-display {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="quiz-screen">
+        <h1>Unit 2: Cell Structure & Function</h1>
+        <div class="quiz-info">20 High-Difficulty AP Biology Questions</div>
+        
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <div id="quiz-wrapper"></div>
+
+        <div class="controls">
+            <span class="q-counter" id="q-counter">Question 1 / 20</span>
+            <button id="next-btn" onclick="nextQuestion()" disabled>Next Question</button>
+            <button id="submit-btn" onclick="showResults()" style="display:none;">Finish Quiz</button>
+        </div>
+    </div>
+
+    <div id="result-screen">
+        <h1>Quiz Complete!</h1>
+        <div class="score-display" id="final-score"></div>
+        <h2 id="commentary" style="color: var(--dark);"></h2>
+        <p>Review the principles of membrane transport, compartmentalization, and water potential to master Unit 2.</p>
+        <button onclick="location.reload()" style="margin-top: 20px;">Restart Quiz</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        q: "A spherical cell has a radius of 2 &mu;m. If it grows to a radius of 4 &mu;m, how does its surface area-to-volume ratio change, and what is the biological consequence?",
+        a: [
+            "The ratio doubles; the cell becomes more efficient at eliminating waste.",
+            "The ratio halves; the cell's ability to exchange materials with its environment decreases relative to its size.",
+            "The ratio remains constant; growth has no effect on transport efficiency.",
+            "The ratio squares; the cell divides immediately."
+        ],
+        correct: 1,
+        exp: "As a cell grows, its volume increases at a faster rate (cubed) than its surface area (squared). Therefore, the surface area-to-volume ratio decreases (halves if radius doubles), making material exchange less efficient."
+    },
+    {
+        q: "Which of the following observations most directly supports the endosymbiotic theory regarding the origin of mitochondria?",
+        a: [
+            "Mitochondria possess linear DNA similar to that found in the nucleus.",
+            "Mitochondria reproduce via mitosis and are heavily localized near the rough ER.",
+            "Mitochondria contain 70S ribosomes and circular DNA lacking histones, similar to bacteria.",
+            "Mitochondria rely entirely on the host cell's nucleus for the synthesis of all their proteins."
+        ],
+        correct: 2,
+        exp: "The endosymbiotic theory states mitochondria evolved from engulfed prokaryotes. Evidence includes their double membrane, circular DNA, and 70S ribosomes, all of which are characteristic of bacteria."
+    },
+    {
+        q: "A researcher studying a winter wheat plant observes that its plasma membranes remain fluid even at near-freezing temperatures. Which structural modification most likely accounts for this?",
+        a: [
+            "An increased proportion of cis-unsaturated fatty acids in the phospholipid tails.",
+            "A decreased concentration of cholesterol in the lipid bilayer.",
+            "An increased proportion of saturated fatty acids in the phospholipid tails.",
+            "The covalent binding of peripheral proteins to the phospholipid heads."
+        ],
+        correct: 0,
+        exp: "Cis-unsaturated fatty acids have 'kinks' in their hydrocarbon chains that prevent phospholipids from packing tightly together, thereby maintaining membrane fluidity at low temperatures."
+    },
+    {
+        q: "A plant cell with a pressure potential (&Psi;p) of 0.2 MPa and a solute potential (&Psi;s) of -0.7 MPa is placed in an open beaker of pure water. What will be the initial net direction of water movement, and what will the equilibrium water potential (&Psi;) of the cell be?",
+        a: [
+            "Out of the cell; equilibrium &Psi; = -0.5 MPa",
+            "Into the cell; equilibrium &Psi; = 0 MPa",
+            "Into the cell; equilibrium &Psi; = 0.2 MPa",
+            "No net movement; equilibrium &Psi; = -0.5 MPa"
+        ],
+        correct: 1,
+        exp: "The cell's initial &Psi; is (-0.7) + (0.2) = -0.5 MPa. Pure water has a &Psi; of 0 MPa. Water moves from high &Psi; (0) to low &Psi; (-0.5), so it moves into the cell. At equilibrium in an open beaker, the cell's &Psi; will equal the environment's &Psi; (0 MPa)."
+    },
+    {
+        q: "Cyanide is a toxin that inhibits cytochrome c oxidase in the electron transport chain, halting ATP synthesis. Which of the following cellular transport processes would be most immediately affected?",
+        a: [
+            "The facilitated diffusion of glucose via GLUT transporters.",
+            "The movement of oxygen molecules across the alveolar membrane.",
+            "The movement of K+ ions into the cell against their concentration gradient.",
+            "The osmosis of water through aquaporins."
+        ],
+        correct: 2,
+        exp: "The movement of ions against their concentration gradient (like K+ entering via the Na+/K+ pump) is active transport, which strictly requires ATP. Diffusion and osmosis are passive and do not require ATP."
+    },
+    {
+        q: "Gaucher's disease is an inherited disorder characterized by the accumulation of complex lipids inside macrophages due to a lack of a specific hydrolytic enzyme. A defect in which of the following organelles is the most likely cause?",
+        a: ["Peroxisome", "Lysosome", "Smooth Endoplasmic Reticulum", "Golgi Apparatus"],
+        correct: 1,
+        exp: "Lysosomes are the 'digestive system' of the cell, containing hydrolytic enzymes that break down macromolecules. A deficiency in these enzymes leads to the toxic accumulation of substrates."
+    },
+    {
+        q: "In a pulse-chase experiment, radioactive amino acids are supplied to a secretory cell. Which sequence correctly traces the pathway of a newly synthesized glycoprotein?",
+        a: [
+            "Smooth ER &rarr; Nucleus &rarr; Secretory Vesicle &rarr; Plasma Membrane",
+            "Rough ER &rarr; cis Golgi &rarr; trans Golgi &rarr; Secretory Vesicle &rarr; Plasma Membrane",
+            "Cytoplasm &rarr; Lysosome &rarr; Golgi &rarr; Rough ER",
+            "Golgi &rarr; Rough ER &rarr; Secretory Vesicle &rarr; Plasma Membrane"
+        ],
+        correct: 1,
+        exp: "Proteins destined for secretion are synthesized in the Rough ER, enclosed in vesicles, transported to the cis face of the Golgi for modification, and exit from the trans face in secretory vesicles that fuse with the plasma membrane."
+    },
+    {
+        q: "A beaker is divided by a selectively permeable membrane that is permeable to water but impermeable to sucrose. Side A contains 0.1 M sucrose, and Side B contains 0.5 M sucrose. What will happen over time?",
+        a: [
+            "Sucrose will diffuse from Side B to Side A.",
+            "Water will move from Side B to Side A, raising the fluid level in Side A.",
+            "Water will move from Side A to Side B, lowering the solute concentration in Side B.",
+            "Both water and sucrose will move until equilibrium is reached."
+        ],
+        correct: 2,
+        exp: "Side A is hypotonic (lower solute, higher water potential), while Side B is hypertonic (higher solute, lower water potential). Water will move via osmosis from Side A to Side B to equalize the concentrations."
+    },
+    {
+        q: "Certain mammalian cells in the respiratory tract possess motile cilia that sweep mucus and debris. Which cytoskeletal element forms the core structural component of these cilia, and what motor protein drives their movement?",
+        a: [
+            "Microfilaments; Myosin",
+            "Intermediate filaments; Kinesin",
+            "Microtubules; Dynein",
+            "Microtubules; Actin"
+        ],
+        correct: 2,
+        exp: "Cilia and flagella have a core composed of microtubules arranged in a '9+2' pattern. The motor protein dynein causes these microtubules to slide past one another, generating movement."
+    },
+    {
+        q: "The Na+/K+ pump transports 3 Na+ ions out of the cell and 2 K+ ions into the cell for every ATP molecule hydrolyzed. What is the electrogenic effect of this pump on the cell?",
+        a: [
+            "It neutralizes the membrane potential.",
+            "It contributes to a net negative charge inside the cell.",
+            "It contributes to a net positive charge inside the cell.",
+            "It creates a proton gradient across the membrane."
+        ],
+        correct: 1,
+        exp: "Because 3 positive charges (Na+) leave the cell while only 2 positive charges (K+) enter, there is a net loss of one positive charge per cycle, making the interior of the cell more negative relative to the outside."
+    },
+    {
+        q: "How does the compartmentalization of a eukaryotic cell specifically contribute to the regulation of metabolic pathways?",
+        a: [
+            "It ensures all cellular enzymes share the same optimal pH.",
+            "It prevents the cell from exceeding the surface area-to-volume ratio limit.",
+            "It allows incompatible reactions and distinct pH environments to exist simultaneously within the same cell.",
+            "It allows bacteria to undergo translation and transcription simultaneously."
+        ],
+        correct: 2,
+        exp: "Compartmentalization via membrane-bound organelles allows eukaryotic cells to maintain distinct environments (like the acidic pH of a lysosome) that optimize specific enzymatic reactions without interfering with cytosolic processes."
+    },
+    {
+        q: "Liver cells (hepatocytes) are heavily involved in detoxifying drugs and alcohol. Based on this function, which organelle would you expect to be unusually abundant in these cells?",
+        a: ["Nucleolus", "Rough Endoplasmic Reticulum", "Smooth Endoplasmic Reticulum", "Central Vacuole"],
+        correct: 2,
+        exp: "The Smooth ER contains enzymes involved in the synthesis of lipids, metabolism of carbohydrates, and the detoxification of drugs and poisons (abundant in liver cells)."
+    },
+    {
+        q: "A mutant yeast strain secretes proteins into the extracellular environment that are normally supposed to be transported to the vacuole. This mutation most likely affects the function of which organelle?",
+        a: ["Ribosome", "Nucleus", "Golgi Apparatus", "Mitochondrion"],
+        correct: 2,
+        exp: "The Golgi apparatus is the sorting and packaging center of the cell. It adds specific molecular 'tags' (like mannose-6-phosphate) to direct proteins to specific destinations. Without proper tagging, proteins default to the secretory pathway."
+    },
+    {
+        q: "Aquaporins are channel proteins that facilitate the rapid transport of water across the plasma membrane. Based on their biological function, the amino acids lining the internal channel of an aquaporin are most likely:",
+        a: ["Hydrophobic and nonpolar", "Hydrophilic and polar", "Exclusively acidic", "Exclusively basic"],
+        correct: 1,
+        exp: "Because water is highly polar, it cannot easily cross the hydrophobic core of the lipid bilayer. The interior channel of an aquaporin must be lined with hydrophilic (polar) amino acids to allow water molecules to pass."
+    },
+    {
+        q: "Paramecium is a single-celled freshwater protist. If a Paramecium is transferred from its natural freshwater habitat to an isotonic saline solution, what immediate change will occur regarding its contractile vacuole?",
+        a: [
+            "The vacuole will contract more rapidly to expel excess salt.",
+            "The vacuole will stop contracting because the net influx of water ceases.",
+            "The vacuole will reverse its function and pump water into the cell.",
+            "The vacuole will undergo exocytosis to repair the membrane."
+        ],
+        correct: 1,
+        exp: "In a freshwater (hypotonic) environment, water constantly enters the Paramecium, so the contractile vacuole must pump it out to prevent lysis. In an isotonic environment, there is no net influx of water, so the pumping action will cease."
+    },
+    {
+        q: "What prevents plant cells from bursting (lysing) when placed in a severely hypotonic environment?",
+        a: [
+            "The active transport of water out of the cell.",
+            "The rigid cellulose cell wall exerts turgor pressure that opposes further water influx.",
+            "The central vacuole shrinks to accommodate the excess fluid.",
+            "Aquaporins close specifically in response to hypotonic shock."
+        ],
+        correct: 1,
+        exp: "Water enters the cell and expands the central vacuole, pushing the plasma membrane against the cell wall. The rigid cell wall pushes back (turgor pressure), eventually equalling the osmotic pressure and halting net water entry."
+    },
+    {
+        q: "Researchers discover a small, uncharged, nonpolar steroid hormone that acts as a signaling factor. How does this molecule most likely enter its target cells?",
+        a: [
+            "Simple diffusion directly through the phospholipid bilayer.",
+            "Receptor-mediated endocytosis.",
+            "Facilitated diffusion through an ion channel.",
+            "Active transport via a carrier protein."
+        ],
+        correct: 0,
+        exp: "Small, nonpolar, hydrophobic molecules (like steroids and O2) can dissolve in the lipid bilayer and cross the membrane readily without the assistance of transport proteins."
+    },
+    {
+        q: "Which of the following intercellular junctions allows for the direct passage of ions and small molecules between the cytoplasm of adjacent animal cells, coordinating electrical signals in cardiac muscle?",
+        a: ["Tight junctions", "Plasmodesmata", "Desmosomes", "Gap junctions"],
+        correct: 3,
+        exp: "Gap junctions are channels consisting of connexon proteins that directly connect the cytoplasm of adjacent animal cells, allowing rapid communication. (Plasmodesmata serve a similar function, but in plant cells)."
+    },
+    {
+        q: "A researcher treats a rapidly dividing animal cell culture with a chemical that completely depolymerizes actin microfilaments. Which of the following cellular processes will be directly and completely inhibited?",
+        a: [
+            "The separation of sister chromatids during anaphase.",
+            "The formation of a cleavage furrow during cytokinesis.",
+            "The transport of vesicles from the ER to the Golgi.",
+            "The synthesis of ribosomal RNA in the nucleolus."
+        ],
+        correct: 1,
+        exp: "In animal cells, cytokinesis is driven by a contractile ring composed of actin microfilaments and myosin motor proteins. Inhibiting actin prevents the cleavage furrow from forming. (Chromatid separation relies on microtubules)."
+    },
+    {
+        q: "Which of the following best describes the role of clathrin in receptor-mediated endocytosis?",
+        a: [
+            "It acts as the primary receptor on the extracellular surface to bind specific ligands.",
+            "It is a lipid molecule that dissolves the plasma membrane to allow entry.",
+            "It forms a structural coat on the cytoplasmic face of the membrane, driving the invagination of a vesicle.",
+            "It is a hydrolytic enzyme that digests the target ligand once inside the cell."
+        ],
+        correct: 2,
+        exp: "Clathrin is a protein that polymerizes on the inside (cytoplasmic side) of the plasma membrane. It forms a basket-like lattice that physically deforms the membrane to pinch off a coated vesicle during endocytosis."
+    }
+];
+
+let currentQ = 0;
+let score = 0;
+let answered = false;
+
+function loadQuiz() {
+    const wrapper = document.getElementById('quiz-wrapper');
+    quizData.forEach((item, index) => {
+        const qDiv = document.createElement('div');
+        qDiv.className = `question-container ${index === 0 ? 'active' : ''}`;
+        qDiv.id = `qbox-${index}`;
+        
+        let opts = '';
+        item.a.forEach((opt, oIndex) => {
+            opts += `<li class="option" id="opt-${index}-${oIndex}" onclick="checkAns(${index}, ${oIndex})">${String.fromCharCode(65 + oIndex)}. ${opt}</li>`;
+        });
+
+        qDiv.innerHTML = `
+            <div class="question-text">${index + 1}. ${item.q}</div>
+            <ul class="options">${opts}</ul>
+            <div class="feedback" id="fb-${index}"></div>
+        `;
+        wrapper.appendChild(qDiv);
+    });
+    updateBar();
+}
+
+function checkAns(qIdx, selectedIdx) {
+    if (answered) return;
+    answered = true;
+    
+    const correctIdx = quizData[qIdx].correct;
+    const fb = document.getElementById(`fb-${qIdx}`);
+    const nextBtn = document.getElementById('next-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    
+    // Disable clicks
+    for (let i=0; i<4; i++) {
+        document.getElementById(`opt-${qIdx}-${i}`).classList.add('disabled');
+    }
+    
+    if (selectedIdx === correctIdx) {
+        document.getElementById(`opt-${qIdx}-${selectedIdx}`).classList.add('correct');
+        fb.innerHTML = `<strong>Correct!</strong> ${quizData[qIdx].exp}`;
+        fb.style.backgroundColor = '#d5f5e3';
+        fb.style.color = '#1e8449';
+        score++;
+    } else {
+        document.getElementById(`opt-${qIdx}-${selectedIdx}`).classList.add('incorrect');
+        document.getElementById(`opt-${qIdx}-${correctIdx}`).classList.add('correct');
+        fb.innerHTML = `<strong>Incorrect.</strong> ${quizData[qIdx].exp}`;
+        fb.style.backgroundColor = '#fadbd8';
+        fb.style.color = '#922b21';
+    }
+    
+    fb.style.display = 'block';
+    
+    if (currentQ === quizData.length - 1) {
+        submitBtn.style.display = 'inline-block';
+        nextBtn.style.display = 'none';
+    } else {
+        nextBtn.disabled = false;
+    }
+}
+
+function nextQuestion() {
+    document.getElementById(`qbox-${currentQ}`).classList.remove('active');
+    currentQ++;
+    document.getElementById(`qbox-${currentQ}`).classList.add('active');
+    
+    document.getElementById('q-counter').innerText = `Question ${currentQ + 1} / ${quizData.length}`;
+    document.getElementById('next-btn').disabled = true;
+    answered = false;
+    updateBar();
+}
+
+function updateBar() {
+    const p = (currentQ / quizData.length) * 100;
+    document.getElementById('progress-bar').style.width = p + '%';
+}
+
+function showResults() {
+    document.getElementById('quiz-screen').style.display = 'none';
+    document.getElementById('result-screen').style.display = 'block';
+    
+    const pct = Math.round((score / quizData.length) * 100);
+    document.getElementById('final-score').innerText = `${score} / ${quizData.length} (${pct}%)`;
+    
+    const comm = document.getElementById('commentary');
+    if (pct >= 90) comm.innerText = "Outstanding! You are highly prepared for AP Biology Unit 2.";
+    else if (pct >= 75) comm.innerText = "Great job! You have a solid grasp of cell structure and function.";
+    else if (pct >= 60) comm.innerText = "Good effort, but you should review cell transport mechanisms and water potential math.";
+    else comm.innerText = "Keep studying! Focus on organelle functions and the differences between active and passive transport.";
+}
+
+loadQuiz();
+</script>
+
+</body>
+</html>
