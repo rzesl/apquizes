@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Biology Unit 6 Quiz: Gene Expression & Regulation</title>
+    <style>
+        :root {
+            --primary: #c0392b;
+            --secondary: #e74c3c;
+            --correct: #27ae60;
+            --incorrect: #c0392b;
+            --bg: #fdfefe;
+            --text: #2c3e50;
+            --card-bg: #ffffff;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 850px;
+            width: 100%;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 15px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.15em;
+            margin-bottom: 30px;
+        }
+        .progress-bar-bg {
+            background-color: #ecf0f1;
+            border-radius: 8px;
+            height: 12px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            background-color: var(--primary);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        .question-box {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .question-box.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .q-text {
+            font-size: 1.25em;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: var(--text);
+            line-height: 1.5;
+        }
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #dde1e5;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.05em;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+        .option:hover:not(.locked) {
+            background: #fadbd8;
+            border-color: var(--secondary);
+        }
+        .option.correct {
+            background: #eafaf1;
+            border-color: var(--correct);
+            color: #1d8348;
+            font-weight: 500;
+        }
+        .option.incorrect {
+            background: #fdedec;
+            border-color: var(--incorrect);
+            color: #922b21;
+            font-weight: 500;
+        }
+        .option.locked {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            font-size: 1.05em;
+            line-height: 1.6;
+            border-left: 5px solid;
+            background: #fdfafb;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 35px;
+            border-top: 2px solid #eee;
+            padding-top: 20px;
+        }
+        .q-counter {
+            font-weight: 600;
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        .btn {
+            padding: 12px 30px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.05em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover:not(:disabled) {
+            background-color: #922b21;
+        }
+        .btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        #result-screen {
+            display: none;
+            text-align: center;
+        }
+        .score-display {
+            font-size: 5em;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+        .commentary {
+            font-size: 1.2em;
+            color: var(--text);
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="quiz-ui">
+        <h1>Unit 6: Gene Expression & Regulation</h1>
+        <div class="subtitle">DNA Replication, Transcription, Translation, and Biotechnology</div>
+        
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+
+        <div id="quiz-container"></div>
+
+        <div class="controls">
+            <div class="q-counter" id="q-counter">Question 1 / 20</div>
+            <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Next Question</button>
+            <button class="btn" id="finish-btn" onclick="showResults()" style="display:none;">Finish Quiz</button>
+        </div>
+    </div>
+
+    <div id="result-screen">
+        <h1>Quiz Complete!</h1>
+        <div class="score-display" id="final-score"></div>
+        <div class="commentary" id="commentary"></div>
+        <button class="btn" onclick="location.reload()">Take Quiz Again</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        q: "During DNA replication, the lagging strand is synthesized discontinuously. Which of the following best explains why this occurs?",
+        opts: [
+            "A. DNA polymerase can only add nucleotides to the free 3' end of a growing strand, meaning it must move away from the replication fork on the lagging strand.",
+            "B. The lagging strand lacks a primer, forcing RNA primase to constantly re-attach.",
+            "C. Helicase unwinds the DNA in a 3' to 5' direction on the lagging strand.",
+            "D. Ligase prevents continuous synthesis to ensure proofreading can occur."
+        ],
+        ans: 0,
+        exp: "Because DNA strands are antiparallel and DNA polymerase III only synthesizes DNA in the 5' to 3' direction (adding to the 3' end), the lagging strand must be synthesized in short segments (Okazaki fragments) moving away from the replication fork."
+    },
+    {
+        q: "What is the primary role of DNA ligase in the replication of the lagging strand?",
+        opts: [
+            "A. To unwind the double helix.",
+            "B. To form phosphodiester bonds between the 3' end of one Okazaki fragment and the 5' end of another.",
+            "C. To add an RNA primer to initiate synthesis.",
+            "D. To relieve the supercoiling strain ahead of the replication fork."
+        ],
+        ans: 1,
+        exp: "After DNA polymerase I replaces the RNA primers with DNA, the fragments are not yet covalently linked. DNA ligase seals these gaps by forming phosphodiester bonds, completing the continuous DNA strand."
+    },
+    {
+        q: "Through alternative RNA splicing, a single gene can result in the production of multiple different polypeptides. How is this achieved?",
+        opts: [
+            "A. By mutating specific bases during transcription.",
+            "B. By translating the mRNA in different reading frames.",
+            "C. By selectively including or excluding different exons from the mature mRNA transcript.",
+            "D. By adding different types of 5' caps and poly-A tails."
+        ],
+        ans: 2,
+        exp: "Alternative splicing allows a single pre-mRNA to be spliced in multiple ways. By treating different segments as either exons (included) or introns (excluded), cells can generate diverse proteins from a single gene sequence."
+    },
+    {
+        q: "Which of the following statements best describes the function of a repressible operon, such as the *trp* operon in E. coli?",
+        opts: [
+            "A. It is usually off, but is turned on when an inducer molecule binds to the repressor.",
+            "B. It is transcribed continuously regardless of environmental conditions.",
+            "C. The repressor protein binds to the promoter to permanently block RNA polymerase.",
+            "D. It is usually transcribed, but transcription is halted when a specific small molecule corepressor binds allosterically to a regulatory protein."
+        ],
+        ans: 3,
+        exp: "Repressible operons are typically ON (synthesizing an essential product like tryptophan). When the product is abundant, it acts as a corepressor, binding to and activating the repressor protein, which then binds the operator and stops transcription."
+    },
+    {
+        q: "In the context of the *lac* operon, what occurs when both glucose and lactose are present in the environment?",
+        opts: [
+            "A. The operon is transcribed at maximum capacity.",
+            "B. The *lac* repressor remains tightly bound to the operator.",
+            "C. The operon is permanently turned off by DNA methylation.",
+            "D. Transcription occurs at a very low level because cAMP levels are low, preventing the activator protein (CAP) from effectively binding to the promoter."
+        ],
+        ans: 3,
+        exp: "While lactose removes the repressor, maximum transcription requires CAP (catabolite activator protein). CAP only binds when cAMP levels are high, which occurs when glucose is absent. If glucose is present, cAMP is low, CAP doesn't bind, and transcription of the *lac* operon is minimal."
+    },
+    {
+        q: "What is the primary function of the poly-A tail added to the 3' end of eukaryotic mRNA?",
+        opts: [
+            "A. To provide a binding site for the small ribosomal subunit.",
+            "B. To protect the mRNA from degradation by hydrolytic enzymes in the cytoplasm and facilitate its export from the nucleus.",
+            "C. To serve as a termination signal for RNA polymerase II.",
+            "D. To act as an intron removal site during splicing."
+        ],
+        ans: 1,
+        exp: "The poly-A tail (along with the 5' cap) protects the mature mRNA from exonucleases in the cytoplasm, aids in its export from the nucleus, and helps ribosomes attach to the 5' end during translation."
+    },
+    {
+        q: "In eukaryotic cells, the initiation of transcription requires which of the following complexes to assemble at the promoter?",
+        opts: [
+            "A. Transcription factors and RNA polymerase II binding to the TATA box.",
+            "B. The large and small ribosomal subunits binding to the start codon.",
+            "C. DNA helicase and primase binding to the origin of replication.",
+            "D. Repressors and corepressors binding to the operator sequence."
+        ],
+        ans: 0,
+        exp: "Eukaryotic RNA polymerase II cannot initiate transcription on its own. It requires specific proteins called transcription factors to bind to the promoter region (often containing a TATA box) to form the transcription initiation complex."
+    },
+    {
+        q: "During the elongation phase of translation, an incoming aminoacyl-tRNA binds to which site on the ribosome?",
+        opts: [
+            "A. The E (Exit) site.",
+            "B. The P (Peptidyl) site.",
+            "C. The A (Aminoacyl) site.",
+            "D. The T (Termination) site."
+        ],
+        ans: 2,
+        exp: "New tRNAs carrying amino acids enter the ribosome at the A site (except for the initiator tRNA, which goes straight to the P site). The polypeptide chain is then transferred to the amino acid on the A site, and the ribosome translocates."
+    },
+    {
+        q: "Epigenetic inheritance involves changes in gene expression that do not involve alterations to the underlying DNA sequence. Which of the following modifications is most highly correlated with increased gene transcription?",
+        opts: [
+            "A. High levels of DNA methylation at CpG islands.",
+            "B. Deacetylation of histone tails.",
+            "C. The condensation of chromatin into heterochromatin.",
+            "D. Acetylation of histone tails."
+        ],
+        ans: 3,
+        exp: "Adding acetyl groups (-COCH3) to histone tails neutralizes their positive charge, causing them to bind DNA less tightly. This creates open chromatin (euchromatin) which is highly accessible to transcription machinery, increasing expression."
+    },
+    {
+        q: "A mutation changes a codon from UAC (Tyrosine) to UAA (Stop). This is an example of a:",
+        opts: [
+            "A. Nonsense mutation.",
+            "B. Missense mutation.",
+            "C. Silent mutation.",
+            "D. Frameshift mutation."
+        ],
+        ans: 0,
+        exp: "A nonsense mutation occurs when a point mutation changes an amino acid-coding codon into a premature stop codon, usually resulting in a truncated, nonfunctional protein."
+    },
+    {
+        q: "In gel electrophoresis, DNA fragments are separated based on their:",
+        opts: [
+            "A. Nitrogenous base composition.",
+            "B. Size, with shorter fragments migrating faster toward the positive electrode.",
+            "C. Charge, with positively charged DNA moving toward the negative electrode.",
+            "D. Sequence similarity to a complementary probe."
+        ],
+        ans: 1,
+        exp: "DNA is negatively charged due to its phosphate groups, so it moves toward the positive electrode. The porous gel matrix acts like a sieve, allowing smaller DNA fragments to travel faster and further than larger ones."
+    },
+    {
+        q: "Why is *Taq* polymerase uniquely essential for the Polymerase Chain Reaction (PCR)?",
+        opts: [
+            "A. It requires no primers to begin DNA synthesis.",
+            "B. It acts as both a helicase and a polymerase simultaneously.",
+            "C. It is capable of synthesizing RNA from a DNA template.",
+            "D. It is highly heat-stable and can survive the high-temperature denaturation step without denaturing."
+        ],
+        ans: 3,
+        exp: "PCR requires heating the DNA to near boiling (~95°C) to separate the strands. Standard human DNA polymerase would denature and be destroyed at this heat. *Taq* polymerase, derived from a thermophilic bacterium, survives this heat, allowing cyclic amplification."
+    },
+    {
+        q: "Retroviruses, such as HIV, violate the standard central dogma of molecular biology because they:",
+        opts: [
+            "A. Translate proteins directly from DNA without an mRNA intermediate.",
+            "B. Replicate without utilizing host cell ribosomes.",
+            "C. Use reverse transcriptase to synthesize DNA from an RNA genome.",
+            "D. Insert proteins directly into the host cell's nucleus."
+        ],
+        ans: 2,
+        exp: "The central dogma describes the flow of information from DNA -> RNA -> Protein. Retroviruses possess RNA genomes and the enzyme reverse transcriptase, which reverse-transcribes their RNA into DNA before integration into the host genome."
+    },
+    {
+        q: "In a transformation experiment, bacteria are mixed with a plasmid containing a gene for ampicillin resistance and a gene of interest. The bacteria are then plated on agar containing ampicillin. What is the purpose of the ampicillin in the agar?",
+        opts: [
+            "A. To induce mutations in the bacterial genome.",
+            "B. To select for and allow only the bacteria that successfully took up the plasmid to grow.",
+            "C. To provide a nutrient source for the rapidly dividing transformed bacteria.",
+            "D. To trigger the expression of the gene of interest via an operon."
+        ],
+        ans: 1,
+        exp: "Ampicillin acts as a selectable marker. Bacteria that did not take up the plasmid will be killed by the antibiotic. Only those that successfully transformed (taking in the resistance gene) will survive and form colonies."
+    },
+    {
+        q: "MicroRNAs (miRNAs) primarily regulate eukaryotic gene expression at the post-transcriptional level by:",
+        opts: [
+            "A. Binding to transcription factors and preventing their attachment to promoters.",
+            "B. Directly phosphorylating RNA polymerase II.",
+            "C. Modifying the splicing pattern of pre-mRNA in the nucleus.",
+            "D. Binding to complementary target mRNAs, which triggers their degradation or blocks their translation."
+        ],
+        ans: 3,
+        exp: "miRNAs are small noncoding RNAs that associate with protein complexes (like RISC) and bind to complementary sequences on target mRNAs in the cytoplasm. This either physically blocks ribosomes from translating the mRNA or causes the mRNA to be chopped up."
+    },
+    {
+        q: "What is the specific evolutionary benefit of telomerase in eukaryotic organisms?",
+        opts: [
+            "A. It catalyzes the lengthening of telomeres in germ cells, preventing the loss of essential genes over successive generations.",
+            "B. It cuts out damaged DNA caused by UV radiation.",
+            "C. It connects the Okazaki fragments on the lagging strand.",
+            "D. It removes introns from the ends of the pre-mRNA transcript."
+        ],
+        ans: 0,
+        exp: "Because linear eukaryotic chromosomes shorten with every round of replication, telomeres act as protective caps. Telomerase restores these caps in germ cells (and some stem/cancer cells) so that offspring inherit complete, full-length chromosomes."
+    },
+    {
+        q: "The genetic code is described as 'redundant' or 'degenerate'. This property is primarily due to:",
+        opts: [
+            "A. The presence of multiple origins of replication in eukaryotic genomes.",
+            "B. The fact that introns are spliced out of the mRNA.",
+            "C. 'Wobble' pairing, where multiple different codons can specify the same amino acid.",
+            "D. The ability of ribosomes to read mRNA in both the 5'->3' and 3'->5' directions."
+        ],
+        ans: 2,
+        exp: "Redundancy means that most amino acids are coded for by more than one codon (e.g., UUU and UUC both code for Phenylalanine). This is often due to relaxed base-pairing rules at the third 'wobble' position of the codon/anticodon interaction."
+    },
+    {
+        q: "Which enzyme is responsible for relieving the structural strain and supercoiling of the DNA double helix ahead of the replication fork?",
+        opts: [
+            "A. Helicase",
+            "B. Topoisomerase",
+            "C. Primase",
+            "D. Single-strand binding protein"
+        ],
+        ans: 1,
+        exp: "As helicase unwinds the double helix, the DNA ahead of the fork becomes tightly twisted and supercoiled. Topoisomerase relieves this tension by breaking, swiveling, and rejoining the DNA strands ahead of the fork."
+    },
+    {
+        q: "Which of the following mutations within a protein-coding gene would most likely be the MOST detrimental to the resulting polypeptide's structure and function?",
+        opts: [
+            "A. A silent mutation in the third exon.",
+            "B. A missense mutation substituting a chemically similar amino acid.",
+            "C. A three-base pair deletion near the very end of the coding sequence.",
+            "D. A single base pair insertion immediately following the start codon."
+        ],
+        ans: 3,
+        exp: "An insertion or deletion of a number of nucleotides not divisible by 3 causes a frameshift mutation. If this happens right after the start codon, every single downstream codon will be misread, creating a completely incorrect and likely truncated sequence."
+    },
+    {
+        q: "Spliceosomes are massive complexes made of proteins and small RNAs (snRNAs). What specific role do the snRNAs play in splicing?",
+        opts: [
+            "A. They translate the intron sequences into structural proteins.",
+            "B. They act as primers for RNA polymerase.",
+            "C. They recognize and base-pair with specific splice site sequences at the ends of introns, directing the cutting process.",
+            "D. They attach the poly-A tail to the newly cut 3' end of the exon."
+        ],
+        ans: 2,
+        exp: "Small nuclear RNAs (snRNAs) form complexes called snRNPs. The RNA components have catalytic ability (ribozymes) and specifically base-pair with the consensus sequences at the intron-exon boundaries to ensure highly accurate cutting and joining."
+    }
+];
+
+let currentIndex = 0;
+let score = 0;
+let hasAnswered = false;
+
+function buildQuiz() {
+    const container = document.getElementById('quiz-container');
+    quizData.forEach((qObj, index) => {
+        const box = document.createElement('div');
+        box.className = `question-box ${index === 0 ? 'active' : ''}`;
+        box.id = `qbox-${index}`;
+        
+        let optionsHTML = '';
+        qObj.opts.forEach((optText, oIdx) => {
+            optionsHTML += `<li class="option" id="opt-${index}-${oIdx}" onclick="checkAnswer(${index}, ${oIdx})">${optText}</li>`;
+        });
+
+        box.innerHTML = `
+            <div class="q-text">${index + 1}. ${qObj.q}</div>
+            <ul class="options-list">${optionsHTML}</ul>
+            <div class="feedback" id="fb-${index}"></div>
+        `;
+        container.appendChild(box);
+    });
+    updateProgressBar();
+}
+
+function checkAnswer(qIdx, selectedIdx) {
+    if (hasAnswered) return;
+    hasAnswered = true;
+    
+    const correctIdx = quizData[qIdx].ans;
+    const fb = document.getElementById(`fb-${qIdx}`);
+    const nextBtn = document.getElementById('next-btn');
+    const finishBtn = document.getElementById('finish-btn');
+    
+    // Lock all options
+    for(let i = 0; i < 4; i++){
+        document.getElementById(`opt-${qIdx}-${i}`).classList.add('locked');
+    }
+
+    if (selectedIdx === correctIdx) {
+        document.getElementById(`opt-${qIdx}-${selectedIdx}`).classList.add('correct');
+        fb.innerHTML = `<strong>Correct!</strong> ${quizData[qIdx].exp}`;
+        fb.style.borderColor = "var(--correct)";
+        fb.style.color = "#1d8348";
+        score++;
+    } else {
+        document.getElementById(`opt-${qIdx}-${selectedIdx}`).classList.add('incorrect');
+        document.getElementById(`opt-${qIdx}-${correctIdx}`).classList.add('correct');
+        fb.innerHTML = `<strong>Incorrect.</strong> ${quizData[qIdx].exp}`;
+        fb.style.borderColor = "var(--incorrect)";
+        fb.style.color = "#922b21";
+    }
+    
+    fb.style.display = 'block';
+
+    if (currentIndex === quizData.length - 1) {
+        finishBtn.style.display = 'inline-block';
+        nextBtn.style.display = 'none';
+    } else {
+        nextBtn.disabled = false;
+    }
+}
+
+function nextQuestion() {
+    document.getElementById(`qbox-${currentIndex}`).classList.remove('active');
+    currentIndex++;
+    document.getElementById(`qbox-${currentIndex}`).classList.add('active');
+    
+    document.getElementById('q-counter').innerText = `Question ${currentIndex + 1} / ${quizData.length}`;
+    document.getElementById('next-btn').disabled = true;
+    hasAnswered = false;
+    updateProgressBar();
+}
+
+function updateProgressBar() {
+    const pct = (currentIndex / quizData.length) * 100;
+    document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+function showResults() {
+    document.getElementById('quiz-ui').style.display = 'none';
+    const res = document.getElementById('result-screen');
+    res.style.display = 'block';
+    
+    const pct = Math.round((score / quizData.length) * 100);
+    document.getElementById('final-score').innerText = `${score} / ${quizData.length} (${pct}%)`;
+    
+    const comm = document.getElementById('commentary');
+    if (pct >= 90) {
+        comm.innerText = "Exceptional work! You possess a deep understanding of Gene Expression & Regulation.";
+    } else if (pct >= 75) {
+        comm.innerText = "Great job! You have a solid grasp on transcription, translation, and operons.";
+    } else if (pct >= 60) {
+        comm.innerText = "Good effort. Make sure to review epigenetic regulation, biotechnology, and the specific enzymes of DNA replication.";
+    } else {
+        comm.innerText = "Keep studying! Focus on the differences between prokaryotic and eukaryotic gene regulation, and the steps of the Central Dogma.";
+    }
+}
+
+// Initialize the quiz
+buildQuiz();
+</script>
+
+</body>
+</html>
