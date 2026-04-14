@@ -15,6 +15,8 @@ AP Biology
 <br>
 <a href="ap-bio-quiz-unit-4.html">AP Bio Quiz - Unit 4 - Cell Communication & Cell Cycle</a>
 <br>
+<a href="ap-bio-quiz-unit-5.html">AP Bio Quiz - Unit 5 - Heredity</a>
+<br>
 <br>
 AP Chinese
 <br>
