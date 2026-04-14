@@ -10,14 +10,14 @@ AP Biology
 <a href="ap-bio-quiz-unit-1-chemistry-of-life.html">AP Bio Quiz - Unit 1 - Chemistry of Life</a>
 <br>
 <br>
-AP Calculus BC
-<br>
-<a href="ap-calc-bc-quiz-1.html">AP Calc BC Quiz 1</a>
-<br>
-<br>
 AP Chinese
 <br>
 <a href="ap-chinese-quiz-1.html">AP Chinese Quiz 1</a>
+<br>
+<br>
+AP Calculus BC
+<br>
+<a href="ap-calc-bc-quiz-1.html">AP Calc BC Quiz 1</a>
 <br>
 <br>
 AP Lang
