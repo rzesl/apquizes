@@ -5,7 +5,7 @@ AP Biology
 <br>
 <a href="ap-bio-quiz-2.html">AP Bio Quiz - General</a>
 <br>
-<a href="ap-bio-quiz-1.html">AP Bio Quiz - Structured Water</a>
+<a href="ap-bio-quiz-1.html">AP Bio Quiz - Structure of Water</a>
 <br>
 <br>
 AP Calculus BC
