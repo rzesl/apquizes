@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Biology Unit 3: Cellular Energetics Quiz</title>
+    <style>
+        :root {
+            --primary: #8e44ad;
+            --secondary: #9b59b6;
+            --accent: #f39c12;
+            --bg: #fdfafb;
+            --text: #2c3e50;
+            --correct: #27ae60;
+            --incorrect: #e74c3c;
+            --white: #ffffff;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 15px;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        .progress-wrapper {
+            background: #ecf0f1;
+            border-radius: 8px;
+            height: 12px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: var(--accent);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        .question-box {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .question-box.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .q-text {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+        .options {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #dde1e5;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.05em;
+        }
+        .option:hover:not(.locked) {
+            border-color: var(--secondary);
+            background: #f4eff6;
+        }
+        .option.correct {
+            background: #e9f7ef;
+            border-color: var(--correct);
+            color: #186a3b;
+        }
+        .option.incorrect {
+            background: #fdedec;
+            border-color: var(--incorrect);
+            color: #7b241c;
+        }
+        .option.locked {
+            cursor: not-allowed;
+        }
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            font-size: 1.05em;
+            font-weight: 500;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            border-top: 2px solid #ecf0f1;
+            padding-top: 20px;
+        }
+        .counter {
+            font-weight: 600;
+            color: #7f8c8d;
+        }
+        button {
+            padding: 12px 25px;
+            border: none;
+            background: var(--primary);
+            color: var(--white);
+            border-radius: 6px;
+            font-size: 1.05em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover:not(:disabled) {
+            background: var(--secondary);
+        }
+        button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        #results {
+            display: none;
+            text-align: center;
+        }
+        .score {
+            font-size: 4em;
+            color: var(--primary);
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .commentary {
+            font-size: 1.2em;
+            color: var(--text);
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="quiz-ui">
+        <h1>Unit 3: Cellular Energetics</h1>
+        <div class="subtitle">Enzymes, Photosynthesis, and Cellular Respiration</div>
+        
+        <div class="progress-wrapper">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <div id="q-container"></div>
+
+        <div class="controls">
+            <div class="counter" id="q-counter">Question 1 / 20</div>
+            <button id="next-btn" onclick="nextQ()" disabled>Next Question</button>
+            <button id="finish-btn" onclick="showResults()" style="display:none;">Finish Quiz</button>
+        </div>
+    </div>
+
+    <div id="results">
+        <h1>Quiz Completed!</h1>
+        <div class="score" id="final-score"></div>
+        <div class="commentary" id="commentary"></div>
+        <button onclick="location.reload()">Take Quiz Again</button>
+    </div>
+</div>
+
+<script>
+const quizData = [
+    {
+        q: "Which of the following best describes how an enzyme increases the rate of a biological reaction?",
+        opts: [
+            "By lowering the overall change in free energy (ΔG) of the reaction.",
+            "By lowering the activation energy required to reach the transition state.",
+            "By increasing the kinetic energy of the substrate molecules.",
+            "By providing thermal energy to break the bonds of the reactants."
+        ],
+        ans: 1,
+        exp: "Enzymes act as catalysts by lowering the activation energy (Ea) needed to start a reaction. They do not alter the overall free energy (ΔG) or the equilibrium of the reaction."
+    },
+    {
+        q: "A chemical binds to the enzyme hexokinase at a site distinct from the active site. This binding alters the enzyme's shape and decreases its activity. Adding excessive glucose (the substrate) does not restore the enzyme's activity. The chemical is acting as a:",
+        opts: [
+            "Competitive inhibitor.",
+            "Noncompetitive (allosteric) inhibitor.",
+            "Cofactor.",
+            "Coenzyme."
+        ],
+        ans: 1,
+        exp: "A noncompetitive inhibitor binds to an allosteric site (away from the active site), changing the enzyme's conformation. Because it doesn't compete for the active site, increasing substrate concentration cannot overcome the inhibition."
+    },
+    {
+        q: "During aerobic cellular respiration, what is the primary purpose of the Krebs (Citric Acid) cycle?",
+        opts: [
+            "To generate the majority of the ATP produced by the cell via substrate-level phosphorylation.",
+            "To completely oxidize acetyl-CoA, extracting high-energy electrons to reduce NAD+ and FAD.",
+            "To pump protons across the inner mitochondrial membrane.",
+            "To synthesize glucose from carbon dioxide and water."
+        ],
+        ans: 1,
+        exp: "The main function of the Krebs cycle is to harvest high-energy electrons from carbon compounds and transfer them to electron carriers (NADH and FADH2), which will then power the electron transport chain."
+    },
+    {
+        q: "In the light-dependent reactions of photosynthesis, what is the direct role of Photosystem II (PSII)?",
+        opts: [
+            "To absorb light energy and oxidize water, releasing O2 and providing electrons to the electron transport chain.",
+            "To reduce NADP+ into NADPH using electrons from Photosystem I.",
+            "To synthesize ATP via photophosphorylation.",
+            "To fix carbon dioxide into a 3-carbon sugar."
+        ],
+        ans: 0,
+        exp: "Photosystem II absorbs light to excite electrons. To replace these lost electrons, PSII splits water (photolysis), releasing oxygen as a byproduct and sending electrons down the ETC to Photosystem I."
+    },
+    {
+        q: "Which of the following cellular compartments becomes the most acidic (lowest pH) during active photosynthesis in a plant cell?",
+        opts: [
+            "The stroma of the chloroplast.",
+            "The thylakoid space (lumen).",
+            "The mitochondrial matrix.",
+            "The cytoplasm."
+        ],
+        ans: 1,
+        exp: "During the light-dependent reactions, the electron transport chain pumps protons (H+) from the stroma into the thylakoid space. This high concentration of protons makes the thylakoid space highly acidic."
+    },
+    {
+        q: "DNP (2,4-dinitrophenol) is a chemical that makes the inner mitochondrial membrane highly permeable to protons (H+). If a cell is treated with DNP, what will be the immediate effect?",
+        opts: [
+            "ATP synthesis will increase dramatically due to faster proton flow.",
+            "Glycolysis will halt due to a lack of ATP.",
+            "ATP synthesis will rapidly decrease, and the energy from the ETC will be released as heat.",
+            "Oxygen consumption will completely stop."
+        ],
+        ans: 2,
+        exp: "DNP is an 'uncoupler'. It allows protons to leak back into the matrix without passing through ATP synthase. The proton gradient is destroyed, meaning ATP synthesis stops, and the potential energy is lost as thermal energy (heat)."
+    },
+    {
+        q: "In the absence of oxygen, human muscle cells undergo lactic acid fermentation. What is the critical cellular benefit of this process?",
+        opts: [
+            "It produces 36 additional ATP per molecule of glucose.",
+            "It oxidizes NADH back to NAD+, allowing glycolysis to continue.",
+            "It creates oxygen as a byproduct, temporarily relieving the anaerobic conditions.",
+            "It transports pyruvate directly into the mitochondria."
+        ],
+        ans: 1,
+        exp: "Glycolysis requires a constant supply of NAD+ to accept electrons. Without oxygen, the ETC stops and NADH builds up. Fermentation transfers electrons from NADH to pyruvate (forming lactic acid), regenerating the NAD+ needed to keep glycolysis running."
+    },
+    {
+        q: "Which of the following correctly describes the relationship between the light-dependent reactions and the Calvin cycle in photosynthesis?",
+        opts: [
+            "The light-dependent reactions supply ATP and NADPH, which the Calvin cycle uses to reduce carbon dioxide into G3P.",
+            "The Calvin cycle supplies water and CO2 to the light-dependent reactions.",
+            "The light-dependent reactions produce sugar, which the Calvin cycle breaks down to make ATP.",
+            "The Calvin cycle produces oxygen, which is required by the light-dependent reactions."
+        ],
+        ans: 0,
+        exp: "The light reactions capture solar energy and store it in ATP and NADPH. The Calvin cycle (light-independent reactions) uses these energy carriers to drive the endergonic fixation and reduction of CO2 into carbohydrates."
+    },
+    {
+        q: "Cyanide is a potent poison that irreversibly binds to cytochrome c oxidase, the final complex in the mitochondrial electron transport chain. What is the direct consequence of this binding?",
+        opts: [
+            "Water is produced at a toxic, accelerated rate.",
+            "Oxygen cannot accept electrons, halting the ETC and preventing the maintenance of the proton gradient.",
+            "ATP synthase reverses direction and hydrolyzes ATP.",
+            "Carbon dioxide builds up in the blood, causing asphyxiation."
+        ],
+        ans: 1,
+        exp: "Cytochrome c oxidase passes electrons to O2. If cyanide blocks this enzyme, a 'traffic jam' of electrons occurs. The entire ETC halts, proton pumping stops, the gradient dissipates, and ATP synthesis ceases."
+    },
+    {
+        q: "In biological systems, the hydrolysis of ATP is highly exergonic. How does the cell utilize this energy to drive endergonic reactions?",
+        opts: [
+            "By radiating heat that speeds up the surrounding chemical reactions.",
+            "By acting as an enzyme and lowering the activation energy.",
+            "Through energy coupling, where the phosphate group from ATP is transferred to a reactant, creating a more reactive intermediate.",
+            "By increasing the entropy of the cell to favorable levels."
+        ],
+        ans: 2,
+        exp: "Cells use energy coupling. The exergonic release of a phosphate group from ATP is used to phosphorylate another molecule, making that molecule highly unstable and reactive, which drives the endergonic reaction forward."
+    },
+    {
+        q: "Phosphofructokinase (PFK) is an early regulatory enzyme in glycolysis. It is allosterically inhibited by high levels of cellular ATP. This is an example of:",
+        opts: [
+            "Positive feedback.",
+            "Negative feedback (feedback inhibition).",
+            "Competitive inhibition.",
+            "Cooperativity."
+        ],
+        ans: 1,
+        exp: "When a cell has plenty of ATP, ATP binds to the allosteric site of PFK, slowing down glycolysis. This prevents the cell from wasting glucose to make ATP it doesn't currently need. This self-regulating mechanism is negative feedback."
+    },
+    {
+        q: "During which stage of cellular respiration is the majority of the carbon dioxide (CO2) released?",
+        opts: [
+            "Glycolysis",
+            "Pyruvate Oxidation (Link Reaction)",
+            "The Krebs (Citric Acid) cycle",
+            "Oxidative Phosphorylation"
+        ],
+        ans: 2,
+        exp: "Out of the 6 carbons in a glucose molecule, 2 are released during pyruvate oxidation, and the remaining 4 are released during the Krebs cycle as the acetyl groups are completely oxidized."
+    },
+    {
+        q: "What is the primary evolutionary advantage of the C4 and CAM photosynthetic pathways compared to C3 photosynthesis?",
+        opts: [
+            "They do not require sunlight to produce ATP.",
+            "They utilize a more efficient version of chlorophyll.",
+            "They concentrate carbon dioxide around Rubisco to minimize the energetically wasteful process of photorespiration.",
+            "They allow the plant to fix nitrogen directly from the atmosphere."
+        ],
+        ans: 2,
+        exp: "In hot, dry environments, C3 plants close their stomata, causing O2 to build up. Rubisco will bind O2 instead of CO2 (photorespiration), wasting energy. C4 and CAM plants separate carbon fixation physically or temporally to ensure Rubisco only encounters high concentrations of CO2."
+    },
+    {
+        q: "If the thylakoid membrane is punctured so that the interior of the thylakoid is no longer separated from the stroma, which of the following processes will be most directly inhibited?",
+        opts: [
+            "The absorption of light by chlorophyll.",
+            "The splitting of water molecules.",
+            "The synthesis of ATP via chemiosmosis.",
+            "The reduction of NADP+ to NADPH."
+        ],
+        ans: 2,
+        exp: "ATP synthesis requires a proton gradient across an intact thylakoid membrane. If the membrane is punctured, protons will leak out, destroying the gradient, and ATP synthase will have no motive force to operate."
+    },
+    {
+        q: "Which of the following statements about the thermodynamics of biological systems is true, in accordance with the Second Law of Thermodynamics?",
+        opts: [
+            "Energy can be created by autotrophs during photosynthesis.",
+            "Every energy transfer increases the entropy of the universe, meaning some energy is always lost as heat.",
+            "Living organisms violate the second law because they maintain a high degree of order.",
+            "Endergonic reactions happen spontaneously without an input of energy."
+        ],
+        ans: 1,
+        exp: "The Second Law states that every energy transfer increases universal entropy. In biological systems, no energy conversion is 100% efficient; a significant portion of energy is always dissipated as heat."
+    },
+    {
+        q: "During the Calvin cycle, the enzyme Rubisco catalyzes the fixation of CO2 to which 5-carbon molecule?",
+        opts: [
+            "G3P (Glyceraldehyde 3-phosphate)",
+            "PGA (Phosphoglycerate)",
+            "RuBP (Ribulose 1,5-bisphosphate)",
+            "Oxaloacetate"
+        ],
+        ans: 2,
+        exp: "Rubisco attaches atmospheric CO2 to the 5-carbon molecule RuBP, creating a highly unstable 6-carbon intermediate that immediately splits into two 3-carbon molecules of PGA."
+    },
+    {
+        q: "What happens to the oxygen (O2) that is consumed during aerobic cellular respiration?",
+        opts: [
+            "It is incorporated into carbon dioxide during the Krebs cycle.",
+            "It acts as the final electron acceptor in the ETC and is reduced to form water (H2O).",
+            "It is used to oxidize glucose directly in the cytoplasm.",
+            "It provides the activation energy needed to start glycolysis."
+        ],
+        ans: 1,
+        exp: "Oxygen is highly electronegative and sits at the very end of the electron transport chain. It pulls electrons down the chain and, upon receiving them, binds with protons (H+) to form water."
+    },
+    {
+        q: "If a mutation caused all glycolysis enzymes to become non-functional, how might a eukaryotic cell still produce ATP aerobically?",
+        opts: [
+            "By increasing the rate of lactic acid fermentation.",
+            "By utilizing the Calvin cycle in the mitochondria.",
+            "By undergoing beta-oxidation to break down fatty acids directly into acetyl-CoA for the Krebs cycle.",
+            "The cell would be completely unable to produce ATP."
+        ],
+        ans: 2,
+        exp: "While glucose cannot be used without glycolysis, cells can metabolize lipids. Fatty acids undergo beta-oxidation to form acetyl-CoA, bypassing glycolysis and entering directly into the Krebs cycle."
+    },
+    {
+        q: "Cyclic electron flow in the chloroplast differs from linear (non-cyclic) electron flow in that it:",
+        opts: [
+            "Produces ATP but does not produce NADPH or O2.",
+            "Utilizes Photosystem II but not Photosystem I.",
+            "Occurs in the stroma rather than the thylakoid membrane.",
+            "Reverses the direction of ATP synthase."
+        ],
+        ans: 0,
+        exp: "The Calvin cycle requires more ATP than NADPH. To make up this ATP deficit, electrons in Photosystem I can cycle back to the cytochrome complex, pumping more protons for ATP synthesis without producing NADPH or splitting water (no O2)."
+    },
+    {
+        q: "Which of the following experimental results would most strongly support the hypothesis that a new drug acts as an uncoupler of oxidative phosphorylation?",
+        opts: [
+            "Both oxygen consumption and ATP production stop completely.",
+            "Oxygen consumption continues at a high rate, but ATP production stops.",
+            "ATP production increases, but oxygen consumption decreases.",
+            "The pH of the intermembrane space drops to 2.0."
+        ],
+        ans: 1,
+        exp: "An uncoupler destroys the proton gradient. The ETC will continue running at maximum speed trying to rebuild the gradient (thus consuming massive amounts of Oxygen), but because the protons leak back, no ATP is synthesized."
+    }
+];
+
+let currentQIdx = 0;
+let score = 0;
+let hasAnswered = false;
+
+function buildQuiz() {
+    const container = document.getElementById('q-container');
+    quizData.forEach((data, index) => {
+        const qDiv = document.createElement('div');
+        qDiv.className = `question-box ${index === 0 ? 'active' : ''}`;
+        qDiv.id = `q-${index}`;
+        
+        let optsHtml = '';
+        data.opts.forEach((opt, oIdx) => {
+            optsHtml += `<li class="option" id="o-${index}-${oIdx}" onclick="checkAnswer(${index}, ${oIdx})">${String.fromCharCode(65+oIdx)}. ${opt}</li>`;
+        });
+
+        qDiv.innerHTML = `
+            <div class="q-text">${index + 1}. ${data.q}</div>
+            <ul class="options">${optsHtml}</ul>
+            <div class="feedback" id="f-${index}"></div>
+        `;
+        container.appendChild(qDiv);
+    });
+    updateProgress();
+}
+
+function checkAnswer(qIdx, selectedOIdx) {
+    if (hasAnswered) return;
+    hasAnswered = true;
+    
+    const correctOIdx = quizData[qIdx].ans;
+    const feedback = document.getElementById(`f-${qIdx}`);
+    const nextBtn = document.getElementById('next-btn');
+    const finishBtn = document.getElementById('finish-btn');
+    
+    // Lock options
+    for(let i=0; i<4; i++){
+        document.getElementById(`o-${qIdx}-${i}`).classList.add('locked');
+    }
+
+    if (selectedOIdx === correctOIdx) {
+        document.getElementById(`o-${qIdx}-${selectedOIdx}`).classList.add('correct');
+        feedback.innerHTML = `<strong>Correct!</strong> ${quizData[qIdx].exp}`;
+        feedback.style.backgroundColor = '#e9f7ef';
+        feedback.style.color = '#186a3b';
+        score++;
+    } else {
+        document.getElementById(`o-${qIdx}-${selectedOIdx}`).classList.add('incorrect');
+        document.getElementById(`o-${qIdx}-${correctOIdx}`).classList.add('correct');
+        feedback.innerHTML = `<strong>Incorrect.</strong> ${quizData[qIdx].exp}`;
+        feedback.style.backgroundColor = '#fdedec';
+        feedback.style.color = '#7b241c';
+    }
+    
+    feedback.style.display = 'block';
+
+    if (currentQIdx === quizData.length - 1) {
+        finishBtn.style.display = 'block';
+        nextBtn.style.display = 'none';
+    } else {
+        nextBtn.disabled = false;
+    }
+}
+
+function nextQ() {
+    document.getElementById(`q-${currentQIdx}`).classList.remove('active');
+    currentQIdx++;
+    document.getElementById(`q-${currentQIdx}`).classList.add('active');
+    
+    document.getElementById('q-counter').innerText = `Question ${currentQIdx + 1} / ${quizData.length}`;
+    document.getElementById('next-btn').disabled = true;
+    hasAnswered = false;
+    updateProgress();
+}
+
+function updateProgress() {
+    const prog = (currentQIdx / quizData.length) * 100;
+    document.getElementById('progress-bar').style.width = prog + '%';
+}
+
+function showResults() {
+    document.getElementById('quiz-ui').style.display = 'none';
+    const res = document.getElementById('results');
+    res.style.display = 'block';
+    
+    const pct = Math.round((score / quizData.length) * 100);
+    document.getElementById('final-score').innerText = `${score} / ${quizData.length} (${pct}%)`;
+    
+    const comm = document.getElementById('commentary');
+    if (pct >= 90) comm.innerText = "Fantastic! You have a strong command of cellular energetics.";
+    else if (pct >= 75) comm.innerText = "Great work! You're very close to mastery. Review photosynthesis vs respiration interactions.";
+    else if (pct >= 60) comm.innerText = "Good effort. Focus on brushing up on the electron transport chain and enzyme kinetics.";
+    else comm.innerText = "Keep studying! Review the specific reactants, products, and locations of cellular respiration and photosynthesis.";
+}
+
+buildQuiz();
+</script>
+
+</body>
+</html>
