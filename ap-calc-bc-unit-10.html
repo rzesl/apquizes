@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Calculus BC - Unit 10 Quiz</title>
+    <!-- MathJax for rendering LaTeX math formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f0f4f8; 
+            color: #333; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px; 
+            box-sizing: border-box; 
+        }
+        .quiz-container { 
+            background-color: #fff; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 800px; 
+            padding: 40px; 
+            border-top: 5px solid #16a085;
+        }
+        h1 { 
+            text-align: center; 
+            color: #2c3e50; 
+            font-size: 26px; 
+            margin-bottom: 20px; 
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        .progress { 
+            text-align: center; 
+            margin-bottom: 25px; 
+            font-weight: bold; 
+            color: #7f8c8d; 
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .question { 
+            font-size: 18px; 
+            font-weight: 600; 
+            margin-bottom: 25px; 
+            line-height: 1.6; 
+        }
+        .options { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+        }
+        .option { 
+            background-color: #f8f9fa; 
+            border: 2px solid #e9ecef; 
+            border-radius: 8px; 
+            padding: 16px; 
+            margin-bottom: 12px; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            display: flex; 
+            align-items: center; 
+            font-size: 16px;
+        }
+        .option:hover { 
+            background-color: #e2e6ea; 
+            border-color: #dae0e5; 
+        }
+        .option.selected { 
+            border-color: #16a085; 
+            background-color: #e8f8f5; 
+        }
+        .option.correct { 
+            border-color: #2ecc71; 
+            background-color: #eaeded; 
+        }
+        .option.wrong { 
+            border-color: #e74c3c; 
+            background-color: #fdedec; 
+        }
+        .option.disabled { 
+            pointer-events: none; 
+        }
+        .option-label {
+            font-weight: bold; 
+            margin-right: 15px; 
+            background: #16a085; 
+            color: white; 
+            width: 35px; 
+            height: 35px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 50%; 
+            flex-shrink: 0;
+        }
+        .option.correct .option-label { background: #27ae60; }
+        .option.wrong .option-label { background: #c0392b; }
+        .feedback-container {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .feedback-container.show {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+        .feedback-container.correct-box {
+            background-color: #eafaf1;
+            border-left: 4px solid #27ae60;
+        }
+        .feedback-container.wrong-box {
+            background-color: #fdedec;
+            border-left: 4px solid #c0392b;
+        }
+        .feedback-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .feedback-container.correct-box .feedback-title { color: #27ae60; }
+        .feedback-container.wrong-box .feedback-title { color: #c0392b; }
+        .controls { 
+            display: flex; 
+            justify-content: flex-end; 
+            margin-top: 25px; 
+        }
+        button { 
+            background-color: #16a085; 
+            color: #fff; 
+            border: none; 
+            border-radius: 8px; 
+            padding: 14px 28px; 
+            font-size: 16px; 
+            font-weight: bold;
+            cursor: pointer; 
+            transition: background-color 0.3s ease; 
+        }
+        button:hover { 
+            background-color: #117864; 
+        }
+        button:disabled { 
+            background-color: #bdc3c7; 
+            cursor: not-allowed; 
+        }
+        .score-container { 
+            text-align: center; 
+            display: none; 
+        }
+        .score-text { 
+            font-size: 36px; 
+            font-weight: bold; 
+            color: #2c3e50; 
+            margin-bottom: 30px; 
+        }
+        .score-text span {
+            color: #16a085;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <div id="quiz-screen">
+            <h1>AP Calculus BC - Unit 10</h1>
+            <p style="text-align: center; color: #7f8c8d; margin-top: -10px; margin-bottom: 20px;">Infinite Sequences and Series (Taylor/Maclaurin & Convergence Tests)</p>
+            <div class="progress" id="progress">Question 1 of 20</div>
+            <div class="question" id="question"></div>
+            <ul class="options" id="options"></ul>
+            
+            <div class="feedback-container" id="feedback">
+                <div class="feedback-title" id="feedback-title"></div>
+                <div id="feedback-text"></div>
+            </div>
+
+            <div class="controls">
+                <button id="submit-btn" disabled>Submit Answer</button>
+                <button id="next-btn" style="display: none;">Next Question</button>
+            </div>
+        </div>
+
+        <div class="score-container" id="score-screen">
+            <h1>Quiz Completed!</h1>
+            <div class="score-text">Your Score: <br> <span id="final-score">0</span> / 20</div>
+            <button onclick="location.reload()">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "What is the interval of convergence for the power series \\( \\displaystyle \\sum_{n=1}^\\infty \\frac{(x-3)^n}{n \\cdot 2^n} \\)?",
+                options: [
+                    "\\( [1, 5) \\)",
+                    "\\( (1, 5] \\)",
+                    "\\( (1, 5) \\)",
+                    "\\( [1, 5] \\)"
+                ],
+                answer: 0,
+                explanation: "Using the Ratio Test, \\( \\lim_{n \\to \\infty} \\left| \\frac{(x-3)^{n+1}}{(n+1)2^{n+1}} \\cdot \\frac{n 2^n}{(x-3)^n} \\right| = \\frac{|x-3|}{2} < 1 \\implies |x-3| < 2 \\). The radius is 2, so the endpoints are 1 and 5. Testing \\( x=5 \\): \\( \\sum \\frac{2^n}{n 2^n} = \\sum \\frac{1}{n} \\) (Harmonic, diverges). Testing \\( x=1 \\): \\( \\sum \\frac{(-2)^n}{n 2^n} = \\sum \\frac{(-1)^n}{n} \\) (Alternating Harmonic, converges). Interval is \\( [1, 5) \\)."
+            },
+            {
+                question: "Which of the following is the Maclaurin series for \\( f(x) = x \\cos(x^2) \\)?",
+                options: [
+                    "\\( \\displaystyle \\sum_{n=0}^\\infty \\frac{(-1)^n x^{4n+1}}{(2n)!} \\)",
+                    "\\( \\displaystyle \\sum_{n=0}^\\infty \\frac{(-1)^n x^{2n+1}}{n!} \\)",
+                    "\\( \\displaystyle \\sum_{n=0}^\\infty \\frac{(-1)^n x^{4n+2}}{(2n)!} \\)",
+                    "\\( \\displaystyle \\sum_{n=0}^\\infty \\frac{x^{4n+1}}{(2n)!} \\)"
+                ],
+                answer: 0,
+                explanation: "The Maclaurin series for \\( \\cos u \\) is \\( \\sum_{n=0}^\\infty \\frac{(-1)^n u^{2n}}{(2n)!} \\). Substitute \\( u = x^2 \\) to get \\( \\cos(x^2) = \\sum_{n=0}^\\infty \\frac{(-1)^n x^{4n}}{(2n)!} \\). Multiply the entire series by \\( x \\) to yield \\( \\sum_{n=0}^\\infty \\frac{(-1)^n x^{4n+1}}{(2n)!} \\)."
+            },
+            {
+                question: "Let \\( P_3(x) \\) be the 3rd-degree Taylor polynomial for \\( f(x) = \\ln(x) \\) centered at \\( x=1 \\). What is the coefficient of the \\( (x-1)^3 \\) term?",
+                options: [
+                    "\\( -1/3 \\)",
+                    "\\( 1/3 \\)",
+                    "\\( 1/6 \\)",
+                    "\\( 2 \\)"
+                ],
+                answer: 1,
+                explanation: "The coefficient of \\( (x-1)^3 \\) in the Taylor series is \\( \\frac{f'''(1)}{3!} \\). For \\( f(x) = \\ln x \\), \\( f'(x) = x^{-1} \\), \\( f''(x) = -x^{-2} \\), and \\( f'''(x) = 2x^{-3} \\). Thus, \\( f'''(1) = 2 \\). The coefficient is \\( \\frac{2}{3!} = \\frac{2}{6} = \\frac{1}{3} \\)."
+            },
+            {
+                question: "The alternating series \\( \\displaystyle \\sum_{n=1}^\\infty \\frac{(-1)^{n+1}}{n^2} \\) is used to approximate the sum of the series. What is the minimum number of terms \\( N \\) needed to guarantee that the absolute error is less than \\( 0.01 \\)?",
+                options: [
+                    "\\( 8 \\)",
+                    "\\( 9 \\)",
+                    "\\( 10 \\)",
+                    "\\( 11 \\)"
+                ],
+                answer: 2,
+                explanation: "By the Alternating Series Error Bound, the maximum error \\( |E_N| \\) is bounded by the magnitude of the first omitted term: \\( |E_N| \\le a_{N+1} = \\frac{1}{(N+1)^2} \\). We need \\( \\frac{1}{(N+1)^2} < 0.01 \\implies (N+1)^2 > 100 \\implies N+1 > 10 \\implies N > 9 \\). The minimum integer \\( N \\) is 10."
+            },
+            {
+                question: "Which of the following series converges conditionally?",
+                options: [
+                    "\\( \\displaystyle \\sum_{n=1}^\\infty \\frac{(-1)^n}{n^2} \\)",
+                    "\\( \\displaystyle \\sum_{n=1}^\\infty \\frac{\\cos(n\\pi)}{n} \\)",
+                    "\\( \\displaystyle \\sum_{n=1}^\\infty \\frac{(-1)^n e^n}{n!} \\)",
+                    "\\( \\displaystyle \\sum_{n=1}^\\infty \\frac{1}{\\sqrt{n}} \\)"
+                ],
+                answer: 1,
+                explanation: "Option B simplifies to \\( \\sum \\frac{(-1)^n}{n} \\), which converges by the Alternating Series Test. However, its absolute value series \\( \\sum \\frac{1}{n} \\) is the divergent harmonic series. Thus, it converges conditionally. A and C converge absolutely, and D diverges."
+            },
+            {
+                question: "Find the exact sum of the series \\( \\displaystyle \\sum_{n=1}^\\infty n \\left(\\frac{1}{2}\\right)^n \\).",
+                options: [
+                    "\\( 1 \\)",
+                    "\\( 2 \\)",
+                    "\\( 4 \\)",
+                    "Diverges"
+                ],
+                answer: 1,
+                explanation: "We know \\( \\sum_{n=0}^\\infty x^n = \\frac{1}{1-x} \\) for \\( |x| < 1 \\). Differentiating both sides gives \\( \\sum_{n=1}^\\infty n x^{n-1} = \\frac{1}{(1-x)^2} \\). Multiplying by \\( x \\) gives \\( \\sum_{n=1}^\\infty n x^n = \\frac{x}{(1-x)^2} \\). Plugging in \\( x = 1/2 \\) yields \\( \\frac{1/2}{(1 - 1/2)^2} = \\frac{1/2}{1/4} = 2 \\)."
+            },
+            {
+                question: "When applying the Limit Comparison Test to determine the convergence of \\( \\displaystyle \\sum_{n=1}^\\infty \\frac{3n^2+5}{n^4+1} \\), which of the following series is the most appropriate comparison series?",
+                options: [
+                    "\\( \\displaystyle \\sum_{n=1}^\\infty \\frac{1}{n} \\)",
+                    "\\( \\displaystyle \\sum_{n=1}^\\infty \\frac{1}{n^2} \\)",
+                    "\\( \\displaystyle \\sum_{n=1}^\\infty \\frac{1}{n^3} \\)",
+                    "\\( \\displaystyle \\sum_{n=1}^\\infty \\frac{3}{n^4} \\)"
+                ],
+                answer: 1,
+                explanation: "For large \\( n \\), the highest power terms dominate. The general behavior of the terms is \\( \\frac{3n^2}{n^4} = \\frac{3}{n^2} \\). Discarding constants, the most appropriate comparison series is the convergent p-series \\( \\sum \\frac{1}{n^2} \\)."
+            },
+            {
+                question: "The Maclaurin series for a function \\( f(x) \\) is given by \\( 1 + 2x + \\frac{3x^2}{2!} + \\frac{4x^3}{3!} + \\dots \\). What is \\( f(x) \\)?",
+                options: [
+                    "\\( e^x \\)",
+                    "\\( x e^x \\)",
+                    "\\( (x+1)e^x \\)",
+                    "\\( x^2 e^x \\)"
+                ],
+                answer: 2,
+                explanation: "The series can be written as \\( \\sum_{n=0}^\\infty \\frac{(n+1)x^n}{n!} \\). We can split this into \\( \\sum_{n=0}^\\infty \\frac{n x^n}{n!} + \\sum_{n=0}^\\infty \\frac{x^n}{n!} \\). The second sum is exactly \\( e^x \\). The first sum is \\( x \\sum_{n=1}^\\infty \\frac{x^{n-1}}{(n-1)!} = x e^x \\). Thus, \\( f(x) = x e^x + e^x = (x+1)e^x \\)."
+            },
+            {
+                question: "Use Maclaurin series to evaluate \\( \\displaystyle \\lim_{x \\to 0} \\frac{e^x - 1 - x - x^2/2}{x^3} \\).",
+                options: [
+                    "\\( 1/6 \\)",
+                    "\\( 1/3 \\)",
+                    "\\( 1/2 \\)",
+                    "\\( 0 \\)"
+                ],
+                answer: 0,
+                explanation: "The Maclaurin series for \\( e^x \\) is \\( 1 + x + \\frac{x^2}{2!} + \\frac{x^3}{3!} + \\frac{x^4}{4!} + \\dots \\). Subtracting \\( 1 + x + x^2/2 \\) leaves \\( \\frac{x^3}{6} + \\frac{x^4}{24} + \\dots \\). Dividing this by \\( x^3 \\) yields \\( \\frac{1}{6} + \\frac{x}{24} + \\dots \\). As \\( x \\to 0 \\), the limit is \\( 1/6 \\)."
+            },
+            {
+                question: "What is the radius of convergence of the power series \\( \\displaystyle \\sum_{n=0}^\\infty \\frac{(2n)!}{(n!)^2} x^n \\)?",
+                options: [
+                    "\\( 1/4 \\)",
+                    "\\( 1/2 \\)",
+                    "\\( 2 \\)",
+                    "\\( 4 \\)"
+                ],
+                answer: 0,
+                explanation: "Use the Ratio Test: \\( \\lim_{n \\to \\infty} \\left| \\frac{(2n+2)!}{((n+1)!)^2} \\cdot \\frac{(n!)^2}{(2n)!} x \\right| \\). Simplify factorials: \\( \\frac{(2n+2)(2n+1)}{(n+1)^2} = \\frac{4n^2 + 6n + 2}{n^2 + 2n + 1} \\). The limit as \\( n \\to \\infty \\) is 4. Thus, \\( 4|x| < 1 \\implies |x| < 1/4 \\). The radius is \\( 1/4 \\)."
+            },
+            {
+                question: "Let \\( f(x) = \\displaystyle \\sum_{n=1}^\\infty \\frac{x^n}{n} \\). What is the value of the 10th derivative, \\( f^{(10)}(0) \\)?",
+                options: [
+                    "\\( 10! \\)",
+                    "\\( 9! \\)",
+                    "\\( 1/10 \\)",
+                    "\\( 10 \\)"
+                ],
+                answer: 1,
+                explanation: "The coefficient of \\( x^{10} \\) in the Maclaurin series is \\( \\frac{1}{10} \\). By Taylor's formula, the coefficient of \\( x^{10} \\) is also \\( \\frac{f^{(10)}(0)}{10!} \\). Therefore, \\( \\frac{f^{(10)}(0)}{10!} = \\frac{1}{10} \\implies f^{(10)}(0) = \\frac{10!}{10} = 9! \\)."
+            },
+            {
+                question: "What is the interval of convergence for the power series \\( \\displaystyle \\sum_{n=1}^\\infty \\frac{(-1)^n (x-2)^n}{n \\cdot 3^n} \\)?",
+                options: [
+                    "\\( [-1, 5) \\)",
+                    "\\( (-1, 5] \\)",
+                    "\\( [-1, 5] \\)",
+                    "\\( (-1, 5) \\)"
+                ],
+                answer: 1,
+                explanation: "The Ratio Test reveals \\( \\lim \\left| \\frac{(x-2)}{3} \\cdot \\frac{n}{n+1} \\right| = \\frac{|x-2|}{3} < 1 \\implies |x-2| < 3 \\). Endpoints are -1 and 5. At \\( x=5 \\), the series is \\( \\sum \\frac{(-1)^n 3^n}{n 3^n} = \\sum \\frac{(-1)^n}{n} \\) (converges). At \\( x=-1 \\), \\( \\sum \\frac{(-1)^n (-3)^n}{n 3^n} = \\sum \\frac{1}{n} \\) (diverges). Thus, the interval is \\( (-1, 5] \\)."
+            },
+            {
+                question: "Let \\( P_2(x) \\) be the 2nd-degree Taylor polynomial for \\( f(x) = \\sin(x) \\) centered at \\( x=0 \\). Using the Lagrange Error Bound, what is the maximum possible error in estimating \\( \\sin(0.5) \\)?",
+                options: [
+                    "\\( 1/24 \\)",
+                    "\\( 1/48 \\)",
+                    "\\( 1/120 \\)",
+                    "\\( 1/16 \\)"
+                ],
+                answer: 1,
+                explanation: "The Lagrange Error Bound formula is \\( |R_2(x)| \\le \\frac{\\max |f'''(z)|}{3!} |x - 0|^3 \\). Here, \\( f'''(x) = -\\cos(x) \\), whose maximum absolute value is 1. The maximum error is \\( \\frac{1}{3!} (0.5)^3 = \\frac{1}{6} \\cdot \\frac{1}{8} = \\frac{1}{48} \\)."
+            },
+            {
+                question: "Which test confirms the convergence of the series \\( \\displaystyle \\sum_{n=1}^\\infty \\frac{n!}{n^n} \\)?",
+                options: [
+                    "Ratio Test (Converges)",
+                    "Ratio Test (Diverges)",
+                    "Limit Comparison Test",
+                    "nth-Term Test for Divergence"
+                ],
+                answer: 0,
+                explanation: "Applying the Ratio Test: \\( \\lim_{n \\to \\infty} \\frac{(n+1)!}{(n+1)^{n+1}} \\cdot \\frac{n^n}{n!} = \\lim_{n \\to \\infty} \\frac{n+1}{n+1} \\left(\\frac{n}{n+1}\\right)^n = \\lim_{n \\to \\infty} \\left(1 + \\frac{1}{n}\\right)^{-n} = \\frac{1}{e} \\). Since \\( 1/e < 1 \\), the series converges by the Ratio Test."
+            },
+            {
+                question: "Applying the Integral Test to the series \\( \\displaystyle \\sum_{n=2}^\\infty \\frac{1}{n \\ln(n)} \\) shows that the series:",
+                options: [
+                    "Converges",
+                    "Diverges",
+                    "Conditionally Converges",
+                    "Test is Inconclusive"
+                ],
+                answer: 1,
+                explanation: "Evaluate \\( \\int_{2}^\\infty \\frac{1}{x \\ln x} dx \\). Let \\( u = \\ln x \\), \\( du = 1/x dx \\). The integral becomes \\( \\int \\frac{1}{u} du = \\ln|u| = \\ln(\\ln x) \\). Evaluating from 2 to \\( \\infty \\) yields \\( \\lim_{b \\to \\infty} \\ln(\\ln b) - \\ln(\\ln 2) = \\infty \\). Since the integral diverges, the series diverges."
+            },
+            {
+                question: "Find the sum of the infinite geometric series: \\( \\displaystyle 3 - 1 + \\frac{1}{3} - \\frac{1}{9} + \\dots \\)",
+                options: [
+                    "\\( 9/4 \\)",
+                    "\\( 3/2 \\)",
+                    "\\( 9/2 \\)",
+                    "\\( 3/4 \\)"
+                ],
+                answer: 0,
+                explanation: "This is a geometric series with the first term \\( a = 3 \\) and the common ratio \\( r = -1/3 \\). Because \\( |r| < 1 \\), it converges. The sum is \\( S = \\frac{a}{1 - r} = \\frac{3}{1 - (-1/3)} = \\frac{3}{4/3} = \\frac{9}{4} \\)."
+            },
+            {
+                question: "The sum of the infinite series \\( \\displaystyle \\sum_{n=0}^\\infty \\frac{\\pi^n}{n!} \\) is equivalent to:",
+                options: [
+                    "\\( \\pi \\)",
+                    "\\( \\cos(\\pi) \\)",
+                    "\\( \\sin(\\pi) \\)",
+                    "\\( e^\\pi \\)"
+                ],
+                answer: 3,
+                explanation: "The Maclaurin series for \\( e^x \\) is defined as \\( \\sum_{n=0}^\\infty \\frac{x^n}{n!} \\) for all real numbers \\( x \\). By substituting \\( x = \\pi \\), we get \\( \\sum_{n=0}^\\infty \\frac{\\pi^n}{n!} = e^\\pi \\)."
+            },
+            {
+                question: "The p-series \\( \\displaystyle \\sum_{n=1}^\\infty \\frac{1}{n^p} \\) converges if and only if:",
+                options: [
+                    "\\( p \\ge 1 \\)",
+                    "\\( p < 1 \\)",
+                    "\\( p \\le 1 \\)",
+                    "\\( p > 1 \\)"
+                ],
+                answer: 3,
+                explanation: "The p-series test states that the series \\( \\sum_{n=1}^\\infty \\frac{1}{n^p} \\) converges strictly when the exponent \\( p > 1 \\). If \\( p \\le 1 \\), the series will diverge (as proven by the Integral Test)."
+            },
+            {
+                question: "Evaluate the exact value of the series \\( \\displaystyle \\sum_{n=0}^\\infty \\frac{(-1)^n \\pi^{2n+1}}{(2n+1)!} \\).",
+                options: [
+                    "\\( 1 \\)",
+                    "\\( -1 \\)",
+                    "\\( 0 \\)",
+                    "\\( \\pi \\)"
+                ],
+                answer: 2,
+                explanation: "This series is the Maclaurin series expansion for \\( \\sin(x) \\) evaluated at \\( x = \\pi \\). Therefore, the sum is exactly \\( \\sin(\\pi) = 0 \\)."
+            },
+            {
+                question: "Which of the following series diverges strictly by the nth-Term Test for Divergence?",
+                options: [
+                    "\\( \\displaystyle \\sum_{n=1}^\\infty \\cos\\left(\\frac{1}{n}\\right) \\)",
+                    "\\( \\displaystyle \\sum_{n=1}^\\infty \\frac{n}{n^2+1} \\)",
+                    "\\( \\displaystyle \\sum_{n=1}^\\infty \\sin\\left(\\frac{1}{n}\\right) \\)",
+                    "\\( \\displaystyle \\sum_{n=1}^\\infty e^{-n} \\)"
+                ],
+                answer: 0,
+                explanation: "The nth-Term Test states that if \\( \\lim_{n \\to \\infty} a_n \\neq 0 \\), the series diverges. For Option A, \\( \\lim_{n \\to \\infty} \\cos(1/n) = \\cos(0) = 1 \\neq 0 \\). Thus, it diverges by the nth-Term Test. (The other options have limits approaching 0, so the test is inconclusive for them)."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedOption = null;
+
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const feedbackContainer = document.getElementById('feedback');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackText = document.getElementById('feedback-text');
+        const progressEl = document.getElementById('progress');
+        const quizScreen = document.getElementById('quiz-screen');
+        const scoreScreen = document.getElementById('score-screen');
+        const finalScoreEl = document.getElementById('final-score');
+
+        function loadQuestion() {
+            selectedOption = null;
+            feedbackContainer.classList.remove('show', 'correct-box', 'wrong-box');
+            submitBtn.style.display = 'block';
+            submitBtn.disabled = true;
+            nextBtn.style.display = 'none';
+            progressEl.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+
+            const qData = quizData[currentQuestion];
+            questionEl.innerHTML = qData.question;
+            optionsEl.innerHTML = '';
+
+            const letters = ['A', 'B', 'C', 'D'];
+            qData.options.forEach((opt, idx) => {
+                const li = document.createElement('li');
+                li.className = 'option';
+                li.innerHTML = `<span class="option-label">${letters[idx]}</span> <div>${opt}</div>`;
+                li.onclick = () => selectOption(idx, li);
+                optionsEl.appendChild(li);
+            });
+
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function selectOption(idx, liElement) {
+            const allOptions = optionsEl.children;
+            for (let i = 0; i < allOptions.length; i++) {
+                allOptions[i].classList.remove('selected');
+            }
+            liElement.classList.add('selected');
+            selectedOption = idx;
+            submitBtn.disabled = false;
+        }
+
+        submitBtn.onclick = () => {
+            if (selectedOption === null) return;
+            const qData = quizData[currentQuestion];
+            const allOptions = optionsEl.children;
+
+            for (let i = 0; i < allOptions.length; i++) {
+                allOptions[i].classList.add('disabled');
+            }
+
+            feedbackContainer.classList.add('show');
+
+            if (selectedOption === qData.answer) {
+                allOptions[selectedOption].classList.add('correct');
+                feedbackContainer.classList.add('correct-box');
+                feedbackTitle.textContent = 'Correct!';
+                score++;
+            } else {
+                allOptions[selectedOption].classList.add('wrong');
+                allOptions[qData.answer].classList.add('correct');
+                feedbackContainer.classList.add('wrong-box');
+                feedbackTitle.textContent = 'Incorrect!';
+            }
+            
+            feedbackText.innerHTML = qData.explanation;
+
+            submitBtn.style.display = 'none';
+            nextBtn.style.display = 'block';
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise([feedbackText]);
+            }
+        };
+
+        nextBtn.onclick = () => {
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showScore();
+            }
+        };
+
+        function showScore() {
+            quizScreen.style.display = 'none';
+            scoreScreen.style.display = 'block';
+            finalScoreEl.textContent = score;
+        }
+
+        // Initialize quiz
+        loadQuestion();
+    </script>
+</body>
+</html>
