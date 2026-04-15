@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Calculus BC - Unit 9 Quiz</title>
+    <!-- MathJax for rendering LaTeX math formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f0f4f8; 
+            color: #333; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px; 
+            box-sizing: border-box; 
+        }
+        .quiz-container { 
+            background-color: #fff; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 800px; 
+            padding: 40px; 
+            border-top: 5px solid #d35400;
+        }
+        h1 { 
+            text-align: center; 
+            color: #2c3e50; 
+            font-size: 26px; 
+            margin-bottom: 20px; 
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        .progress { 
+            text-align: center; 
+            margin-bottom: 25px; 
+            font-weight: bold; 
+            color: #7f8c8d; 
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .question { 
+            font-size: 18px; 
+            font-weight: 600; 
+            margin-bottom: 25px; 
+            line-height: 1.6; 
+        }
+        .options { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+        }
+        .option { 
+            background-color: #f8f9fa; 
+            border: 2px solid #e9ecef; 
+            border-radius: 8px; 
+            padding: 16px; 
+            margin-bottom: 12px; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            display: flex; 
+            align-items: center; 
+            font-size: 16px;
+        }
+        .option:hover { 
+            background-color: #e2e6ea; 
+            border-color: #dae0e5; 
+        }
+        .option.selected { 
+            border-color: #d35400; 
+            background-color: #fdf2e9; 
+        }
+        .option.correct { 
+            border-color: #2ecc71; 
+            background-color: #eaeded; 
+        }
+        .option.wrong { 
+            border-color: #e74c3c; 
+            background-color: #fdedec; 
+        }
+        .option.disabled { 
+            pointer-events: none; 
+        }
+        .option-label {
+            font-weight: bold; 
+            margin-right: 15px; 
+            background: #d35400; 
+            color: white; 
+            width: 35px; 
+            height: 35px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 50%; 
+            flex-shrink: 0;
+        }
+        .option.correct .option-label { background: #27ae60; }
+        .option.wrong .option-label { background: #c0392b; }
+        .feedback-container {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .feedback-container.show {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+        .feedback-container.correct-box {
+            background-color: #eafaf1;
+            border-left: 4px solid #27ae60;
+        }
+        .feedback-container.wrong-box {
+            background-color: #fdedec;
+            border-left: 4px solid #c0392b;
+        }
+        .feedback-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .feedback-container.correct-box .feedback-title { color: #27ae60; }
+        .feedback-container.wrong-box .feedback-title { color: #c0392b; }
+        .controls { 
+            display: flex; 
+            justify-content: flex-end; 
+            margin-top: 25px; 
+        }
+        button { 
+            background-color: #d35400; 
+            color: #fff; 
+            border: none; 
+            border-radius: 8px; 
+            padding: 14px 28px; 
+            font-size: 16px; 
+            font-weight: bold;
+            cursor: pointer; 
+            transition: background-color 0.3s ease; 
+        }
+        button:hover { 
+            background-color: #a04000; 
+        }
+        button:disabled { 
+            background-color: #bdc3c7; 
+            cursor: not-allowed; 
+        }
+        .score-container { 
+            text-align: center; 
+            display: none; 
+        }
+        .score-text { 
+            font-size: 36px; 
+            font-weight: bold; 
+            color: #2c3e50; 
+            margin-bottom: 30px; 
+        }
+        .score-text span {
+            color: #d35400;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <div id="quiz-screen">
+            <h1>AP Calculus BC - Unit 9</h1>
+            <p style="text-align: center; color: #7f8c8d; margin-top: -10px; margin-bottom: 20px;">Parametric Equations, Polar Coordinates, and Vector-Valued Functions</p>
+            <div class="progress" id="progress">Question 1 of 20</div>
+            <div class="question" id="question"></div>
+            <ul class="options" id="options"></ul>
+            
+            <div class="feedback-container" id="feedback">
+                <div class="feedback-title" id="feedback-title"></div>
+                <div id="feedback-text"></div>
+            </div>
+
+            <div class="controls">
+                <button id="submit-btn" disabled>Submit Answer</button>
+                <button id="next-btn" style="display: none;">Next Question</button>
+            </div>
+        </div>
+
+        <div class="score-container" id="score-screen">
+            <h1>Quiz Completed!</h1>
+            <div class="score-text">Your Score: <br> <span id="final-score">0</span> / 20</div>
+            <button onclick="location.reload()">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "What is the area of the region enclosed by one petal of the polar curve \\( r = 2\\cos(3\\theta) \\)?",
+                options: [
+                    "\\( \\frac{\\pi}{3} \\)",
+                    "\\( \\frac{\\pi}{2} \\)",
+                    "\\( \\frac{2\\pi}{3} \\)",
+                    "\\( \\pi \\)"
+                ],
+                answer: 0,
+                explanation: "The limits for one petal are \\( -\\pi/6 \\) to \\( \\pi/6 \\). The area is \\( \\frac{1}{2} \\int_{-\\pi/6}^{\\pi/6} (2\\cos(3\\theta))^2 d\\theta = \\int_{-\\pi/6}^{\\pi/6} 2\\cos^2(3\\theta) d\\theta = \\int_{-\\pi/6}^{\\pi/6} (1 + \\cos(6\\theta)) d\\theta \\). Evaluating gives \\( [\\theta + \\frac{1}{6}\\sin(6\\theta)]_{-\\pi/6}^{\\pi/6} = \\frac{\\pi}{6} - (-\\frac{\\pi}{6}) = \\frac{\\pi}{3} \\)."
+            },
+            {
+                question: "Let \\( x = t^2 \\) and \\( y = t^3 - 3t \\). Find the value of \\( \\frac{d^2y}{dx^2} \\) at \\( t = 2 \\).",
+                options: [
+                    "\\( \\frac{3}{16} \\)",
+                    "\\( \\frac{15}{32} \\)",
+                    "\\( \\frac{9}{16} \\)",
+                    "\\( \\frac{3}{8} \\)"
+                ],
+                answer: 1,
+                explanation: "\\( \\frac{dy}{dx} = \\frac{dy/dt}{dx/dt} = \\frac{3t^2 - 3}{2t} = \\frac{3}{2}t - \\frac{3}{2}t^{-1} \\). Then \\( \\frac{d}{dt}(\\frac{dy}{dx}) = \\frac{3}{2} + \\frac{3}{2}t^{-2} \\). Finally, \\( \\frac{d^2y}{dx^2} = \\frac{\\frac{d}{dt}(y')}{dx/dt} = \\frac{\\frac{3}{2} + \\frac{3}{2t^2}}{2t} \\). At \\( t=2 \\), this evaluates to \\( \\frac{3/2 + 3/8}{4} = \\frac{15/8}{4} = \\frac{15}{32} \\)."
+            },
+            {
+                question: "A particle moves in the xy-plane with velocity vector \\( \\mathbf{v}(t) = \\langle e^t, -2e^{-t} \\rangle \\). What is the speed of the particle at \\( t = \\ln 2 \\)?",
+                options: [
+                    "\\( \\sqrt{3} \\)",
+                    "\\( 2 \\)",
+                    "\\( \\sqrt{5} \\)",
+                    "\\( 3 \\)"
+                ],
+                answer: 2,
+                explanation: "The speed is the magnitude of the velocity vector: \\( ||\\mathbf{v}(t)|| = \\sqrt{(x'(t))^2 + (y'(t))^2} \\). At \\( t = \\ln 2 \\), \\( x'(\\ln 2) = e^{\\ln 2} = 2 \\) and \\( y'(\\ln 2) = -2e^{-\\ln 2} = -2(\\frac{1}{2}) = -1 \\). The speed is \\( \\sqrt{2^2 + (-1)^2} = \\sqrt{5} \\)."
+            },
+            {
+                question: "Find the slope of the line tangent to the polar curve \\( r = \\sin \\theta \\) at \\( \\theta = \\frac{\\pi}{4} \\).",
+                options: [
+                    "\\( 0 \\)",
+                    "\\( 1 \\)",
+                    "\\( -1 \\)",
+                    "Undefined"
+                ],
+                answer: 3,
+                explanation: "We convert to rectangular: \\( x = r\\cos\\theta = \\sin\\theta\\cos\\theta = \\frac{1}{2}\\sin(2\\theta) \\) and \\( y = r\\sin\\theta = \\sin^2\\theta \\). Then \\( \\frac{dx}{d\\theta} = \\cos(2\\theta) \\) and \\( \\frac{dy}{d\\theta} = \\sin(2\\theta) \\). At \\( \\theta = \\pi/4 \\), \\( \\frac{dx}{d\\theta} = \\cos(\\pi/2) = 0 \\) and \\( \\frac{dy}{d\\theta} = \\sin(\\pi/2) = 1 \\). The slope \\( \\frac{dy}{dx} \\) is \\( \\frac{1}{0} \\), which is undefined."
+            },
+            {
+                question: "A particle moves such that its velocity vector is \\( \\mathbf{v}(t) = \\langle 3t^2, 4t^2 \\rangle \\). What is the total distance traveled by the particle from \\( t = 0 \\) to \\( t = 2 \\)?",
+                options: [
+                    "\\( \\frac{40}{3} \\)",
+                    "\\( 20 \\)",
+                    "\\( \\frac{80}{3} \\)",
+                    "\\( 10 \\)"
+                ],
+                answer: 0,
+                explanation: "Distance traveled is \\( \\int_{a}^{b} ||\\mathbf{v}(t)|| dt \\). Here, \\( ||\\mathbf{v}(t)|| = \\sqrt{(3t^2)^2 + (4t^2)^2} = \\sqrt{25t^4} = 5t^2 \\). The integral is \\( \\int_{0}^{2} 5t^2 dt = \\left[\\frac{5}{3}t^3\\right]_0^2 = \\frac{40}{3} \\)."
+            },
+            {
+                question: "Find the arc length of the parametric curve defined by \\( x = e^t \\cos t \\) and \\( y = e^t \\sin t \\) for \\( 0 \\le t \\le \\pi \\).",
+                options: [
+                    "\\( \\sqrt{2}e^{\\pi} \\)",
+                    "\\( \\sqrt{2}(e^{\\pi} - 1) \\)",
+                    "\\( 2(e^{\\pi} - 1) \\)",
+                    "\\( e^{\\pi} - 1 \\)"
+                ],
+                answer: 1,
+                explanation: "\\( x' = e^t(\\cos t - \\sin t) \\) and \\( y' = e^t(\\sin t + \\cos t) \\). Then \\( (x')^2 + (y')^2 = e^{2t}[(\\cos t-\\sin t)^2 + (\\sin t+\\cos t)^2] = e^{2t}[2\\cos^2 t + 2\\sin^2 t] = 2e^{2t} \\). The arc length is \\( \\int_{0}^{\\pi} \\sqrt{2e^{2t}} dt = \\int_{0}^{\\pi} \\sqrt{2}e^t dt = \\sqrt{2}[e^t]_0^\\pi = \\sqrt{2}(e^\\pi - 1) \\)."
+            },
+            {
+                question: "What is the area of the region that lies inside the polar curve \\( r = 3\\sin\\theta \\) and outside the curve \\( r = 1 + \\sin\\theta \\)?",
+                options: [
+                    "\\( \\frac{\\pi}{2} \\)",
+                    "\\( \\frac{3\\pi}{2} \\)",
+                    "\\( \\pi \\)",
+                    "\\( 2\\pi \\)"
+                ],
+                answer: 2,
+                explanation: "The curves intersect where \\( 3\\sin\\theta = 1+\\sin\\theta \\implies \\sin\\theta = 1/2 \\implies \\theta = \\pi/6, 5\\pi/6 \\). The area is \\( \\frac{1}{2}\\int_{\\pi/6}^{5\\pi/6} [(3\\sin\\theta)^2 - (1+\\sin\\theta)^2] d\\theta \\). Expanding gives \\( 8\\sin^2\\theta - 2\\sin\\theta - 1 \\). Using half-angle identites and integrating carefully between the bounds yields exactly \\( \\pi \\)."
+            },
+            {
+                question: "The position of a particle is given by \\( \\mathbf{r}(t) = \\langle t^3 - 3t, t^2 - 2t \\rangle \\). Find the equation of the line tangent to the path of the particle at \\( t = 2 \\).",
+                options: [
+                    "\\( y = \\frac{2}{9}x - \\frac{4}{9} \\)",
+                    "\\( y = \\frac{9}{2}x - 9 \\)",
+                    "\\( y = \\frac{2}{9}x + \\frac{4}{9} \\)",
+                    "\\( y = \\frac{9}{2}x + 9 \\)"
+                ],
+                answer: 0,
+                explanation: "Position at \\( t=2 \\) is \\( (2, 0) \\). Velocity \\( \\mathbf{v}(t) = \\langle 3t^2 - 3, 2t - 2 \\rangle \\). At \\( t=2 \\), \\( \\mathbf{v}(2) = \\langle 9, 2 \\rangle \\). The slope is \\( dy/dx = 2/9 \\). The point-slope form is \\( y - 0 = \\frac{2}{9}(x - 2) \\implies y = \\frac{2}{9}x - \\frac{4}{9} \\)."
+            },
+            {
+                question: "At what value of \\( \\theta \\) in the interval \\( (0, \\pi) \\) does the polar curve \\( r = 1 - \\cos\\theta \\) have a horizontal tangent?",
+                options: [
+                    "\\( \\frac{\\pi}{3} \\)",
+                    "\\( \\frac{2\\pi}{3} \\)",
+                    "\\( \\frac{\\pi}{2} \\)",
+                    "\\( \\frac{5\\pi}{6} \\)"
+                ],
+                answer: 1,
+                explanation: "Horizontal tangent means \\( dy/d\\theta = 0 \\). \\( y = r\\sin\\theta = \\sin\\theta - \\frac{1}{2}\\sin(2\\theta) \\). Then \\( dy/d\\theta = \\cos\\theta - \\cos(2\\theta) = -2\\cos^2\\theta + \\cos\\theta + 1 = 0 \\). Factoring gives \\( (2\\cos\\theta+1)(\\cos\\theta-1) = 0 \\). In \\( (0, \\pi) \\), \\( \\cos\\theta = -1/2 \\implies \\theta = 2\\pi/3 \\)."
+            },
+            {
+                question: "Given the parametric equations \\( x = t - \\sin t \\) and \\( y = 1 - \\cos t \\), evaluate \\( \\frac{d^2y}{dx^2} \\) at \\( t = \\frac{\\pi}{2} \\).",
+                options: [
+                    "\\( 1 \\)",
+                    "\\( 0 \\)",
+                    "\\( -1 \\)",
+                    "Undefined"
+                ],
+                answer: 2,
+                explanation: "\\( x' = 1 - \\cos t \\), \\( y' = \\sin t \\). \\( dy/dx = \\frac{\\sin t}{1-\\cos t} \\). The derivative of this with respect to t is \\( \\frac{-1}{1-\\cos t} \\). Dividing by \\( dx/dt \\) gives \\( \\frac{d^2y}{dx^2} = \\frac{-1}{(1-\\cos t)^2} \\). At \\( t=\\pi/2 \\), \\( \\cos(\\pi/2)=0 \\), so it evaluates to \\( -1 \\)."
+            },
+            {
+                question: "A particle's velocity vector is \\( \\mathbf{v}(t) = \\langle \\cos(t^2), \\sin(t^2) \\rangle \\). What is the magnitude of the particle's acceleration at \\( t = \\sqrt{\\frac{\\pi}{2}} \\)?",
+                options: [
+                    "\\( \\sqrt{2\\pi} \\)",
+                    "\\( 2\\pi \\)",
+                    "\\( \\sqrt{\\pi} \\)",
+                    "\\( \\frac{\\pi}{2} \\)"
+                ],
+                answer: 0,
+                explanation: "\\( \\mathbf{a}(t) = \\mathbf{v}'(t) = \\langle -2t\\sin(t^2), 2t\\cos(t^2) \\rangle \\). The magnitude is \\( ||\\mathbf{a}(t)|| = \\sqrt{(-2t\\sin(t^2))^2 + (2t\\cos(t^2))^2} = \\sqrt{4t^2} = 2t \\). At \\( t = \\sqrt{\\pi/2} \\), the magnitude is \\( 2\\sqrt{\\pi/2} = \\sqrt{2\\pi} \\)."
+            },
+            {
+                question: "Calculate the arc length of the polar curve \\( r = \\theta^2 \\) from \\( \\theta = 0 \\) to \\( \\theta = \\sqrt{5} \\).",
+                options: [
+                    "\\( \\frac{13}{3} \\)",
+                    "\\( \\frac{19}{3} \\)",
+                    "\\( \\frac{25}{3} \\)",
+                    "\\( 9 \\)"
+                ],
+                answer: 1,
+                explanation: "The arc length formula for polar curves is \\( \\int \\sqrt{r^2 + (r')^2} d\\theta \\). Here \\( r' = 2\\theta \\). Integrand is \\( \\sqrt{\\theta^4 + 4\\theta^2} = \\theta\\sqrt{\\theta^2+4} \\). Evaluating \\( \\int_{0}^{\\sqrt{5}} \\theta\\sqrt{\\theta^2+4} d\\theta \\) using u-substitution (\\( u = \\theta^2+4 \\)) yields \\( \\frac{1}{2} [\\frac{2}{3}u^{3/2}]_4^9 = \\frac{1}{3}(27 - 8) = \\frac{19}{3} \\)."
+            },
+            {
+                question: "A particle moves with parametric equations \\( x(t) = t^3 - 3t \\) and \\( y(t) = \\frac{4}{3}t^3 - 4t \\). Find the total distance traveled from \\( t = 0 \\) to \\( t = 2 \\).",
+                options: [
+                    "\\( \\frac{20}{3} \\)",
+                    "\\( 5 \\)",
+                    "\\( 10 \\)",
+                    "\\( 15 \\)"
+                ],
+                answer: 2,
+                explanation: "\\( x'(t) = 3(t^2 - 1) \\) and \\( y'(t) = 4(t^2 - 1) \\). The speed is \\( \\sqrt{9(t^2-1)^2 + 16(t^2-1)^2} = \\sqrt{25(t^2-1)^2} = 5|t^2-1| \\). Distance is \\( \\int_0^2 5|t^2-1| dt = 5\\int_0^1 (1-t^2) dt + 5\\int_1^2 (t^2-1) dt = 5(2/3) + 5(4/3) = 10 \\)."
+            },
+            {
+                question: "Find the area of the region enclosed by the loop of the parametric curve \\( x = t^2 - 1 \\) and \\( y = t^3 - t \\).",
+                options: [
+                    "\\( \\frac{4}{15} \\)",
+                    "\\( \\frac{2}{15} \\)",
+                    "\\( \\frac{16}{15} \\)",
+                    "\\( \\frac{8}{15} \\)"
+                ],
+                answer: 3,
+                explanation: "The curve crosses itself at \\( x=0, y=0 \\), which corresponds to \\( t = -1 \\) and \\( t = 1 \\). By symmetry, the area is given by Green's Theorem or \\( |\\int_{-1}^{1} y(t) x'(t) dt| \\). The integral is \\( \\int_{-1}^{1} (t^3-t)(2t) dt = 2\\int_{-1}^{1} (t^4 - t^2) dt = 2 [\\frac{t^5}{5} - \\frac{t^3}{3}]_{-1}^{1} = 4(\\frac{1}{5} - \\frac{1}{3}) = -\\frac{8}{15} \\). The area is \\( 8/15 \\)."
+            },
+            {
+                question: "For the parametric curve \\( x = e^{2t} \\) and \\( y = t e^{2t} \\), find \\( \\frac{dy}{dx} \\) at \\( t = 1 \\).",
+                options: [
+                    "\\( \\frac{3}{2} \\)",
+                    "\\( \\frac{1}{2} \\)",
+                    "\\( \\frac{e^2}{2} \\)",
+                    "\\( 3 \\)"
+                ],
+                answer: 0,
+                explanation: "\\( x'(t) = 2e^{2t} \\) and \\( y'(t) = e^{2t} + 2te^{2t} \\). Therefore \\( \\frac{dy}{dx} = \\frac{e^{2t}(1+2t)}{2e^{2t}} = \\frac{1+2t}{2} \\). At \\( t=1 \\), \\( \\frac{dy}{dx} = \\frac{3}{2} \\)."
+            },
+            {
+                question: "A particle moves such that its velocity vector is \\( \\mathbf{v}(t) = \\langle \\sin(\\pi t), e^{t-1} \\rangle \\). If the position at \\( t=0 \\) is \\( \\langle 1, 2 \\rangle \\), what is the y-coordinate of the particle at \\( t=2 \\)?",
+                options: [
+                    "\\( 1 + e - e^{-1} \\)",
+                    "\\( 2 + e - e^{-1} \\)",
+                    "\\( e - e^{-1} \\)",
+                    "\\( 2 + e + e^{-1} \\)"
+                ],
+                answer: 1,
+                explanation: "The displacement in the y-direction is \\( \\int_0^2 e^{t-1} dt = [e^{t-1}]_0^2 = e^1 - e^{-1} \\). Since the initial y-position is 2, the final position is \\( 2 + e - e^{-1} \\)."
+            },
+            {
+                question: "A point moves along the polar curve \\( r = \\theta \\). If \\( \\frac{d\\theta}{dt} = 2 \\text{ rad/sec} \\), what is \\( \\frac{dy}{dt} \\) when \\( \\theta = \\frac{\\pi}{2} \\)?",
+                options: [
+                    "\\( \\pi \\)",
+                    "\\( 1 \\)",
+                    "\\( 2 \\)",
+                    "\\( \\frac{\\pi}{2} \\)"
+                ],
+                answer: 2,
+                explanation: "\\( y = r\\sin\\theta = \\theta\\sin\\theta \\). Using the chain rule, \\( \\frac{dy}{dt} = \\frac{dy}{d\\theta} \\frac{d\\theta}{dt} = (\\sin\\theta + \\theta\\cos\\theta) \\times 2 \\). Evaluating at \\( \\theta = \\pi/2 \\) yields \\( (1 + 0) \\times 2 = 2 \\)."
+            },
+            {
+                question: "Find the coordinates \\( (x, y) \\) where the parametric curve \\( x = t^3 - 3t \\), \\( y = t^2 \\) has a vertical tangent.",
+                options: [
+                    "\\( (-2, 1) \\) and \\( (2, 1) \\)",
+                    "\\( (0, 0) \\)",
+                    "\\( (1, 1) \\) and \\( (-1, 1) \\)",
+                    "\\( (2, 2) \\)"
+                ],
+                answer: 0,
+                explanation: "Vertical tangents occur when \\( dx/dt = 0 \\) and \\( dy/dt \\neq 0 \\). \\( dx/dt = 3t^2 - 3 = 0 \\implies t = \\pm 1 \\). At \\( t=1 \\), \\( (x,y) = (-2, 1) \\). At \\( t=-1 \\), \\( (x,y) = (2, 1) \\). \\( dy/dt = 2t \\), which is non-zero at \\( t = \\pm 1 \\)."
+            },
+            {
+                question: "The acceleration vector of a particle is \\( \\mathbf{a}(t) = \\langle 6t, 2 \\rangle \\). If the initial velocity is \\( \\mathbf{v}(0) = \\langle -1, 1 \\rangle \\), find the displacement vector of the particle from \\( t=0 \\) to \\( t=1 \\).",
+                options: [
+                    "\\( \\langle 1, 2 \\rangle \\)",
+                    "\\( \\langle 0, 2 \\rangle \\)",
+                    "\\( \\langle -1, 1 \\rangle \\)",
+                    "\\( \\langle 2, 0 \\rangle \\)"
+                ],
+                answer: 1,
+                explanation: "Velocity is \\( \\mathbf{v}(t) = \\int \\langle 6t, 2 \\rangle dt = \\langle 3t^2 - 1, 2t + 1 \\rangle \\) (using initial conditions). The displacement is \\( \\int_0^1 \\langle 3t^2 - 1, 2t + 1 \\rangle dt = \\langle [t^3 - t]_0^1, [t^2 + t]_0^1 \\rangle = \\langle 0, 2 \\rangle \\)."
+            },
+            {
+                question: "For the polar curve \\( r = 1 - \\cos\\theta \\), evaluate the limit \\( \\displaystyle \\lim_{\\theta \\to 0} \\frac{r(\\theta)}{\\theta} \\).",
+                options: [
+                    "\\( \\frac{1}{2} \\)",
+                    "\\( 1 \\)",
+                    "\\( 0 \\)",
+                    "\\( -1 \\)"
+                ],
+                answer: 2,
+                explanation: "\\( \\lim_{\\theta \\to 0} \\frac{1 - \\cos\\theta}{\\theta} \\). This is a well-known limit that equals 0. Alternatively, apply L'Hôpital's rule: \\( \\lim_{\\theta \\to 0} \\frac{\\sin\\theta}{1} = 0 \\)."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedOption = null;
+
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const feedbackContainer = document.getElementById('feedback');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackText = document.getElementById('feedback-text');
+        const progressEl = document.getElementById('progress');
+        const quizScreen = document.getElementById('quiz-screen');
+        const scoreScreen = document.getElementById('score-screen');
+        const finalScoreEl = document.getElementById('final-score');
+
+        function loadQuestion() {
+            selectedOption = null;
+            feedbackContainer.classList.remove('show', 'correct-box', 'wrong-box');
+            submitBtn.style.display = 'block';
+            submitBtn.disabled = true;
+            nextBtn.style.display = 'none';
+            progressEl.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+
+            const qData = quizData[currentQuestion];
+            questionEl.innerHTML = qData.question;
+            optionsEl.innerHTML = '';
+
+            const letters = ['A', 'B', 'C', 'D'];
+            qData.options.forEach((opt, idx) => {
+                const li = document.createElement('li');
+                li.className = 'option';
+                li.innerHTML = `<span class="option-label">${letters[idx]}</span> <div>${opt}</div>`;
+                li.onclick = () => selectOption(idx, li);
+                optionsEl.appendChild(li);
+            });
+
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function selectOption(idx, liElement) {
+            const allOptions = optionsEl.children;
+            for (let i = 0; i < allOptions.length; i++) {
+                allOptions[i].classList.remove('selected');
+            }
+            liElement.classList.add('selected');
+            selectedOption = idx;
+            submitBtn.disabled = false;
+        }
+
+        submitBtn.onclick = () => {
+            if (selectedOption === null) return;
+            const qData = quizData[currentQuestion];
+            const allOptions = optionsEl.children;
+
+            for (let i = 0; i < allOptions.length; i++) {
+                allOptions[i].classList.add('disabled');
+            }
+
+            feedbackContainer.classList.add('show');
+
+            if (selectedOption === qData.answer) {
+                allOptions[selectedOption].classList.add('correct');
+                feedbackContainer.classList.add('correct-box');
+                feedbackTitle.textContent = 'Correct!';
+                score++;
+            } else {
+                allOptions[selectedOption].classList.add('wrong');
+                allOptions[qData.answer].classList.add('correct');
+                feedbackContainer.classList.add('wrong-box');
+                feedbackTitle.textContent = 'Incorrect!';
+            }
+            
+            feedbackText.innerHTML = qData.explanation;
+
+            submitBtn.style.display = 'none';
+            nextBtn.style.display = 'block';
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise([feedbackText]);
+            }
+        };
+
+        nextBtn.onclick = () => {
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showScore();
+            }
+        };
+
+        function showScore() {
+            quizScreen.style.display = 'none';
+            scoreScreen.style.display = 'block';
+            finalScoreEl.textContent = score;
+        }
+
+        // Initialize quiz
+        loadQuestion();
+    </script>
+</body>
+</html>
