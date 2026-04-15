@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Calculus BC - Unit 5 Quiz</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f0f4f8; 
+            color: #333; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px; 
+            box-sizing: border-box; 
+        }
+        .quiz-container { 
+            background-color: #fff; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 800px; 
+            padding: 40px; 
+        }
+        h1 { 
+            text-align: center; 
+            color: #2c3e50; 
+            font-size: 26px; 
+            margin-bottom: 20px; 
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        .progress { 
+            text-align: center; 
+            margin-bottom: 25px; 
+            font-weight: bold; 
+            color: #7f8c8d; 
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .question { 
+            font-size: 18px; 
+            font-weight: 600; 
+            margin-bottom: 25px; 
+            line-height: 1.6; 
+        }
+        .options { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+        }
+        .option { 
+            background-color: #f8f9fa; 
+            border: 2px solid #e9ecef; 
+            border-radius: 8px; 
+            padding: 16px; 
+            margin-bottom: 12px; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            display: flex; 
+            align-items: center; 
+            font-size: 16px;
+        }
+        .option:hover { 
+            background-color: #e2e6ea; 
+            border-color: #dae0e5; 
+        }
+        .option.selected { 
+            border-color: #3498db; 
+            background-color: #ebf5fb; 
+        }
+        .option.correct { 
+            border-color: #2ecc71; 
+            background-color: #eaeded; 
+        }
+        .option.wrong { 
+            border-color: #e74c3c; 
+            background-color: #fdedec; 
+        }
+        .option.disabled { 
+            pointer-events: none; 
+        }
+        .feedback { 
+            font-size: 20px; 
+            font-weight: bold; 
+            text-align: center; 
+            margin-top: 25px; 
+            min-height: 30px; 
+        }
+        .feedback.correct-text { color: #2ecc71; }
+        .feedback.wrong-text { color: #e74c3c; }
+        .controls { 
+            display: flex; 
+            justify-content: center; 
+            margin-top: 25px; 
+        }
+        button { 
+            background-color: #3498db; 
+            color: #fff; 
+            border: none; 
+            border-radius: 8px; 
+            padding: 14px 28px; 
+            font-size: 16px; 
+            font-weight: bold;
+            cursor: pointer; 
+            transition: background-color 0.3s ease; 
+        }
+        button:hover { 
+            background-color: #2980b9; 
+        }
+        button:disabled { 
+            background-color: #bdc3c7; 
+            cursor: not-allowed; 
+        }
+        .score-container { 
+            text-align: center; 
+            display: none; 
+        }
+        .score-text { 
+            font-size: 36px; 
+            font-weight: bold; 
+            color: #2c3e50; 
+            margin-bottom: 30px; 
+        }
+        .score-text span {
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <div id="quiz-screen">
+            <h1>AP Calculus BC - Unit 5 Quiz</h1>
+            <div class="progress" id="progress">Question 1 of 20</div>
+            <div class="question" id="question"></div>
+            <ul class="options" id="options"></ul>
+            <div class="feedback" id="feedback"></div>
+            <div class="controls">
+                <button id="submit-btn" disabled>Submit Answer</button>
+                <button id="next-btn" style="display: none;">Next Question</button>
+            </div>
+        </div>
+
+        <div class="score-container" id="score-screen">
+            <h1>Quiz Completed!</h1>
+            <div class="score-text">Your Score: <br> <span id="final-score">0</span> / 20</div>
+            <button onclick="location.reload()">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "Let \\( f(x) = x^3 - 3x^2 + 2x \\). On the interval \\( [0, 2] \\), at what value(s) of \\( c \\) does the Mean Value Theorem guarantee \\( f'(c) = \\frac{f(2)-f(0)}{2-0} \\)?",
+                options: [
+                    "\\( 1 \\pm \\frac{\\sqrt{3}}{3} \\)",
+                    "\\( 1 \\pm \\frac{\\sqrt{2}}{2} \\)",
+                    "\\( 1 \\)",
+                    "\\( \\frac{\\sqrt{3}}{3} \\)"
+                ],
+                answer: 0
+            },
+            {
+                question: "Find the absolute maximum value of \\( f(x) = x e^{-2x} \\) on the interval \\( [0, 2] \\).",
+                options: [
+                    "\\( \\frac{2}{e^4} \\)",
+                    "\\( \\frac{1}{2e} \\)",
+                    "\\( e^{-2} \\)",
+                    "\\( \\frac{1}{e} \\)"
+                ],
+                answer: 1
+            },
+            {
+                question: "Given \\( f'(x) = (x-2)^2 (x+1)^3 (x-4) \\), at which x-value(s) does \\( f(x) \\) have a local minimum?",
+                options: [
+                    "\\( x = -1 \\)",
+                    "\\( x = 2 \\)",
+                    "\\( x = 4 \\)",
+                    "\\( x = -1 \\text{ and } x = 4 \\)"
+                ],
+                answer: 2
+            },
+            {
+                question: "Let \\( g(x) = \\frac{\\ln x}{x^2} \\) for \\( x > 0 \\). What is the x-coordinate of the point of inflection of \\( g \\)?",
+                options: [
+                    "\\( e^{5/6} \\)",
+                    "\\( e^{6/5} \\)",
+                    "\\( e^{1/2} \\)",
+                    "\\( e^{3/2} \\)"
+                ],
+                answer: 0
+            },
+            {
+                question: "A rectangle is inscribed under the curve \\( y = 12 - x^2 \\) with its base on the x-axis. What is the maximum possible area of the rectangle?",
+                options: [
+                    "\\( 16 \\)",
+                    "\\( 32 \\)",
+                    "\\( 48 \\)",
+                    "\\( 64 \\)"
+                ],
+                answer: 1
+            },
+            {
+                question: "Let \\( h(x) \\) be twice differentiable with \\( h'(3) = 0 \\) and \\( h''(3) = -5 \\). Which of the following statements is true?",
+                options: [
+                    "\\( h \\) has a point of inflection at \\( x = 3 \\).",
+                    "\\( h \\) has a local minimum at \\( x = 3 \\).",
+                    "\\( h \\) has a local maximum at \\( x = 3 \\).",
+                    "The Second Derivative Test is inconclusive."
+                ],
+                answer: 2
+            },
+            {
+                question: "Find the x-coordinate of the point on the curve \\( y = \\sqrt{x} \\) that is closest to the point \\( (4, 0) \\).",
+                options: [
+                    "\\( 3.5 \\)",
+                    "\\( 3.0 \\)",
+                    "\\( 4.0 \\)",
+                    "\\( 4.5 \\)"
+                ],
+                answer: 0
+            },
+            {
+                question: "Suppose \\( f(x) \\) is continuous on \\( [1, 5] \\) and differentiable on \\( (1, 5) \\). If \\( f(1) = 4 \\) and \\( f(5) = 4 \\), then Rolle's Theorem guarantees which of the following?",
+                options: [
+                    "There exists \\( c \\in (1, 5) \\) such that \\( f(c) = 0 \\).",
+                    "There exists \\( c \\in (1, 5) \\) such that \\( f''(c) = 0 \\).",
+                    "\\( f(x) \\) is a constant function.",
+                    "There exists \\( c \\in (1, 5) \\) such that \\( f'(c) = 0 \\)."
+                ],
+                answer: 3
+            },
+            {
+                question: "The graph of \\( f' \\), the derivative of \\( f \\), is a parabola opening upward with x-intercepts at \\( x = -2 \\) and \\( x = 3 \\). Which of the following describes \\( f \\) at \\( x = -2 \\)?",
+                options: [
+                    "Local minimum",
+                    "Local maximum",
+                    "Point of inflection",
+                    "Neither a maximum nor minimum"
+                ],
+                answer: 1
+            },
+            {
+                question: "Let \\( f(x) = \\frac{k}{x} + x^2 \\) for some constant \\( k > 0 \\). At what value of \\( x \\) does \\( f \\) have a local minimum?",
+                options: [
+                    "\\( \\sqrt[3]{k} \\)",
+                    "\\( \\sqrt{k/2} \\)",
+                    "\\( \\sqrt[3]{k/2} \\)",
+                    "\\( \\sqrt[3]{2k} \\)"
+                ],
+                answer: 2
+            },
+            {
+                question: "For what value(s) of \\( k \\) does the function \\( f(x) = x^3 + kx^2 + 3x \\) have exactly one point of inflection and no local extrema?",
+                options: [
+                    "\\( -3 \\le k \\le 3 \\)",
+                    "\\( k > 3 \\text{ or } k < -3 \\)",
+                    "\\( k = 3 \\text{ only} \\)",
+                    "\\( -3 < k < 3 \\)"
+                ],
+                answer: 0
+            },
+            {
+                question: "Let \\( f(x) = x^4 - 4x^3 \\). On which of the following intervals is \\( f \\) both decreasing and concave up?",
+                options: [
+                    "\\( (0, 2) \\)",
+                    "\\( (2, 3) \\)",
+                    "\\( (3, \\infty) \\)",
+                    "\\( (-\\infty, 0) \\)"
+                ],
+                answer: 1
+            },
+            {
+                question: "What is the minimum vertical distance between the parabolas \\( y = x^2 + 1 \\) and \\( y = x - x^2 \\)?",
+                options: [
+                    "\\( 1/8 \\)",
+                    "\\( 3/4 \\)",
+                    "\\( 7/8 \\)",
+                    "\\( 1 \\)"
+                ],
+                answer: 2
+            },
+            {
+                question: "A wire of length 20 meters is to be cut into two pieces. One piece will be shaped into a square and the other into a circle. To maximize the total area enclosed, how much of the wire should be used for the square?",
+                options: [
+                    "\\( 0 \\) meters (all for the circle)",
+                    "\\( 20 \\) meters (all for the square)",
+                    "\\( \\frac{80}{4+\\pi} \\) meters",
+                    "\\( 10 \\) meters"
+                ],
+                answer: 0
+            },
+            {
+                question: "Find the absolute maximum of the function \\( f(x) = 3x^{2/3} - x \\) on the interval \\( [-1, 27] \\).",
+                options: [
+                    "\\( 2 \\)",
+                    "\\( 4 \\)",
+                    "\\( 8 \\)",
+                    "\\( 0 \\)"
+                ],
+                answer: 1
+            },
+            {
+                question: "An open-top box is to be made by cutting small congruent squares from the corners of a 12-by-12 inch sheet of tin and bending up the sides. How large should the squares cut from the corners be to maximize the volume of the box?",
+                options: [
+                    "1 inch",
+                    "1.5 inches",
+                    "2 inches",
+                    "3 inches"
+                ],
+                answer: 2
+            },
+            {
+                question: "Let \\( f(x) = \\frac{\\sin x}{2 + \\cos x} \\) on \\( [0, 2\\pi] \\). Find the x-coordinate of the absolute maximum.",
+                options: [
+                    "\\( \\frac{2\\pi}{3} \\)",
+                    "\\( \\frac{4\\pi}{3} \\)",
+                    "\\( \\frac{5\\pi}{6} \\)",
+                    "\\( \\pi \\)"
+                ],
+                answer: 0
+            },
+            {
+                question: "Which of the following conditions guarantees that a twice-differentiable function \\( f(x) \\) has a local maximum at \\( x = c \\)?",
+                options: [
+                    "\\( f'(c) = 0 \\)",
+                    "\\( f'(c) = 0 \\) and \\( f''(c) < 0 \\)",
+                    "\\( f'(c) = 0 \\) and \\( f''(c) > 0 \\)",
+                    "\\( f''(c) = 0 \\) and \\( f'(c) \\) changes sign"
+                ],
+                answer: 1
+            },
+            {
+                question: "If \\( f'(x) = \\frac{(x-1)^2 (x-3)}{x+2} \\), at what value(s) of \\( x \\) does \\( f(x) \\) have a local minimum?",
+                options: [
+                    "\\( x = 1 \\)",
+                    "\\( x = -2 \\)",
+                    "\\( x = 1 \\) and \\( x = 3 \\)",
+                    "\\( x = 3 \\)"
+                ],
+                answer: 3
+            },
+            {
+                question: "Let \\( f(x) \\) be a differentiable function such that \\( f(2) = 5 \\) and \\( f(5) = 14 \\). If \\( f'(x) \\le 3 \\) for all \\( x \\), what is the largest possible value for \\( f(7) \\)?",
+                options: [
+                    "\\( 17 \\)",
+                    "\\( 19 \\)",
+                    "\\( 20 \\)",
+                    "\\( 23 \\)"
+                ],
+                answer: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedOption = null;
+
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const feedbackEl = document.getElementById('feedback');
+        const progressEl = document.getElementById('progress');
+        const quizScreen = document.getElementById('quiz-screen');
+        const scoreScreen = document.getElementById('score-screen');
+        const finalScoreEl = document.getElementById('final-score');
+
+        function loadQuestion() {
+            selectedOption = null;
+            feedbackEl.textContent = '';
+            feedbackEl.className = 'feedback';
+            submitBtn.style.display = 'block';
+            submitBtn.disabled = true;
+            nextBtn.style.display = 'none';
+            progressEl.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+
+            const qData = quizData[currentQuestion];
+            questionEl.innerHTML = qData.question;
+            optionsEl.innerHTML = '';
+
+            const letters = ['A', 'B', 'C', 'D'];
+            qData.options.forEach((opt, idx) => {
+                const li = document.createElement('li');
+                li.className = 'option';
+                li.innerHTML = `<strong>${letters[idx]}.&nbsp;</strong> ${opt}`;
+                li.onclick = () => selectOption(idx, li);
+                optionsEl.appendChild(li);
+            });
+
+            // Trigger MathJax rendering for new content
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function selectOption(idx, liElement) {
+            const allOptions = optionsEl.children;
+            for (let i = 0; i < allOptions.length; i++) {
+                allOptions[i].classList.remove('selected');
+            }
+            liElement.classList.add('selected');
+            selectedOption = idx;
+            submitBtn.disabled = false;
+        }
+
+        submitBtn.onclick = () => {
+            if (selectedOption === null) return;
+            const qData = quizData[currentQuestion];
+            const allOptions = optionsEl.children;
+
+            // Disable further clicks
+            for (let i = 0; i < allOptions.length; i++) {
+                allOptions[i].classList.add('disabled');
+            }
+
+            // Check answer
+            if (selectedOption === qData.answer) {
+                allOptions[selectedOption].classList.add('correct');
+                feedbackEl.textContent = 'Correct!';
+                feedbackEl.classList.add('correct-text');
+                score++;
+            } else {
+                allOptions[selectedOption].classList.add('wrong');
+                allOptions[qData.answer].classList.add('correct');
+                feedbackEl.textContent = 'Incorrect!';
+                feedbackEl.classList.add('wrong-text');
+            }
+
+            submitBtn.style.display = 'none';
+            nextBtn.style.display = 'block';
+        };
+
+        nextBtn.onclick = () => {
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showScore();
+            }
+        };
+
+        function showScore() {
+            quizScreen.style.display = 'none';
+            scoreScreen.style.display = 'block';
+            finalScoreEl.textContent = score;
+        }
+
+        // Initialize quiz
+        loadQuestion();
+    </script>
+</body>
+</html>
