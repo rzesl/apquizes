@@ -41,6 +41,8 @@ AP Calculus BC
 <br>
 <a href="ap-calc-bc-unit-4.html">AP Calc - Unit 4: Contextual Applications of Differentiation</a>
 <br>
+<a href="ap-calc-bc-unit-5.html">AP Calc - Unit 5: Analytical Applications of Differentiation</a>
+<br>
 <br>
 AP Lang
 <br>
