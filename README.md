@@ -43,6 +43,8 @@ AP Calculus BC
 <br>
 <a href="ap-calc-bc-unit-5.html">AP Calc - Unit 5: Analytical Applications of Differentiation</a>
 <br>
+<a href="ap-calc-bc-unit-6.html">AP Calc - Unit 6: Integration and Accumulation of Change</a>
+<br>
 <br>
 AP Lang
 <br>
