@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Calculus BC - Unit 4 Quiz</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .intro {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #555;
+            font-size: 1.1em;
+        }
+        .question-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border-top: 5px solid #e74c3c;
+            display: none; /* hidden by default */
+        }
+        .question-card.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+        .question-header {
+            font-weight: 600;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+        }
+        .option:hover:not(.disabled) {
+            background-color: #e2e6ea;
+            border-color: #dae0e5;
+        }
+        .option-label {
+            font-weight: bold;
+            margin-right: 15px;
+            background: #e74c3c;
+            color: white;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .option.correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .option.correct .option-label {
+            background-color: #28a745;
+        }
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .option.incorrect .option-label {
+            background-color: #dc3545;
+        }
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 6px;
+            display: none;
+            font-size: 1.05em;
+        }
+        .feedback.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        .feedback.correct-feedback {
+            background-color: #d4edda;
+            border-left: 5px solid #28a745;
+            color: #155724;
+        }
+        .feedback.incorrect-feedback {
+            background-color: #f8d7da;
+            border-left: 5px solid #dc3545;
+            color: #721c24;
+        }
+        .next-btn {
+            margin-top: 20px;
+            padding: 12px 25px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            float: right;
+            display: none;
+            transition: background 0.2s;
+        }
+        .next-btn:hover {
+            background-color: #c0392b;
+        }
+        .next-btn.show {
+            display: block;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        .status-icon {
+            margin-left: auto;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+        #score-container {
+            display: none;
+            text-align: center;
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-top: 5px solid #2ecc71;
+        }
+        #score-container h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        #score-container .score {
+            font-size: 3em;
+            color: #2ecc71;
+            font-weight: bold;
+        }
+        .progress {
+            text-align: center;
+            font-weight: bold;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>AP Calculus BC Quiz<br>Unit 4: Contextual Applications of Differentiation</h1>
+    <p class="intro" id="intro-text">Test your knowledge of related rates, rectilinear motion, rates of change, and linearization. Good luck!</p>
+
+    <div class="progress" id="progress-text">Question 1 of 20</div>
+    <div id="quiz-container"></div>
+
+    <div id="score-container">
+        <h2>Quiz Complete!</h2>
+        <p>Your final score is:</p>
+        <div class="score" id="final-score">0 / 20</div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                q: "A particle moves along the x-axis such that its position is given by \\( x(t) = \\frac{1}{3}t^3 - 3t^2 + 8t \\). On what interval(s) is the particle speeding up?",
+                options: [
+                    "\\( (2, 3) \\cup (4, \\infty) \\)",
+                    "\\( (0, 2) \\cup (3, 4) \\)",
+                    "\\( (2, 4) \\)",
+                    "\\( (3, \\infty) \\)"
+                ],
+                correct: 0,
+                explanation: "Speeding up occurs when velocity and acceleration have the same sign. \\( v(t) = t^2 - 6t + 8 = (t-2)(t-4) \\) and \\( a(t) = 2t - 6 = 2(t-3) \\). \\( v(t) \\) is negative on \\( (2,4) \\) and \\( a(t) \\) is negative on \\( (0,3) \\). They are both negative on \\( (2,3) \\). They are both positive on \\( (4, \\infty) \\)."
+            },
+            {
+                q: "A spherical balloon is inflated so its volume increases at a constant rate of \\( 8 \\text{ cm}^3/\\text{s} \\). What is the rate of change of its surface area when the radius is \\( 4 \\text{ cm} \\)?",
+                options: [
+                    "\\( 2 \\text{ cm}^2/\\text{s} \\)",
+                    "\\( 4 \\text{ cm}^2/\\text{s} \\)",
+                    "\\( 8 \\text{ cm}^2/\\text{s} \\)",
+                    "\\( 16 \\text{ cm}^2/\\text{s} \\)"
+                ],
+                correct: 1,
+                explanation: "Volume \\( V = \\frac{4}{3}\\pi r^3 \\implies \\frac{dV}{dt} = 4\\pi r^2 \\frac{dr}{dt} \\). With \\( r=4 \\) and \\( dV/dt = 8 \\), \\( 8 = 64\\pi \\frac{dr}{dt} \\implies \\frac{dr}{dt} = \\frac{1}{8\\pi} \\). Surface area \\( S = 4\\pi r^2 \\implies \\frac{dS}{dt} = 8\\pi r \\frac{dr}{dt} = 32\\pi (\\frac{1}{8\\pi}) = 4 \\text{ cm}^2/\\text{s} \\)."
+            },
+            {
+                q: "Find the local linear approximation \\( L(x) \\) of \\( f(x) = \\sqrt{x^2+9} \\) at \\( x=4 \\), and use it to estimate \\( f(4.1) \\).",
+                options: [
+                    "\\( 5.04 \\)",
+                    "\\( 5.05 \\)",
+                    "\\( 5.08 \\)",
+                    "\\( 5.10 \\)"
+                ],
+                correct: 2,
+                explanation: "\\( f(4) = 5 \\). \\( f'(x) = \\frac{x}{\\sqrt{x^2+9}} \\implies f'(4) = \\frac{4}{5} = 0.8 \\). The tangent line is \\( L(x) = 5 + 0.8(x-4) \\). Then \\( L(4.1) = 5 + 0.8(0.1) = 5.08 \\)."
+            },
+            {
+                q: "A ladder 10 ft long is leaning against a vertical wall. The base of the ladder slides away from the wall at \\( 2 \\text{ ft/s} \\). How fast is the angle \\( \\theta \\) between the ladder and the ground changing when the base is 6 ft from the wall?",
+                options: [
+                    "\\( -1/2 \\text{ rad/s} \\)",
+                    "\\( 1/4 \\text{ rad/s} \\)",
+                    "\\( 1/5 \\text{ rad/s} \\)",
+                    "\\( -1/4 \\text{ rad/s} \\)"
+                ],
+                correct: 3,
+                explanation: "\\( \\cos \\theta = \\frac{x}{10} \\implies -\\sin \\theta \\frac{d\\theta}{dt} = \\frac{1}{10} \\frac{dx}{dt} \\). When \\( x=6 \\), \\( y=8 \\), so \\( \\sin \\theta = \\frac{8}{10} = \\frac{4}{5} \\). Thus, \\( -\\frac{4}{5} \\frac{d\\theta}{dt} = \\frac{1}{10}(2) = \\frac{1}{5} \\implies \\frac{d\\theta}{dt} = -\\frac{1}{4} \\)."
+            },
+            {
+                q: "A particle moves along the x-axis with velocity \\( v(t) = e^{-t} \\sin t \\). For \\( 0 < t < \\pi \\), at what time is the acceleration of the particle zero?",
+                options: [
+                    "\\( \\pi/4 \\)",
+                    "\\( \\pi/2 \\)",
+                    "\\( 3\\pi/4 \\)",
+                    "\\( 1 \\)"
+                ],
+                correct: 0,
+                explanation: "\\( a(t) = v'(t) = -e^{-t}\\sin t + e^{-t}\\cos t = e^{-t}(\\cos t - \\sin t) \\). Setting \\( a(t) = 0 \\implies \\cos t = \\sin t \\implies t = \\pi/4 \\)."
+            },
+            {
+                q: "Water pours into a conical tank (vertex down) of radius 4 ft and height 10 ft at a rate of \\( 10 \\text{ ft}^3/\\text{min} \\). How fast is the water level rising when the depth is 5 ft?",
+                options: [
+                    "\\( \\frac{5}{4\\pi} \\text{ ft/min} \\)",
+                    "\\( \\frac{5}{2\\pi} \\text{ ft/min} \\)",
+                    "\\( \\frac{10}{\\pi} \\text{ ft/min} \\)",
+                    "\\( \\frac{2}{\\pi} \\text{ ft/min} \\)"
+                ],
+                correct: 1,
+                explanation: "By similar triangles, \\( r/h = 4/10 \\implies r = \\frac{2}{5}h \\). \\( V = \\frac{1}{3}\\pi r^2 h = \\frac{4\\pi}{75}h^3 \\). \\( \\frac{dV}{dt} = \\frac{4\\pi}{25}h^2 \\frac{dh}{dt} \\). Plugging in \\( dV/dt = 10 \\) and \\( h = 5 \\): \\( 10 = \\frac{4\\pi}{25}(25)\\frac{dh}{dt} \\implies 10 = 4\\pi \\frac{dh}{dt} \\implies \\frac{dh}{dt} = \\frac{5}{2\\pi} \\)."
+            },
+            {
+                q: "The radius of a circle is measured as 5 cm with a possible error of \\( \\pm 0.1 \\text{ cm} \\). Use differentials to estimate the maximum error in the calculated area.",
+                options: [
+                    "\\( 0.1\\pi \\text{ cm}^2 \\)",
+                    "\\( 0.5\\pi \\text{ cm}^2 \\)",
+                    "\\( \\pi \\text{ cm}^2 \\)",
+                    "\\( 2\\pi \\text{ cm}^2 \\)"
+                ],
+                correct: 2,
+                explanation: "\\( A = \\pi r^2 \\implies dA = 2\\pi r \\, dr \\). Substituting \\( r = 5 \\) and \\( dr = 0.1 \\), \\( dA = 2\\pi(5)(0.1) = \\pi \\text{ cm}^2 \\)."
+            },
+            {
+                q: "A particle moves along a line so that its position at time \\( t \\) is \\( y(t) = t^3 - 6t^2 + 9t \\). What is the total distance traveled by the particle on the interval \\( [0, 4] \\)?",
+                options: [
+                    "\\( 12 \\)",
+                    "\\( 10 \\)",
+                    "\\( 4 \\)",
+                    "\\( 8 \\)"
+                ],
+                correct: 0,
+                explanation: "\\( v(t) = 3t^2 - 12t + 9 = 3(t-1)(t-3) \\). The particle changes direction at \\( t=1 \\) and \\( t=3 \\). Position at critical times: \\( y(0)=0, y(1)=4, y(3)=0, y(4)=4 \\). Distance = \\( |4-0| + |0-4| + |4-0| = 4 + 4 + 4 = 12 \\)."
+            },
+            {
+                q: "The amount of a radioactive substance is given by \\( A(t) = 100e^{-0.05t} \\). What is the rate of decay at \\( t=10 \\)?",
+                options: [
+                    "\\( 5e^{-0.5} \\text{ (growing)} \\)",
+                    "\\( 5e^{-0.5} \\text{ (decaying)} \\)",
+                    "\\( 50e^{-0.5} \\)",
+                    "\\( e^{-0.5} \\)"
+                ],
+                correct: 1,
+                explanation: "\\( A'(t) = -5e^{-0.05t} \\). At \\( t=10 \\), \\( A'(10) = -5e^{-0.5} \\). Since it asks for the *rate of decay*, it is a positive value of the decrease: \\( 5e^{-0.5} \\)."
+            },
+            {
+                q: "The position of a car is given by \\( s(t) = \\ln(t^2 + 1) \\) for \\( t \\ge 0 \\). What is the maximum velocity of the car?",
+                options: [
+                    "\\( 1/2 \\)",
+                    "\\( 2 \\)",
+                    "\\( 1 \\)",
+                    "\\( \\ln(2) \\)"
+                ],
+                correct: 2,
+                explanation: "\\( v(t) = \\frac{2t}{t^2 + 1} \\). To maximize \\( v(t) \\), set \\( a(t) = v'(t) = 0 \\). \\( a(t) = \\frac{2(t^2+1) - 2t(2t)}{(t^2+1)^2} = \\frac{2 - 2t^2}{(t^2+1)^2} = 0 \\implies t = 1 \\). Then \\( v(1) = \\frac{2}{2} = 1 \\)."
+            },
+            {
+                q: "Two cars leave an intersection at the same time. Car A travels north at 30 mph, and Car B travels east at 40 mph. At what rate is the distance between them changing 2 hours after they leave?",
+                options: [
+                    "\\( 50 \\text{ mph} \\)",
+                    "\\( 70 \\text{ mph} \\)",
+                    "\\( 100 \\text{ mph} \\)",
+                    "\\( 25 \\text{ mph} \\)"
+                ],
+                correct: 0,
+                explanation: "Let \\( x \\) and \\( y \\) be the distances of B and A from the intersection. \\( z^2 = x^2 + y^2 \\implies 2z \\frac{dz}{dt} = 2x \\frac{dx}{dt} + 2y \\frac{dy}{dt} \\). After 2 hours, \\( x=80 \\), \\( y=60 \\), \\( z=100 \\). \\( 100 \\frac{dz}{dt} = 80(40) + 60(30) = 5000 \\implies \\frac{dz}{dt} = 50 \\)."
+            },
+            {
+                q: "The cost to produce \\( x \\) units is \\( C(x) = 0.01x^3 - 0.5x^2 + 10x + 50 \\). What is the marginal cost at a production level of \\( x=20 \\)?",
+                options: [
+                    "\\( 10 \\)",
+                    "\\( 2 \\)",
+                    "\\( 4 \\)",
+                    "\\( 0 \\)"
+                ],
+                correct: 1,
+                explanation: "Marginal cost is the derivative \\( C'(x) = 0.03x^2 - x + 10 \\). Evaluating at \\( x=20 \\): \\( C'(20) = 0.03(400) - 20 + 10 = 12 - 20 + 10 = 2 \\)."
+            },
+            {
+                q: "For which of the following functions will the tangent line approximation at \\( x=0 \\) yield an OVERESTIMATE for all \\( x \\neq 0 \\) near 0?",
+                options: [
+                    "\\( f(x) = e^x \\)",
+                    "\\( f(x) = x^2 \\)",
+                    "\\( f(x) = \\cos x \\)",
+                    "\\( f(x) = \\sin x \\)"
+                ],
+                correct: 2,
+                explanation: "A tangent line overestimates the function when the graph is concave down (\\( f''(x) < 0 \\)). At \\( x=0 \\), \\( \\frac{d^2}{dx^2}(\\cos x) = -\\cos(0) = -1 \\). Since it is concave down, the tangent line is above the curve."
+            },
+            {
+                q: "A person 6 ft tall walks away from a 15 ft tall street light at a constant rate of 5 ft/s. How fast is the tip of their shadow moving away from the light?",
+                options: [
+                    "\\( 25/3 \\text{ ft/s} \\)",
+                    "\\( 5/3 \\text{ ft/s} \\)",
+                    "\\( 10 \\text{ ft/s} \\)",
+                    "\\( 15/2 \\text{ ft/s} \\)"
+                ],
+                correct: 0,
+                explanation: "Let \\( x \\) be the distance from the pole to the person, and \\( y \\) the length of the shadow. Similar triangles: \\( \\frac{x+y}{15} = \\frac{y}{6} \\implies 6x + 6y = 15y \\implies y = \\frac{2}{3}x \\). The tip's distance from the pole is \\( L = x + y = \\frac{5}{3}x \\). Thus, \\( \\frac{dL}{dt} = \\frac{5}{3} \\frac{dx}{dt} = \\frac{5}{3}(5) = 25/3 \\text{ ft/s} \\)."
+            },
+            {
+                q: "The velocity of a particle is given by \\( v(t) = \\sin(t^2) \\). What is the acceleration of the particle at \\( t = \\sqrt{\\pi} \\)?",
+                options: [
+                    "\\( 2\\pi \\)",
+                    "\\( -2\\sqrt{\\pi} \\)",
+                    "\\( 0 \\)",
+                    "\\( -\\sqrt{\\pi} \\)"
+                ],
+                correct: 1,
+                explanation: "Acceleration is \\( a(t) = v'(t) = \\cos(t^2) \\cdot 2t \\). At \\( t = \\sqrt{\\pi} \\), \\( a(\\sqrt{\\pi}) = 2\\sqrt{\\pi}\\cos(\\pi) = -2\\sqrt{\\pi} \\)."
+            },
+            {
+                q: "A point moves along the curve \\( y = \\sqrt{x} \\). When \\( x=4 \\), the y-coordinate is increasing at 2 units/sec. What is the rate of change of the x-coordinate?",
+                options: [
+                    "\\( 2 \\text{ units/sec} \\)",
+                    "\\( 4 \\text{ units/sec} \\)",
+                    "\\( 8 \\text{ units/sec} \\)",
+                    "\\( 16 \\text{ units/sec} \\)"
+                ],
+                correct: 2,
+                explanation: "\\( y = x^{1/2} \\implies \\frac{dy}{dt} = \\frac{1}{2\\sqrt{x}} \\frac{dx}{dt} \\). When \\( x=4 \\), \\( 2 = \\frac{1}{2(2)} \\frac{dx}{dt} = \\frac{1}{4} \\frac{dx}{dt} \\implies \\frac{dx}{dt} = 8 \\)."
+            },
+            {
+                q: "Let \\( H(t) \\) represent the temperature of a cup of coffee in degrees Celsius, where \\( t \\) is measured in minutes. What are the appropriate units for \\( H'(10) \\)?",
+                options: [
+                    "Minutes per degree Celsius",
+                    "Degrees Celsius",
+                    "Minutes",
+                    "Degrees Celsius per minute"
+                ],
+                correct: 3,
+                explanation: "The derivative \\( H'(t) \\) represents the instantaneous rate of change of temperature with respect to time. The units are the units of the dependent variable (Celsius) divided by the units of the independent variable (minutes)."
+            },
+            {
+                q: "Use the local linear approximation of \\( f(x) = \\ln(x) \\) at \\( x=1 \\) to estimate \\( \\ln(1.05) \\).",
+                options: [
+                    "\\( 0.05 \\)",
+                    "\\( 1.05 \\)",
+                    "\\( 0.005 \\)",
+                    "\\( 0.10 \\)"
+                ],
+                correct: 0,
+                explanation: "\\( f(1) = 0 \\). \\( f'(x) = 1/x \\implies f'(1) = 1 \\). The tangent line is \\( L(x) = 0 + 1(x - 1) = x - 1 \\). Then \\( L(1.05) = 1.05 - 1 = 0.05 \\)."
+            },
+            {
+                q: "An object is dropped from a height of 100 meters. Its height at time \\( t \\) is \\( h(t) = 100 - 4.9t^2 \\). What is its velocity exactly when it hits the ground?",
+                options: [
+                    "\\( -9.8 \\text{ m/s} \\)",
+                    "\\( -14\\sqrt{10} \\text{ m/s} \\)",
+                    "\\( -49 \\text{ m/s} \\)",
+                    "\\( 0 \\text{ m/s} \\)"
+                ],
+                correct: 1,
+                explanation: "The object hits the ground when \\( h(t) = 0 \\implies 100 = 4.9t^2 \\implies t^2 = 1000/49 \\implies t = 10\\sqrt{10}/7 \\). Velocity is \\( v(t) = -9.8t = -\\frac{49}{5}t \\). At impact, \\( v = -\\frac{49}{5} (\\frac{10\\sqrt{10}}{7}) = -14\\sqrt{10} \\text{ m/s} \\)."
+            },
+            {
+                q: "The area of an equilateral triangle is increasing at a rate of \\( 5\\sqrt{3} \\text{ cm}^2/\\text{s} \\). How fast is the side length \\( s \\) changing when \\( s = 10 \\text{ cm} \\)?",
+                options: [
+                    "\\( 0.5 \\text{ cm/s} \\)",
+                    "\\( \\sqrt{3} \\text{ cm/s} \\)",
+                    "\\( 1 \\text{ cm/s} \\)",
+                    "\\( 2 \\text{ cm/s} \\)"
+                ],
+                correct: 2,
+                explanation: "The area is \\( A = \\frac{\\sqrt{3}}{4}s^2 \\). Differentiating with respect to time gives \\( \\frac{dA}{dt} = \\frac{\\sqrt{3}}{2}s \\frac{ds}{dt} \\). Plugging in knowns: \\( 5\\sqrt{3} = \\frac{\\sqrt{3}}{2}(10) \\frac{ds}{dt} \\implies 5\\sqrt{3} = 5\\sqrt{3} \\frac{ds}{dt} \\implies \\frac{ds}{dt} = 1 \\)."
+            }
+        ];
+
+        const labels = ['A', 'B', 'C', 'D'];
+        const container = document.getElementById('quiz-container');
+        const progressText = document.getElementById('progress-text');
+        const scoreContainer = document.getElementById('score-container');
+        const finalScoreText = document.getElementById('final-score');
+        const introText = document.getElementById('intro-text');
+        
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestion(index) {
+            container.innerHTML = '';
+            progressText.innerText = `Question ${index + 1} of ${quizData.length}`;
+            
+            const item = quizData[index];
+            const card = document.createElement('div');
+            card.className = 'question-card active';
+            
+            const header = document.createElement('div');
+            header.className = 'question-header';
+            header.innerHTML = `Question ${index + 1}: ${item.q}`;
+            card.appendChild(header);
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options';
+
+            item.options.forEach((optText, optIndex) => {
+                const optElement = document.createElement('div');
+                optElement.className = 'option';
+                
+                const labelElement = document.createElement('span');
+                labelElement.className = 'option-label';
+                labelElement.textContent = labels[optIndex];
+
+                const textElement = document.createElement('span');
+                textElement.innerHTML = optText;
+
+                const statusIcon = document.createElement('span');
+                statusIcon.className = 'status-icon';
+
+                optElement.appendChild(labelElement);
+                optElement.appendChild(textElement);
+                optElement.appendChild(statusIcon);
+
+                optElement.addEventListener('click', () => {
+                    // Prevent multiple clicks
+                    if (optionsDiv.classList.contains('answered')) return;
+                    optionsDiv.classList.add('answered');
+                    
+                    let isCorrect = (optIndex === item.correct);
+                    if (isCorrect) score++;
+
+                    // Disable all options and show colors
+                    Array.from(optionsDiv.children).forEach((child, i) => {
+                        child.classList.add('disabled');
+                        if (i === item.correct) {
+                            child.classList.add('correct');
+                            child.querySelector('.status-icon').innerHTML = '✓';
+                        }
+                    });
+
+                    // Mark incorrect if wrong
+                    if (!isCorrect) {
+                        optElement.classList.add('incorrect');
+                        optElement.querySelector('.status-icon').innerHTML = '✗';
+                    }
+
+                    // Show feedback & explanation
+                    feedbackDiv.innerHTML = isCorrect ? 
+                        `<strong>Correct!</strong> <br><br> ${item.explanation}` : 
+                        `<strong>Incorrect.</strong> <br><br> ${item.explanation}`;
+                    feedbackDiv.className = isCorrect ? 'feedback show correct-feedback' : 'feedback show incorrect-feedback';
+                    
+                    nextBtn.classList.add('show');
+                    
+                    // Trigger MathJax typesetting for dynamically injected content
+                    if (window.MathJax) {
+                        MathJax.typesetPromise([feedbackDiv]);
+                    }
+                });
+
+                optionsDiv.appendChild(optElement);
+            });
+
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'feedback';
+            
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'next-btn';
+            nextBtn.innerText = index === quizData.length - 1 ? 'Finish Quiz' : 'Next Question ➔';
+            
+            nextBtn.addEventListener('click', () => {
+                currentQuestion++;
+                if (currentQuestion < quizData.length) {
+                    loadQuestion(currentQuestion);
+                } else {
+                    showScore();
+                }
+            });
+
+            const clearfix = document.createElement('div');
+            clearfix.className = 'clearfix';
+
+            card.appendChild(optionsDiv);
+            card.appendChild(feedbackDiv);
+            card.appendChild(nextBtn);
+            card.appendChild(clearfix);
+            
+            container.appendChild(card);
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise([card]);
+            }
+        }
+
+        function showScore() {
+            container.style.display = 'none';
+            progressText.style.display = 'none';
+            introText.style.display = 'none';
+            scoreContainer.style.display = 'block';
+            finalScoreText.innerText = `${score} / ${quizData.length}`;
+        }
+
+        // Start the quiz
+        loadQuestion(currentQuestion);
+
+    </script>
+</body>
+</html>
