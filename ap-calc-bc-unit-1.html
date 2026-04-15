@@ -3,190 +3,549 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AP Calculus BC - Unit 1: Limits & Continuity Quiz</title>
-    <script>
-        window.MathJax = {
-          tex: {
-            inlineMath: [['\\(', '\\)']],
-            displayMath: [['\\[', '\\]']]
-          }
-        };
-    </script>
+    <title>AP Calculus BC - Unit 1 Quiz</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --bg: #f8f9fa;
-            --card-bg: #ffffff;
-            --correct-bg: #d4edda;
-            --correct-border: #c3e6cb;
-            --incorrect-bg: #f8d7da;
-            --incorrect-border: #f5c6cb;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            line-height: 1.6;
         }
-        body { 
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
-            background-color: var(--bg); 
-            color: #333; 
-            line-height: 1.6; 
-            padding: 20px; 
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 2px solid #e67e22;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
         }
-        .container { 
-            max-width: 850px; 
-            margin: auto; 
-            background: var(--card-bg); 
-            padding: 40px; 
-            border-radius: 12px; 
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1); 
+        .intro {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #555;
+            font-size: 1.1em;
         }
-        h1 { text-align: center; color: var(--primary); margin-bottom: 5px;}
-        h2 { text-align: center; color: #7f8c8d; font-weight: 400; font-size: 1.2em; margin-bottom: 40px; }
-        .info-bar { 
-            background: #e9ecef; 
-            padding: 15px; 
-            border-radius: 8px; 
-            margin-bottom: 30px; 
-            font-size: 0.95em; 
-            color: #555; 
-            border-left: 4px solid var(--secondary); 
+        .question-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border-top: 5px solid #e67e22;
+            display: none; /* hidden by default */
         }
-        .question-card { 
-            background: #fff; 
-            border: 1px solid #e0e0e0;
-            border-top: 5px solid var(--secondary); 
-            padding: 25px; 
-            margin-bottom: 30px; 
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        .question-card.active {
+            display: block;
+            animation: fadeIn 0.4s;
         }
-        .question-text { font-size: 1.15em; margin-bottom: 20px; font-weight: 500;}
-        .options { list-style-type: none; padding: 0; }
-        .options li { 
-            margin-bottom: 12px; 
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
+        .question-header {
+            font-weight: 600;
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
             border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+        }
+        .option:hover:not(.disabled) {
+            background-color: #e2e6ea;
+            border-color: #dae0e5;
+        }
+        .option-label {
+            font-weight: bold;
+            margin-right: 15px;
+            background: #e67e22;
+            color: white;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .option.correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .option.correct .option-label {
+            background-color: #28a745;
+        }
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .option.incorrect .option-label {
+            background-color: #dc3545;
+        }
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 6px;
+            display: none;
+            font-size: 1.05em;
+        }
+        .feedback.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        .feedback.correct-feedback {
+            background-color: #d4edda;
+            border-left: 5px solid #28a745;
+            color: #155724;
+        }
+        .feedback.incorrect-feedback {
+            background-color: #f8d7da;
+            border-left: 5px solid #dc3545;
+            color: #721c24;
+        }
+        .next-btn {
+            margin-top: 20px;
+            padding: 12px 25px;
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            float: right;
+            display: none;
             transition: background 0.2s;
         }
-        .options li:hover { background: #eef2f5; }
-        .options label { 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            padding: 12px 15px;
-            width: 100%;
-            box-sizing: border-box;
+        .next-btn:hover {
+            background-color: #d35400;
         }
-        .options input { margin-right: 15px; transform: scale(1.2); cursor: pointer; }
-        .btn { 
-            display: inline-block; 
-            background: var(--secondary); 
-            color: #fff; 
-            border: none; 
-            padding: 12px 24px; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-size: 1em; 
+        .next-btn.show {
+            display: block;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        .status-icon {
+            margin-left: auto;
             font-weight: bold;
-            margin-top: 15px; 
-            transition: background 0.3s; 
+            font-size: 1.3em;
         }
-        .btn:hover { background: #2980b9; }
-        .btn:disabled { background: #bdc3c7; cursor: not-allowed; }
-        .feedback { 
-            margin-top: 20px; 
-            padding: 20px; 
-            border-radius: 8px; 
-            display: none; 
+        #score-container {
+            display: none;
+            text-align: center;
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-top: 5px solid #2ecc71;
         }
-        .correct { background: var(--correct-bg); color: #155724; border: 1px solid var(--correct-border); }
-        .incorrect { background: var(--incorrect-bg); color: #721c24; border: 1px solid var(--incorrect-border); }
-        .feedback-header { font-size: 1.1em; font-weight: bold; margin-bottom: 10px; }
-        .explanation { margin-top: 10px; font-weight: normal; font-size: 0.95em; line-height: 1.5; color: #333; }
+        #score-container h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        #score-container .score {
+            font-size: 3em;
+            color: #2ecc71;
+            font-weight: bold;
+        }
+        .progress {
+            text-align: center;
+            font-weight: bold;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>AP Calculus BC Quiz</h1>
-        <h2>Unit 1: Limits and Continuity</h2>
-        <div class="info-bar">
-            <strong>Instructions:</strong> This quiz contains 20 challenging multiple-choice questions focusing on Unit 1 of the AP Calculus BC curriculum. Select your answer and click "Check Answer" to receive immediate feedback and a detailed explanation.<br><br>
-        </div>
-        <div id="quiz-container"></div>
+
+    <h1>AP Calculus BC Quiz<br>Unit 1: Limits and Continuity</h1>
+    <p class="intro" id="intro-text">Test your knowledge of evaluating limits, asymptotes, L'Hôpital's rule, and theorems of continuity. Good luck!</p>
+
+    <div class="progress" id="progress-text">Question 1 of 20</div>
+    <div id="quiz-container"></div>
+
+    <div id="score-container">
+        <h2>Quiz Complete!</h2>
+        <p>Your final score is:</p>
+        <div class="score" id="final-score">0 / 20</div>
     </div>
 
     <script>
-        const quizData = [{"question": "Evaluate \\(\\lim_{x \\to 0} \\frac{1 - \\cos(4x)}{x^2}\\).", "options": ["\\(2\\)", "\\(4\\)", "\\(8\\)", "\\(16\\)"], "correctIndex": 2, "explanation": "Using the small angle approximation or multiplying by \\(\\frac{1+\\cos(4x)}{1+\\cos(4x)}\\), we get \\(\\lim_{x \\to 0} \\frac{\\sin^2(4x)}{x^2(1+\\cos(4x))}\\). This simplifies to \\(\\frac{16}{2} = 8\\). Alternatively, applying L'H\u00f4pital's Rule twice yields 8."}, {"question": "Evaluate \\(\\lim_{x \\to \\infty} \\left( \\sqrt{x^2 - 5x} - x \\right)\\).", "options": ["\\(-\\frac{5}{2}\\)", "\\(0\\)", "\\(\\infty\\)", "\\(-5\\)"], "correctIndex": 0, "explanation": "Multiply and divide by the conjugate \\(\\sqrt{x^2 - 5x} + x\\). This gives \\(\\lim_{x \\to \\infty} \\frac{-5x}{\\sqrt{x^2 - 5x} + x}\\). Dividing numerator and denominator by \\(x\\) yields \\(\\frac{-5}{\\sqrt{1 - 5/x} + 1} = -\\frac{5}{2}\\)."}, {"question": "Let \\(f(x) = \\frac{x^2 - 9}{x^3 - 3x^2 + 2x - 6}\\). Determine the type of discontinuity at \\(x = 3\\).", "options": ["Jump Discontinuity", "Infinite Discontinuity", "Removable Discontinuity", "No Discontinuity"], "correctIndex": 2, "explanation": "Factor the denominator by grouping: \\(x^2(x-3) + 2(x-3) = (x^2+2)(x-3)\\). The numerator is \\((x-3)(x+3)\\). Since the \\((x-3)\\) terms cancel, \\(\\lim_{x \\to 3} f(x) = \\frac{6}{11}\\). Because the limit exists but \\(f(3)\\) is undefined, it is a removable discontinuity."}, {"question": "Evaluate \\(\\lim_{x \\to 0} \\frac{\\sin(\\sin x)}{x}\\).", "options": ["\\(0\\)", "\\(1\\)", "DNE", "\\(\\infty\\)"], "correctIndex": 1, "explanation": "Multiply the numerator and denominator by \\(\\sin x\\): \\(\\lim_{x \\to 0} \\left( \\frac{\\sin(\\sin x)}{\\sin x} \\cdot \\frac{\\sin x}{x} \\right)\\). As \\(x \\to 0\\), \\(\\sin x \\to 0\\). Thus, the limit is \\(1 \\cdot 1 = 1\\)."}, {"question": "Determine \\(\\lim_{x \\to 1^-} \\frac{x-1}{|x-1|}\\).", "options": ["\\(1\\)", "\\(-1\\)", "\\(0\\)", "DNE"], "correctIndex": 1, "explanation": "For \\(x < 1\\), the expression \\(x - 1\\) is negative, so \\(|x - 1| = -(x - 1)\\). Therefore, \\(\\frac{x-1}{-(x-1)} = -1\\). The left-sided limit is \\(-1\\)."}, {"question": "Find \\(\\lim_{x \\to \\infty} \\frac{4x^3 - 2x + 1}{\\sqrt{4x^6 - 3x^4}}\\).", "options": ["\\(2\\)", "\\(1\\)", "\\(4\\)", "\\(\\frac{1}{2}\\)"], "correctIndex": 0, "explanation": "Divide the numerator and denominator by \\(x^3\\). Inside the square root, this is equivalent to dividing by \\(x^6\\). The expression becomes \\(\\frac{4 - 2/x^2 + 1/x^3}{\\sqrt{4 - 3/x^2}}\\). As \\(x \\to \\infty\\), this approaches \\(\\frac{4}{\\sqrt{4}} = 2\\)."}, {"question": "Consider \\(f(x) = \\lfloor 2x \\rfloor\\), where \\(\\lfloor x \\rfloor\\) is the greatest integer function. Find \\(\\lim_{x \\to 1.5^-} f(x)\\).", "options": ["\\(1\\)", "\\(2\\)", "\\(3\\)", "\\(1.5\\)"], "correctIndex": 1, "explanation": "As \\(x\\) approaches \\(1.5\\) from the left (e.g., \\(x = 1.49\\)), \\(2x\\) approaches \\(3\\) from the left (e.g., \\(2.98\\)). The greatest integer less than or equal to \\(2.98\\) is \\(2\\)."}, {"question": "Evaluate \\(\\lim_{h \\to 0} \\frac{e^{2(\\ln 3 + h)} - e^{2\\ln 3}}{h}\\).", "options": ["\\(6\\)", "\\(9\\)", "\\(18\\)", "\\(e^6\\)"], "correctIndex": 2, "explanation": "This limit represents the derivative of \\(f(x) = e^{2x}\\) evaluated at \\(x = \\ln 3\\). Since \\(f'(x) = 2e^{2x}\\), we have \\(f'(\\ln 3) = 2e^{2\\ln 3} = 2(e^{\\ln 3})^2 = 2(3^2) = 18\\)."}, {"question": "Evaluate \\(\\lim_{x \\to 0} \\frac{e^x - e^{-x}}{2x}\\).", "options": ["\\(1\\)", "\\(\\frac{1}{2}\\)", "\\(0\\)", "DNE"], "correctIndex": 0, "explanation": "This limit represents the definition of the derivative of \\(f(x) = \\sinh(x)\\) at \\(x=0\\), or it can be split into \\(\\frac{1}{2}\\lim \\frac{e^x-1}{x} - \\frac{1}{2}\\lim \\frac{e^{-x}-1}{x} = \\frac{1}{2}(1) - \\frac{1}{2}(-1) = 1\\)."}, {"question": "For what value of \\(k\\) is the function continuous everywhere? <br> \\(f(x) = \\begin{cases} \\frac{\\sin(kx)}{x} & x < 0 \\\\ 3x + 4 & x \\ge 0 \\end{cases}\\)", "options": ["\\(0\\)", "\\(3\\)", "\\(4\\)", "\\(-4\\)"], "correctIndex": 2, "explanation": "For continuity at \\(x=0\\), the left-hand limit must equal the right-hand limit. \\(\\lim_{x \\to 0^-} \\frac{\\sin(kx)}{x} = k\\). \\(\\lim_{x \\to 0^+} (3x+4) = 4\\). Thus, \\(k = 4\\)."}, {"question": "Which of the following limits evaluates to \\(e^3\\)?", "options": ["\\(\\lim_{x \\to \\infty} \\left(1 + \\frac{1}{x}\\right)^3\\)", "\\(\\lim_{x \\to 0} (1 + 3x)^{1/x}\\)", "\\(\\lim_{x \\to \\infty} \\left(1 + \\frac{3}{x}\\right)^x\\)", "Both B and C"], "correctIndex": 3, "explanation": "The limit definition of \\(e^k\\) is \\(\\lim_{x \\to \\infty} (1 + k/x)^x\\) or \\(\\lim_{x \\to 0} (1 + kx)^{1/x}\\). Both options B and C match these forms for \\(k=3\\), so they both evaluate to \\(e^3\\)."}, {"question": "Find \\(\\lim_{x \\to \\infty} x \\left( \\frac{\\pi}{2} - \\arctan x \\right)\\).", "options": ["\\(1\\)", "\\(0\\)", "\\(\\frac{\\pi}{2}\\)", "\\(-1\\)"], "correctIndex": 0, "explanation": "Let \\(u = \\frac{\\pi}{2} - \\arctan x\\). As \\(x \\to \\infty\\), \\(u \\to 0^+\\). We also have \\(x = \\tan(\\frac{\\pi}{2} - u) = \\cot u\\). The limit becomes \\(\\lim_{u \\to 0^+} u \\cot u = \\lim_{u \\to 0^+} \\frac{u}{\\sin u} \\cos u = 1 \\cdot 1 = 1\\)."}, {"question": "Suppose \\(\\lim_{x \\to a} f(x) = L\\) and \\(\\lim_{x \\to a} g(x) = M\\), where \\(L\\) and \\(M\\) are real numbers. Which of the following MUST be true?<br>I. \\(\\lim_{x \\to a} [f(x)g(x)] = LM\\)<br>II. \\(\\lim_{x \\to a} \\frac{f(x)}{g(x)} = \\frac{L}{M}\\)<br>III. \\(f(a) = L\\)", "options": ["II only", "III only", "I and II only", "I only"], "correctIndex": 3, "explanation": "Statement I is always true by the limit product rule. Statement II is false if \\(M = 0\\). Statement III is false because \\(f(x)\\) may not be continuous at \\(x = a\\)."}, {"question": "Evaluate \\(\\lim_{x \\to 0} \\frac{\\sqrt{1+x} - 1}{x}\\).", "options": ["\\(1\\)", "\\(\\frac{1}{2}\\)", "\\(0\\)", "DNE"], "correctIndex": 1, "explanation": "Multiply the numerator and denominator by the conjugate \\(\\sqrt{1+x} + 1\\). The numerator becomes \\((1+x) - 1 = x\\). We get \\(\\lim_{x \\to 0} \\frac{x}{x(\\sqrt{1+x} + 1)} = \\lim_{x \\to 0} \\frac{1}{\\sqrt{1+x} + 1} = \\frac{1}{2}\\)."}, {"question": "Let \\(f\\) be continuous on \\([-2, 3]\\) such that \\(f(-2) = 5\\) and \\(f(3) = -1\\). The Intermediate Value Theorem guarantees that:", "options": ["\\(f(c) = 0\\) for exactly one \\(c \\in (-2, 3)\\)", "\\(f(c) = 2\\) for some \\(c \\in (-2, 3)\\)", "The absolute maximum of \\(f\\) on the interval is \\(5\\)", "\\(f'(c) = -\\frac{6}{5}\\) for some \\(c \\in (-2, 3)\\)"], "correctIndex": 1, "explanation": "The IVT guarantees that \\(f(x)\\) takes on all values between \\(f(3) = -1\\) and \\(f(-2) = 5\\) at least once in the interval. Since \\(2\\) is between \\(-1\\) and \\(5\\), \\(f(c) = 2\\) for some \\(c \\in (-2, 3)\\). It does not guarantee 'exactly one' root."}, {"question": "Evaluate \\(\\lim_{x \\to \\infty} \\frac{\\ln(x^4 + 1)}{\\ln(x^2 + 1)}\\).", "options": ["\\(1\\)", "\\(2\\)", "\\(4\\)", "\\(\\infty\\)"], "correctIndex": 1, "explanation": "As \\(x \\to \\infty\\), the \\(+1\\) terms become negligible. The limit behaves like \\(\\frac{\\ln(x^4)}{\\ln(x^2)} = \\frac{4\\ln x}{2\\ln x} = 2\\). L'H\u00f4pital's Rule can also be used to verify this."}, {"question": "Find the vertical asymptotes of \\(g(x) = \\frac{2x^2 + 5x - 3}{x^2 + 2x - 3}\\).", "options": ["\\(x = 1\\) and \\(x = -3\\)", "\\(x = 1\\) only", "\\(x = -3\\) only", "No vertical asymptotes"], "correctIndex": 1, "explanation": "Factor the function: \\(g(x) = \\frac{(2x-1)(x+3)}{(x-1)(x+3)}\\). There is a removable discontinuity (hole) at \\(x = -3\\). The remaining factor \\((x-1)\\) in the denominator creates a vertical asymptote at \\(x = 1\\)."}, {"question": "Let \\(f(x) = \\begin{cases} cx^2 + 2x & x < 2 \\\\ x^3 - cx & x \\ge 2 \\end{cases}\\). For what value of \\(c\\) is \\(f(x)\\) continuous at \\(x=2\\)?", "options": ["\\(\\frac{2}{3}\\)", "\\(\\frac{3}{2}\\)", "\\(\\frac{4}{3}\\)", "\\(1\\)"], "correctIndex": 0, "explanation": "Set the left-hand limit equal to the right-hand limit at \\(x = 2\\): \\(c(2)^2 + 2(2) = (2)^3 - c(2)\\). This simplifies to \\(4c + 4 = 8 - 2c\\). Solving yields \\(6c = 4 \\implies c = \\frac{2}{3}\\)."}, {"question": "Evaluate \\(\\lim_{x \\to 0} \\frac{x^2}{\\sec x - 1}\\).", "options": ["\\(1\\)", "\\(0\\)", "\\(2\\)", "DNE"], "correctIndex": 2, "explanation": "Multiply numerator and denominator by \\(\\cos x\\): \\(\\lim_{x \\to 0} \\frac{x^2 \\cos x}{1 - \\cos x}\\). Then multiply by the conjugate \\(1+\\cos x\\): \\(\\lim_{x \\to 0} \\frac{x^2 \\cos x(1+\\cos x)}{1-\\cos^2 x} = \\lim_{x \\to 0} \\frac{x^2}{\\sin^2 x} \\cos x (1+\\cos x) = 1 \\cdot 1 \\cdot 2 = 2\\)."}, {"question": "Evaluate \\(\\lim_{x \\to 0} x^4 \\cos\\left(\\frac{2}{x}\\right)\\).", "options": ["\\(1\\)", "\\(2\\)", "DNE", "\\(0\\)"], "correctIndex": 3, "explanation": "Using the Squeeze Theorem, since \\(-1 \\le \\cos\\left(\\frac{2}{x}\\right) \\le 1\\), we have \\(-x^4 \\le x^4 \\cos\\left(\\frac{2}{x}\\right) \\le x^4\\). As \\(x \\to 0\\), both \\(-x^4\\) and \\(x^4\\) approach \\(0\\). Therefore, the limit is \\(0\\)."}];
-        const quizContainer = document.getElementById('quiz-container');
+        const quizData = [
+            {
+                q: "Evaluate the limit: \\( \\displaystyle \\lim_{x \\to 0} \\frac{e^x - 1 - x}{x^2} \\).",
+                options: [
+                    "\\( 1 \\)",
+                    "\\( \\frac{1}{2} \\)",
+                    "\\( 0 \\)",
+                    "\\( \\text{DNE} \\)"
+                ],
+                correct: 1,
+                explanation: "Applying L'Hôpital's Rule (form 0/0): \\( \\lim_{x \\to 0} \\frac{e^x - 1}{2x} \\). Still 0/0, apply again: \\( \\lim_{x \\to 0} \\frac{e^x}{2} = \\frac{1}{2} \\)."
+            },
+            {
+                q: "Evaluate: \\( \\displaystyle \\lim_{x \\to \\infty} \\frac{\\sqrt{9x^2+2}}{4x+3} \\).",
+                options: [
+                    "\\( \\frac{9}{4} \\)",
+                    "\\( \\frac{3}{4} \\)",
+                    "\\( \\frac{3}{2} \\)",
+                    "\\( \\infty \\)"
+                ],
+                correct: 1,
+                explanation: "Divide the numerator and denominator by \\( x \\). Since \\( x \\to \\infty \\), \\( x = \\sqrt{x^2} \\). The limit becomes \\( \\lim_{x \\to \\infty} \\frac{\\sqrt{9 + 2/x^2}}{4 + 3/x} = \\frac{\\sqrt{9}}{4} = \\frac{3}{4} \\)."
+            },
+            {
+                q: "Evaluate: \\( \\displaystyle \\lim_{x \\to 3^-} \\frac{|x-3|}{x-3} \\).",
+                options: [
+                    "\\( 1 \\)",
+                    "\\( 0 \\)",
+                    "\\( -1 \\)",
+                    "\\( \\text{DNE} \\)"
+                ],
+                correct: 2,
+                explanation: "For \\( x < 3 \\), \\( x - 3 < 0 \\), so \\( |x - 3| = -(x - 3) \\). The expression becomes \\( \\frac{-(x-3)}{x-3} = -1 \\). Thus, the left-hand limit is \\( -1 \\)."
+            },
+            {
+                q: "Let \\( f(x) = \\begin{cases} cx^2 + 2x & x < 2 \\\\ x^3 - cx & x \\ge 2 \\end{cases} \\). Find the value of \\( c \\) that makes \\( f \\) continuous at \\( x = 2 \\).",
+                options: [
+                    "\\( \\frac{2}{3} \\)",
+                    "\\( \\frac{4}{3} \\)",
+                    "\\( 1 \\)",
+                    "\\( 0 \\)"
+                ],
+                correct: 0,
+                explanation: "For continuity at \\( x = 2 \\), the left- and right-hand limits must be equal. \\( \\lim_{x \\to 2^-} f(x) = 4c + 4 \\) and \\( \\lim_{x \\to 2^+} f(x) = 8 - 2c \\). Setting them equal: \\( 4c + 4 = 8 - 2c \\implies 6c = 4 \\implies c = \\frac{2}{3} \\)."
+            },
+            {
+                q: "Evaluate the limit: \\( \\displaystyle \\lim_{h \\to 0} \\frac{\\sin(\\pi/6 + h) - 1/2}{h} \\).",
+                options: [
+                    "\\( \\frac{1}{2} \\)",
+                    "\\( 0 \\)",
+                    "\\( \\frac{\\sqrt{3}}{2} \\)",
+                    "\\( 1 \\)"
+                ],
+                correct: 2,
+                explanation: "This limit represents the definition of the derivative of \\( f(x) = \\sin x \\) at \\( x = \\pi/6 \\). \\( f'(x) = \\cos x \\), and \\( \\cos(\\pi/6) = \\frac{\\sqrt{3}}{2} \\)."
+            },
+            {
+                q: "Evaluate: \\( \\displaystyle \\lim_{x \\to 0} \\frac{\\sin(5x)}{3x} \\).",
+                options: [
+                    "\\( \\frac{5}{3} \\)",
+                    "\\( \\frac{3}{5} \\)",
+                    "\\( 1 \\)",
+                    "\\( 0 \\)"
+                ],
+                correct: 0,
+                explanation: "Multiply and divide by 5 to use the identity \\( \\lim_{u \\to 0} \\frac{\\sin u}{u} = 1 \\). \\( \\lim_{x \\to 0} \\frac{5}{3} \\cdot \\frac{\\sin(5x)}{5x} = \\frac{5}{3} (1) = \\frac{5}{3} \\)."
+            },
+            {
+                q: "Evaluate: \\( \\displaystyle \\lim_{x \\to \\infty} \\left(1 + \\frac{2}{x}\\right)^{3x} \\).",
+                options: [
+                    "\\( e^2 \\)",
+                    "\\( e^3 \\)",
+                    "\\( e^6 \\)",
+                    "\\( e^{2/3} \\)"
+                ],
+                correct: 2,
+                explanation: "Using the definition \\( \\lim_{x \\to \\infty} \\left(1 + \\frac{a}{x}\\right)^{bx} = e^{ab} \\). Here \\( a = 2 \\) and \\( b = 3 \\), so the limit evaluates to \\( e^{2 \\cdot 3} = e^6 \\)."
+            },
+            {
+                q: "Evaluate: \\( \\displaystyle \\lim_{x \\to 0} \\frac{\\sqrt{x+4}-2}{x} \\).",
+                options: [
+                    "\\( \\frac{1}{2} \\)",
+                    "\\( 0 \\)",
+                    "\\( \\frac{1}{4} \\)",
+                    "\\( \\text{DNE} \\)"
+                ],
+                correct: 2,
+                explanation: "Multiply numerator and denominator by the conjugate \\( \\sqrt{x+4} + 2 \\). This gives \\( \\frac{x+4-4}{x(\\sqrt{x+4}+2)} = \\frac{x}{x(\\sqrt{x+4}+2)} = \\frac{1}{\\sqrt{x+4}+2} \\). At \\( x=0 \\), this is \\( \\frac{1}{2+2} = \\frac{1}{4} \\)."
+            },
+            {
+                q: "Evaluate: \\( \\displaystyle \\lim_{x \\to 1} \\frac{x-1}{\\sqrt{x^2+3}-2} \\).",
+                options: [
+                    "\\( 2 \\)",
+                    "\\( 1 \\)",
+                    "\\( \\frac{1}{2} \\)",
+                    "\\( 0 \\)"
+                ],
+                correct: 0,
+                explanation: "Multiply by the conjugate \\( \\sqrt{x^2+3} + 2 \\). The denominator becomes \\( (x^2+3)-4 = x^2-1 = (x-1)(x+1) \\). Cancel \\( (x-1) \\) to get \\( \\frac{\\sqrt{x^2+3}+2}{x+1} \\). At \\( x=1 \\), we get \\( \\frac{2+2}{2} = 2 \\)."
+            },
+            {
+                q: "Evaluate: \\( \\displaystyle \\lim_{x \\to 0^+} x \\ln x \\).",
+                options: [
+                    "\\( 1 \\)",
+                    "\\( e \\)",
+                    "\\( -\\infty \\)",
+                    "\\( 0 \\)"
+                ],
+                correct: 3,
+                explanation: "Rewrite as \\( \\frac{\\ln x}{1/x} \\) to use L'Hôpital's Rule (form \\( -\\infty / \\infty \\)). Differentiating yields \\( \\frac{1/x}{-1/x^2} = -x \\). As \\( x \\to 0^+ \\), \\( -x \\to 0 \\)."
+            },
+            {
+                q: "Evaluate: \\( \\displaystyle \\lim_{x \\to 0} \\left(\\frac{1}{x} - \\frac{1}{e^x-1}\\right) \\).",
+                options: [
+                    "\\( 1 \\)",
+                    "\\( \\frac{1}{2} \\)",
+                    "\\( 0 \\)",
+                    "\\( -1 \\)"
+                ],
+                correct: 1,
+                explanation: "Combine into a single fraction: \\( \\frac{e^x - 1 - x}{x(e^x - 1)} \\). Apply L'Hôpital's Rule: \\( \\frac{e^x - 1}{e^x - 1 + xe^x} \\). Apply L'Hôpital's again: \\( \\frac{e^x}{2e^x + xe^x} \\). At \\( x=0 \\), this evaluates to \\( \\frac{1}{2(1)+0} = \\frac{1}{2} \\)."
+            },
+            {
+                q: "Consider \\( f(x) = \\frac{x^2 - 4}{|x-2|} \\). Which of the following is true?",
+                options: [
+                    "Removable discontinuity at \\( x=2 \\)",
+                    "Jump discontinuity at \\( x=2 \\)",
+                    "Infinite discontinuity at \\( x=2 \\)",
+                    "Continuous at \\( x=2 \\)"
+                ],
+                correct: 1,
+                explanation: "For \\( x > 2 \\), \\( f(x) = \\frac{(x-2)(x+2)}{x-2} = x+2 \\), limit is 4. For \\( x < 2 \\), \\( f(x) = \\frac{(x-2)(x+2)}{-(x-2)} = -(x+2) \\), limit is -4. Since the left and right limits are finite but not equal, it's a jump discontinuity."
+            },
+            {
+                q: "According to the Intermediate Value Theorem, which interval must contain a root for \\( f(x) = x^3 - 3x + 1 = 0 \\)?",
+                options: [
+                    "\\( [-1, 0] \\)",
+                    "\\( [1, 2] \\)",
+                    "\\( [0, 1] \\)",
+                    "\\( [2, 3] \\)"
+                ],
+                correct: 2,
+                explanation: "Evaluate the function at the endpoints. \\( f(0) = 1 \\) and \\( f(1) = 1 - 3 + 1 = -1 \\). Since \\( f(0) > 0 \\) and \\( f(1) < 0 \\) and \\( f(x) \\) is a continuous polynomial, a root must exist in \\( (0, 1) \\)."
+            },
+            {
+                q: "Evaluate: \\( \\displaystyle \\lim_{x \\to 0} \\frac{1 - \\cos x}{x^2} \\).",
+                options: [
+                    "\\( 0 \\)",
+                    "\\( 1 \\)",
+                    "\\( \\frac{1}{2} \\)",
+                    "\\( 2 \\)"
+                ],
+                correct: 2,
+                explanation: "Using L'Hôpital's Rule (form 0/0): \\( \\lim_{x \\to 0} \\frac{\\sin x}{2x} \\). Since \\( \\lim_{x \\to 0} \\frac{\\sin x}{x} = 1 \\), the answer is \\( \\frac{1}{2} \\cdot 1 = \\frac{1}{2} \\)."
+            },
+            {
+                q: "Let \\( 1 - x^2 \\le g(x) \\le \\frac{\\sin x}{x} \\) for \\( x \\neq 0 \\). Find \\( \\displaystyle \\lim_{x \\to 0} g(x) \\).",
+                options: [
+                    "\\( 0 \\)",
+                    "\\( 1 \\)",
+                    "\\( \\text{DNE} \\)",
+                    "Cannot be determined"
+                ],
+                correct: 1,
+                explanation: "By the Squeeze Theorem: \\( \\lim_{x \\to 0} (1 - x^2) = 1 \\) and \\( \\lim_{x \\to 0} \\frac{\\sin x}{x} = 1 \\). Since \\( g(x) \\) is squeezed between two functions approaching 1, \\( \\lim_{x \\to 0} g(x) = 1 \\)."
+            },
+            {
+                q: "Find the horizontal asymptote(s) of \\( y = \\frac{e^x}{e^x - e^{-x}} \\).",
+                options: [
+                    "\\( y = 1 \\)",
+                    "\\( y = -1 \\) and \\( y = 1 \\)",
+                    "\\( y = 0 \\) and \\( y = 1 \\)",
+                    "\\( y = 0 \\)"
+                ],
+                correct: 2,
+                explanation: "As \\( x \\to \\infty \\), \\( e^{-x} \\to 0 \\), so the expression behaves like \\( \\frac{e^x}{e^x} = 1 \\). As \\( x \\to -\\infty \\), \\( e^x \\to 0 \\) and \\( e^{-x} \\to \\infty \\), so the expression behaves like \\( \\frac{0}{-\\infty} = 0 \\). Thus, \\( y=0 \\) and \\( y=1 \\) are HA."
+            },
+            {
+                q: "Evaluate: \\( \\displaystyle \\lim_{x \\to \\infty} \\frac{\\ln(x)}{x^2} \\).",
+                options: [
+                    "\\( 0 \\)",
+                    "\\( 1 \\)",
+                    "\\( \\infty \\)",
+                    "\\( \\frac{1}{2} \\)"
+                ],
+                correct: 0,
+                explanation: "Using L'Hôpital's Rule (form \\( \\infty / \\infty \\)): \\( \\lim_{x \\to \\infty} \\frac{1/x}{2x} = \\lim_{x \\to \\infty} \\frac{1}{2x^2} = 0 \\). Alternately, polynomials grow faster than logarithms at infinity."
+            },
+            {
+                q: "Evaluate: \\( \\displaystyle \\lim_{x \\to 0} x^2 \\sin\\left(\\frac{1}{x}\\right) \\).",
+                options: [
+                    "\\( 1 \\)",
+                    "\\( \\infty \\)",
+                    "\\( 0 \\)",
+                    "\\( \\text{DNE} \\)"
+                ],
+                correct: 2,
+                explanation: "Because \\( -1 \\le \\sin(1/x) \\le 1 \\), we have \\( -x^2 \\le x^2 \\sin(1/x) \\le x^2 \\). Since both bounding functions go to 0 as \\( x \\to 0 \\), the Squeeze Theorem forces the limit to be 0."
+            },
+            {
+                q: "Find the vertical asymptote(s) of \\( f(x) = \\frac{x^2+x-6}{x^2-4} \\).",
+                options: [
+                    "\\( x = 2 \\)",
+                    "\\( x = -2 \\)",
+                    "\\( x = 2 \\) and \\( x = -2 \\)",
+                    "None"
+                ],
+                correct: 1,
+                explanation: "Factor the numerator and denominator: \\( f(x) = \\frac{(x+3)(x-2)}{(x+2)(x-2)} \\). For \\( x \\neq 2 \\), \\( f(x) = \\frac{x+3}{x+2} \\). There is a removable discontinuity at \\( x=2 \\) and a vertical asymptote at \\( x=-2 \\)."
+            },
+            {
+                q: "Let \\( f(x) = \\frac{x^3 - 8}{x - 2} \\) for \\( x \\neq 2 \\). If \\( f \\) is continuous at \\( x=2 \\), what is \\( f(2) \\)?",
+                options: [
+                    "\\( 0 \\)",
+                    "\\( 4 \\)",
+                    "\\( 8 \\)",
+                    "\\( 12 \\)"
+                ],
+                correct: 3,
+                explanation: "To make \\( f \\) continuous, \\( f(2) \\) must equal the limit as \\( x \\to 2 \\). Factor the difference of cubes: \\( \\frac{(x-2)(x^2+2x+4)}{x-2} = x^2 + 2x + 4 \\). Evaluating at \\( x=2 \\) yields \\( 2^2 + 2(2) + 4 = 12 \\)."
+            }
+        ];
 
-        quizData.forEach((q, index) => {
-            const card = document.createElement('div');
-            card.className = 'question-card';
+        const labels = ['A', 'B', 'C', 'D'];
+        const container = document.getElementById('quiz-container');
+        const progressText = document.getElementById('progress-text');
+        const scoreContainer = document.getElementById('score-container');
+        const finalScoreText = document.getElementById('final-score');
+        const introText = document.getElementById('intro-text');
+        
+        let currentQuestion = 0;
+        let score = 0;
+
+        function loadQuestion(index) {
+            container.innerHTML = '';
+            progressText.innerText = `Question ${index + 1} of ${quizData.length}`;
             
-            let optionsHtml = '';
-            const labels = ['A', 'B', 'C', 'D'];
-            q.options.forEach((opt, i) => {
-                optionsHtml += `
-                    <li>
-                        <label>
-                            <input type="radio" name="q${index}" value="${i}">
-                            <span><strong>${labels[i]}.</strong> ${opt}</span>
-                        </label>
-                    </li>
-                `;
+            const item = quizData[index];
+            const card = document.createElement('div');
+            card.className = 'question-card active';
+            
+            const header = document.createElement('div');
+            header.className = 'question-header';
+            header.innerHTML = `Question ${index + 1}: ${item.q}`;
+            card.appendChild(header);
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options';
+
+            item.options.forEach((optText, optIndex) => {
+                const optElement = document.createElement('div');
+                optElement.className = 'option';
+                
+                const labelElement = document.createElement('span');
+                labelElement.className = 'option-label';
+                labelElement.textContent = labels[optIndex];
+
+                const textElement = document.createElement('span');
+                textElement.innerHTML = optText;
+
+                const statusIcon = document.createElement('span');
+                statusIcon.className = 'status-icon';
+
+                optElement.appendChild(labelElement);
+                optElement.appendChild(textElement);
+                optElement.appendChild(statusIcon);
+
+                optElement.addEventListener('click', () => {
+                    // Prevent multiple clicks
+                    if (optionsDiv.classList.contains('answered')) return;
+                    optionsDiv.classList.add('answered');
+                    
+                    let isCorrect = (optIndex === item.correct);
+                    if (isCorrect) score++;
+
+                    // Disable all options and show colors
+                    Array.from(optionsDiv.children).forEach((child, i) => {
+                        child.classList.add('disabled');
+                        if (i === item.correct) {
+                            child.classList.add('correct');
+                            child.querySelector('.status-icon').innerHTML = '✓';
+                        }
+                    });
+
+                    // Mark incorrect if wrong
+                    if (!isCorrect) {
+                        optElement.classList.add('incorrect');
+                        optElement.querySelector('.status-icon').innerHTML = '✗';
+                    }
+
+                    // Show feedback & explanation
+                    feedbackDiv.innerHTML = isCorrect ? 
+                        `<strong>Correct!</strong> <br><br> ${item.explanation}` : 
+                        `<strong>Incorrect.</strong> <br><br> ${item.explanation}`;
+                    feedbackDiv.className = isCorrect ? 'feedback show correct-feedback' : 'feedback show incorrect-feedback';
+                    
+                    nextBtn.classList.add('show');
+                    
+                    // Trigger MathJax typesetting for dynamically injected content
+                    if (window.MathJax) {
+                        MathJax.typesetPromise([feedbackDiv]);
+                    }
+                });
+
+                optionsDiv.appendChild(optElement);
             });
 
-            card.innerHTML = `
-                <div class="question-text"><strong>Question ${index + 1}:</strong> ${q.question}</div>
-                <ul class="options">${optionsHtml}</ul>
-                <button class="btn" id="btn${index}" onclick="checkAnswer(${index})">Check Answer</button>
-                <div class="feedback" id="feedback${index}"></div>
-            `;
-            quizContainer.appendChild(card);
-        });
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'feedback';
+            
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'next-btn';
+            nextBtn.innerText = index === quizData.length - 1 ? 'Finish Quiz' : 'Next Question ➔';
+            
+            nextBtn.addEventListener('click', () => {
+                currentQuestion++;
+                if (currentQuestion < quizData.length) {
+                    loadQuestion(currentQuestion);
+                } else {
+                    showScore();
+                }
+            });
 
-        function checkAnswer(index) {
-            const selected = document.querySelector(`input[name="q${index}"]:checked`);
-            const feedbackDiv = document.getElementById(`feedback${index}`);
-            const btn = document.getElementById(`btn${index}`);
-            
-            if (!selected) {
-                alert("Please select an answer before checking.");
-                return;
-            }
+            const clearfix = document.createElement('div');
+            clearfix.className = 'clearfix';
 
-            const selectedValue = parseInt(selected.value);
-            const q = quizData[index];
+            card.appendChild(optionsDiv);
+            card.appendChild(feedbackDiv);
+            card.appendChild(nextBtn);
+            card.appendChild(clearfix);
             
-            feedbackDiv.style.display = 'block';
+            container.appendChild(card);
             
-            if (selectedValue === q.correctIndex) {
-                feedbackDiv.className = 'feedback correct';
-                feedbackDiv.innerHTML = `
-                    <div class="feedback-header">✅ Correct!</div>
-                    <div class="explanation"><strong>Explanation:</strong><br>${q.explanation}</div>
-                `;
-            } else {
-                const labels = ['A', 'B', 'C', 'D'];
-                feedbackDiv.className = 'feedback incorrect';
-                feedbackDiv.innerHTML = `
-                    <div class="feedback-header">❌ Incorrect. The correct answer is ${labels[q.correctIndex]}.</div>
-                    <div class="explanation"><strong>Explanation:</strong><br>${q.explanation}</div>
-                `;
-            }
-
-            // Disable inputs after checking
-            const radios = document.querySelectorAll(`input[name="q${index}"]`);
-            radios.forEach(r => r.disabled = true);
-            btn.disabled = true;
-            
-            // Re-render MathJax
             if (window.MathJax) {
-                MathJax.typesetPromise([feedbackDiv]).catch(function (err) {
-                    console.log('MathJax processing error: ' + err.message);
-                });
+                MathJax.typesetPromise([card]);
             }
         }
+
+        function showScore() {
+            container.style.display = 'none';
+            progressText.style.display = 'none';
+            introText.style.display = 'none';
+            scoreContainer.style.display = 'block';
+            finalScoreText.innerText = `${score} / ${quizData.length}`;
+        }
+
+        // Start the quiz
+        loadQuestion(currentQuestion);
+
     </script>
 </body>
 </html>
