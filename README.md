@@ -47,6 +47,12 @@ AP Calculus BC
 <br>
 <a href="ap-calc-bc-unit-7.html">AP Calc - Unit 7: Differential Equations (BC includes Euler's Method and logistic models)</a>
 <br>
+<a href="ap-calc-bc-unit-8.html">AP Calc - Unit 8: Applications of Integration (BC includes arc length and integration by parts/partial fractions)</a>
+<br>
+<a href="ap-calc-bc-unit-9.html">AP Calc - Unit 9: Parametric Equations, Polar Coordinates, and Vector-Valued Functions</a>
+<br>
+<a href="ap-calc-bc-unit-10.html">AP Calc - Unit 10: Infinite Sequences and Series (Includes Taylor polynomials, Maclaurin series, and convergence tests)</a>
+<br>
 <br>
 AP Lang
 <br>
