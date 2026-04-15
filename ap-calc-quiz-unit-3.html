@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Calculus BC - Unit 3 Quiz</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 2px solid #9b59b6;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .intro {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #555;
+            font-size: 1.1em;
+        }
+        .question-card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border-left: 5px solid #9b59b6;
+        }
+        .question-header {
+            font-weight: 600;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.05em;
+            display: flex;
+            align-items: center;
+        }
+        .option:hover:not(.disabled) {
+            background-color: #e2e6ea;
+            border-color: #dae0e5;
+        }
+        .option-label {
+            font-weight: bold;
+            margin-right: 15px;
+            background: #9b59b6;
+            color: white;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .option.correct {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .option.correct .option-label {
+            background-color: #28a745;
+        }
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .option.incorrect .option-label {
+            background-color: #dc3545;
+        }
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+        .explanation {
+            margin-top: 20px;
+            padding: 15px 20px;
+            background-color: #eef2f5;
+            border-radius: 6px;
+            border-left: 4px solid #7f8c8d;
+            display: none;
+            font-size: 0.95em;
+        }
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        .status-icon {
+            margin-left: auto;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>AP Calculus BC Quiz<br>Unit 3: Differentiation: Composite, Implicit, and Inverse</h1>
+    <p class="intro">Test your knowledge of the chain rule, implicit differentiation, and derivatives of inverse functions. Click an option to reveal the answer and explanation.</p>
+
+    <div id="quiz-container"></div>
+
+    <script>
+        const quizData = [
+            {
+                q: "Let \\( f(x) = \\sqrt{g(x^2)} \\). Given \\( g(4)=9 \\) and \\( g'(4)=6 \\), find \\( f'(2) \\).",
+                options: [
+                    "\\( 1 \\)",
+                    "\\( 2 \\)",
+                    "\\( 4 \\)",
+                    "\\( 12 \\)"
+                ],
+                correct: 2,
+                explanation: "Using the chain rule: \\( f'(x) = \\frac{1}{2\\sqrt{g(x^2)}} \\cdot g'(x^2) \\cdot 2x \\). Plugging in \\( x = 2 \\): \\( f'(2) = \\frac{1}{2\\sqrt{g(4)}} \\cdot g'(4) \\cdot 4 = \\frac{1}{2\\sqrt{9}} (6)(4) = \\frac{1}{6}(24) = 4 \\)."
+            },
+            {
+                q: "Let \\( f(x) = x^3 + 3x + 1 \\). Find \\( (f^{-1})'(5) \\).",
+                options: [
+                    "\\( \\frac{1}{6} \\)",
+                    "\\( \\frac{1}{76} \\)",
+                    "\\( 6 \\)",
+                    "\\( \\frac{1}{3} \\)"
+                ],
+                correct: 0,
+                explanation: "We need the derivative of the inverse function at 5. First, find \\( x \\) such that \\( f(x) = 5 \\). Solving \\( x^3 + 3x + 1 = 5 \\) gives \\( x = 1 \\). Next, find \\( f'(x) = 3x^2 + 3 \\), so \\( f'(1) = 6 \\). The formula for the derivative of an inverse function is \\( \\frac{1}{f'(f^{-1}(5))} = \\frac{1}{f'(1)} = \\frac{1}{6} \\)."
+            },
+            {
+                q: "If \\( x^3 + y^3 = 6xy \\), find \\( \\frac{dy}{dx} \\) at the point \\( (3,3) \\).",
+                options: [
+                    "\\( 1 \\)",
+                    "\\( -1 \\)",
+                    "\\( 0 \\)",
+                    "\\( \\text{Undefined} \\)"
+                ],
+                correct: 1,
+                explanation: "Implicit differentiation yields: \\( 3x^2 + 3y^2 \\frac{dy}{dx} = 6y + 6x \\frac{dy}{dx} \\). Evaluating at \\( x=3, y=3 \\): \\( 27 + 27\\frac{dy}{dx} = 18 + 18\\frac{dy}{dx} \\). Solving for \\( \\frac{dy}{dx} \\) gives \\( 9\\frac{dy}{dx} = -9 \\), so \\( \\frac{dy}{dx} = -1 \\)."
+            },
+            {
+                q: "Find the derivative of \\( y = \\arctan(e^{2x}) \\).",
+                options: [
+                    "\\( \\frac{e^{2x}}{1 + e^{2x}} \\)",
+                    "\\( \\frac{2e^{2x}}{1 + e^{2x}} \\)",
+                    "\\( \\frac{e^{2x}}{1 + e^{4x}} \\)",
+                    "\\( \\frac{2e^{2x}}{1 + e^{4x}} \\)"
+                ],
+                correct: 3,
+                explanation: "The derivative of \\( \\arctan(u) \\) is \\( \\frac{u'}{1 + u^2} \\). Here, \\( u = e^{2x} \\), so \\( u' = 2e^{2x} \\) and \\( u^2 = e^{4x} \\). Substituting these in gives \\( \\frac{2e^{2x}}{1 + e^{4x}} \\)."
+            },
+            {
+                q: "Given \\( x^2 + y^2 = 4 \\), find \\( \\frac{d^2y}{dx^2} \\) in terms of \\( y \\).",
+                options: [
+                    "\\( -\\frac{4}{y^3} \\)",
+                    "\\( -\\frac{x^2}{y^3} \\)",
+                    "\\( \\frac{4}{y^3} \\)",
+                    "\\( -\\frac{1}{y^2} \\)"
+                ],
+                correct: 0,
+                explanation: "First derivative: \\( 2x + 2y y' = 0 \\implies y' = -\\frac{x}{y} \\). Second derivative using quotient rule: \\( y'' = -\\frac{1(y) - x(y')}{y^2} \\). Substitute \\( y' = -\\frac{x}{y} \\) to get \\( -\\frac{y + \\frac{x^2}{y}}{y^2} = -\\frac{y^2 + x^2}{y^3} \\). Since \\( x^2 + y^2 = 4 \\), this simplifies to \\( -\\frac{4}{y^3} \\)."
+            },
+            {
+                q: "If \\( y = x^{\\sin x} \\), find \\( y'(\\pi/2) \\).",
+                options: [
+                    "\\( 0 \\)",
+                    "\\( 1 \\)",
+                    "\\( \\frac{\\pi}{2} \\)",
+                    "\\( \\frac{2}{\\pi} \\)"
+                ],
+                correct: 1,
+                explanation: "Use logarithmic differentiation: \\( \\ln y = \\sin x \\ln x \\). Differentiating implicitly: \\( \\frac{y'}{y} = \\cos x \\ln x + \\sin x \\cdot \\frac{1}{x} \\). Evaluating at \\( x = \\pi/2 \\), \\( y = (\\pi/2)^1 = \\pi/2 \\). The right side is \\( 0 \\cdot \\ln(\\pi/2) + 1 \\cdot \\frac{2}{\\pi} = \\frac{2}{\\pi} \\). Thus, \\( y' = (\\pi/2) \\cdot (2/\\pi) = 1 \\)."
+            },
+            {
+                q: "Find \\( \\frac{dy}{dx} \\) for \\( y = \\arcsin(2x-1) \\).",
+                options: [
+                    "\\( \\frac{2}{\\sqrt{1 - 4x^2}} \\)",
+                    "\\( \\frac{1}{\\sqrt{x - x^2}} \\)",
+                    "\\( \\frac{2}{\\sqrt{4x - x^2}} \\)",
+                    "\\( \\frac{1}{\\sqrt{1 - (2x-1)^2}} \\)"
+                ],
+                correct: 1,
+                explanation: "The derivative of \\( \\arcsin(u) \\) is \\( \\frac{u'}{\\sqrt{1 - u^2}} \\). Here \\( u = 2x - 1 \\) and \\( u' = 2 \\). We get \\( \\frac{2}{\\sqrt{1 - (2x-1)^2}} = \\frac{2}{\\sqrt{1 - (4x^2 - 4x + 1)}} = \\frac{2}{\\sqrt{4x - 4x^2}} \\). Factoring out the \\( 4 \\) from the radical simplifies it to \\( \\frac{1}{\\sqrt{x - x^2}} \\)."
+            },
+            {
+                q: "Let \\( f(x) = \\cos(\\sin x) \\). What is \\( f'(x) \\)?",
+                options: [
+                    "\\( \\sin(\\sin x) \\cos x \\)",
+                    "\\( -\\sin(\\sin x) \\cos x \\)",
+                    "\\( -\\sin(\\cos x) \\)",
+                    "\\( \\cos(\\cos x) \\sin x \\)"
+                ],
+                correct: 1,
+                explanation: "Using the chain rule, derivative of the outside function \\( \\cos(u) \\) is \\( -\\sin(u) \\), and derivative of the inside \\( \\sin x \\) is \\( \\cos x \\). Multiplying them gives \\( -\\sin(\\sin x) \\cos x \\)."
+            },
+            {
+                q: "Let \\( f(x) = \\frac{1}{\\sqrt{x^2+1}} \\). Find \\( f''(0) \\).",
+                options: [
+                    "\\( -1 \\)",
+                    "\\( 0 \\)",
+                    "\\( 1 \\)",
+                    "\\( -\\frac{3}{2} \\)"
+                ],
+                correct: 0,
+                explanation: "Rewrite \\( f(x) = (x^2+1)^{-1/2} \\). First derivative: \\( f'(x) = -\\frac{1}{2}(x^2+1)^{-3/2}(2x) = -x(x^2+1)^{-3/2} \\). Second derivative using product rule: \\( f''(x) = -1(x^2+1)^{-3/2} - x(-\\frac{3}{2})(x^2+1)^{-5/2}(2x) \\). Plugging in \\( x = 0 \\), all terms with \\( x \\) vanish, leaving \\( -1(1)^{-3/2} = -1 \\)."
+            },
+            {
+                q: "Let \\( f(x) = e^{2x} - e^{-2x} \\). Find \\( (f^{-1})'(0) \\).",
+                options: [
+                    "\\( 4 \\)",
+                    "\\( \\frac{1}{2} \\)",
+                    "\\( \\frac{1}{4} \\)",
+                    "\\( 1 \\)"
+                ],
+                correct: 2,
+                explanation: "Find \\( x \\) such that \\( f(x) = 0 \\). Solving \\( e^{2x} = e^{-2x} \\) yields \\( x = 0 \\). Now find \\( f'(x) = 2e^{2x} + 2e^{-2x} \\). Evaluating at \\( x = 0 \\), \\( f'(0) = 4 \\). Therefore, \\( (f^{-1})'(0) = \\frac{1}{f'(0)} = \\frac{1}{4} \\)."
+            },
+            {
+                q: "Find the derivative of \\( y = \\ln(\\sec x + \\tan x) \\).",
+                options: [
+                    "\\( \\frac{1}{\\sec x + \\tan x} \\)",
+                    "\\( \\sec x \\)",
+                    "\\( \\cos x \\)",
+                    "\\( \\sec^2 x \\)"
+                ],
+                correct: 1,
+                explanation: "Using the chain rule: \\( y' = \\frac{1}{\\sec x + \\tan x} \\cdot (\\sec x \\tan x + \\sec^2 x) \\). Factoring out \\( \\sec x \\) in the numerator yields \\( \\frac{\\sec x (\\tan x + \\sec x)}{\\sec x + \\tan x} = \\sec x \\)."
+            },
+            {
+                q: "If \\( \\sin(xy) = x + y \\), find \\( \\frac{dy}{dx} \\) at the point \\( (0,0) \\).",
+                options: [
+                    "\\( 1 \\)",
+                    "\\( 0 \\)",
+                    "\\( -1 \\)",
+                    "\\( \\text{Undefined} \\)"
+                ],
+                correct: 2,
+                explanation: "Implicit differentiation yields: \\( \\cos(xy)(y + x y') = 1 + y' \\). Plugging in \\( (0,0) \\), we get \\( \\cos(0)(0 + 0) = 1 + y' \\), which means \\( 0 = 1 + y' \\), so \\( y' = -1 \\)."
+            },
+            {
+                q: "Let \\( g(x) = e^{x^2} + x \\). Find \\( (g^{-1})'(1) \\).",
+                options: [
+                    "\\( 1 \\)",
+                    "\\( \\frac{1}{e+1} \\)",
+                    "\\( 0 \\)",
+                    "\\( e \\)"
+                ],
+                correct: 0,
+                explanation: "Find \\( x \\) where \\( g(x) = 1 \\). By inspection, \\( g(0) = e^0 + 0 = 1 \\). Next, \\( g'(x) = 2x e^{x^2} + 1 \\). Evaluating at \\( x = 0 \\) yields \\( g'(0) = 1 \\). The derivative of the inverse is \\( \\frac{1}{g'(0)} = \\frac{1}{1} = 1 \\)."
+            },
+            {
+                q: "If \\( xy + y^2 = 2 \\), find \\( \\frac{dy}{dx} \\) at \\( (1, 1) \\).",
+                options: [
+                    "\\( -\\frac{1}{3} \\)",
+                    "\\( -1 \\)",
+                    "\\( \\frac{1}{3} \\)",
+                    "\\( -\\frac{1}{2} \\)"
+                ],
+                correct: 0,
+                explanation: "Differentiate implicitly: \\( y + x y' + 2y y' = 0 \\). Substituting \\( x=1 \\) and \\( y=1 \\) yields \\( 1 + y' + 2y' = 0 \\). This simplifies to \\( 3y' = -1 \\), making \\( y' = -\\frac{1}{3} \\)."
+            },
+            {
+                q: "Find the slope of the tangent line to \\( y = x^{\\ln x} \\) at \\( x = e \\).",
+                options: [
+                    "\\( e \\)",
+                    "\\( 1 \\)",
+                    "\\( 2 \\)",
+                    "\\( \\frac{2}{e} \\)"
+                ],
+                correct: 2,
+                explanation: "Taking the natural log: \\( \\ln y = \\ln(x^{\\ln x}) = (\\ln x)^2 \\). Differentiating implicitly: \\( \\frac{y'}{y} = 2\\ln x \\cdot \\frac{1}{x} \\). At \\( x = e \\), \\( y = e^{\\ln e} = e^1 = e \\). Therefore, \\( \\frac{y'}{e} = 2(1)\\frac{1}{e} = \\frac{2}{e} \\), giving \\( y' = 2 \\)."
+            },
+            {
+                q: "What is the derivative of \\( f(x) = \\text{arcsec}(2x) \\) for \\( x > \\frac{1}{2} \\)?",
+                options: [
+                    "\\( \\frac{1}{x\\sqrt{4x^2 - 1}} \\)",
+                    "\\( \\frac{2}{|2x|\\sqrt{4x^2 - 1}} \\)",
+                    "\\( \\frac{1}{|2x|\\sqrt{x^2 - 1}} \\)",
+                    "\\( \\frac{2}{x\\sqrt{x^2 - 1}} \\)"
+                ],
+                correct: 0,
+                explanation: "The derivative of \\( \\text{arcsec}(u) \\) is \\( \\frac{u'}{|u|\\sqrt{u^2 - 1}} \\). With \\( u = 2x \\), \\( u' = 2 \\). For \\( x > 1/2 \\), \\( 2x \\) is positive, so \\( |2x| = 2x \\). Substituting these yields \\( \\frac{2}{2x\\sqrt{4x^2 - 1}} = \\frac{1}{x\\sqrt{4x^2 - 1}} \\)."
+            },
+            {
+                q: "If \\( 2^x + 2^y = 12 \\), find \\( \\frac{dy}{dx} \\) at the point \\( (3, 2) \\).",
+                options: [
+                    "\\( -1 \\)",
+                    "\\( -\\frac{3}{2} \\)",
+                    "\\( -\\frac{8}{4} \\)",
+                    "\\( -2 \\)"
+                ],
+                correct: 3,
+                explanation: "Differentiating implicitly yields \\( 2^x \\ln 2 + 2^y \\ln 2 \\cdot \\frac{dy}{dx} = 0 \\). Dividing by \\( \\ln 2 \\) gives \\( 2^x + 2^y y' = 0 \\), so \\( y' = -\\frac{2^x}{2^y} \\). At \\( x=3, y=2 \\), \\( y' = -\\frac{2^3}{2^2} = -\\frac{8}{4} = -2 \\)."
+            },
+            {
+                q: "Let \\( f(x) = \\sqrt{x + \\sqrt{x}} \\). Find \\( f'(1) \\).",
+                options: [
+                    "\\( \\frac{3}{4\\sqrt{2}} \\)",
+                    "\\( \\frac{1}{2\\sqrt{2}} \\)",
+                    "\\( \\frac{3}{2\\sqrt{2}} \\)",
+                    "\\( \\frac{1}{\\sqrt{2}} \\)"
+                ],
+                correct: 0,
+                explanation: "Using the chain rule twice: \\( f'(x) = \\frac{1}{2\\sqrt{x + \\sqrt{x}}} \\cdot (1 + \\frac{1}{2\\sqrt{x}}) \\). Evaluating at \\( x = 1 \\): \\( f'(1) = \\frac{1}{2\\sqrt{2}} \\cdot (1 + \\frac{1}{2}) = \\frac{1}{2\\sqrt{2}} \\cdot \\frac{3}{2} = \\frac{3}{4\\sqrt{2}} \\)."
+            },
+            {
+                q: "If \\( \\sqrt{x} + \\sqrt{y} = 1 \\), find \\( \\frac{d^2y}{dx^2} \\) at the point \\( (\\frac{1}{4}, \\frac{1}{4}) \\).",
+                options: [
+                    "\\( -2 \\)",
+                    "\\( 2 \\)",
+                    "\\( 4 \\)",
+                    "\\( -4 \\)"
+                ],
+                correct: 2,
+                explanation: "First derivative: \\( \\frac{1}{2\\sqrt{x}} + \\frac{y'}{2\\sqrt{y}} = 0 \\implies y' = -\\frac{\\sqrt{y}}{\\sqrt{x}} \\). At \\( (1/4, 1/4) \\), \\( y' = -1 \\). Second derivative: \\( y'' = - \\frac{\\frac{y'}{2\\sqrt{y}}\\sqrt{x} - \\sqrt{y}\\frac{1}{2\\sqrt{x}}}{x} \\). Plugging in \\( x=1/4, y=1/4 \\), and \\( y'=-1 \\), gives \\( -\\frac{(-1)(1) - 1}{2(1/4)} = 4 \\)."
+            },
+            {
+                q: "Find the derivative of \\( f(x) = |x^2 - 4|^3 \\) at \\( x = 1 \\).",
+                options: [
+                    "\\( -54 \\)",
+                    "\\( 54 \\)",
+                    "\\( -18 \\)",
+                    "\\( 18 \\)"
+                ],
+                correct: 0,
+                explanation: "Near \\( x = 1 \\), \\( x^2 - 4 \\) is negative, so \\( |x^2 - 4| = 4 - x^2 \\). We can rewrite the function as \\( f(x) = (4 - x^2)^3 \\). Taking the derivative gives \\( f'(x) = 3(4 - x^2)^2 (-2x) \\). Plugging in \\( x = 1 \\), \\( f'(1) = 3(3)^2 (-2) = 3(9)(-2) = -54 \\)."
+            }
+        ];
+
+        const labels = ['A', 'B', 'C', 'D'];
+        const container = document.getElementById('quiz-container');
+
+        quizData.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            
+            const header = document.createElement('div');
+            header.className = 'question-header';
+            header.innerHTML = `Question ${index + 1}: ${item.q}`;
+            card.appendChild(header);
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options';
+
+            item.options.forEach((optText, optIndex) => {
+                const optElement = document.createElement('div');
+                optElement.className = 'option';
+                
+                const labelElement = document.createElement('span');
+                labelElement.className = 'option-label';
+                labelElement.textContent = labels[optIndex];
+
+                const textElement = document.createElement('span');
+                textElement.innerHTML = optText;
+
+                const statusIcon = document.createElement('span');
+                statusIcon.className = 'status-icon';
+
+                optElement.appendChild(labelElement);
+                optElement.appendChild(textElement);
+                optElement.appendChild(statusIcon);
+
+                optElement.addEventListener('click', () => {
+                    // Prevent multiple clicks
+                    if (optElement.classList.contains('disabled') || optionsDiv.classList.contains('answered')) return;
+                    
+                    optionsDiv.classList.add('answered');
+                    
+                    // Disable all options
+                    Array.from(optionsDiv.children).forEach((child, i) => {
+                        child.classList.add('disabled');
+                        if (i === item.correct) {
+                            child.classList.add('correct');
+                            child.querySelector('.status-icon').innerHTML = '✓';
+                        }
+                    });
+
+                    // Mark incorrect if wrong
+                    if (optIndex !== item.correct) {
+                        optElement.classList.add('incorrect');
+                        optElement.querySelector('.status-icon').innerHTML = '✗';
+                    }
+
+                    // Show explanation
+                    explanationDiv.classList.add('show');
+                });
+
+                optionsDiv.appendChild(optElement);
+            });
+
+            const explanationDiv = document.createElement('div');
+            explanationDiv.className = 'explanation';
+            explanationDiv.innerHTML = `<strong>Explanation:</strong> ${item.explanation}`;
+
+            card.appendChild(optionsDiv);
+            card.appendChild(explanationDiv);
+            container.appendChild(card);
+        });
+    </script>
+</body>
+</html>
