@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Calculus BC - Unit 6 Quiz</title>
+    <!-- MathJax for rendering LaTeX math formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f0f4f8; 
+            color: #333; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px; 
+            box-sizing: border-box; 
+        }
+        .quiz-container { 
+            background-color: #fff; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 800px; 
+            padding: 40px; 
+            border-top: 5px solid #2980b9;
+        }
+        h1 { 
+            text-align: center; 
+            color: #2c3e50; 
+            font-size: 26px; 
+            margin-bottom: 20px; 
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        .progress { 
+            text-align: center; 
+            margin-bottom: 25px; 
+            font-weight: bold; 
+            color: #7f8c8d; 
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .question { 
+            font-size: 18px; 
+            font-weight: 600; 
+            margin-bottom: 25px; 
+            line-height: 1.6; 
+        }
+        .options { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+        }
+        .option { 
+            background-color: #f8f9fa; 
+            border: 2px solid #e9ecef; 
+            border-radius: 8px; 
+            padding: 16px; 
+            margin-bottom: 12px; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            display: flex; 
+            align-items: center; 
+            font-size: 16px;
+        }
+        .option:hover { 
+            background-color: #e2e6ea; 
+            border-color: #dae0e5; 
+        }
+        .option.selected { 
+            border-color: #3498db; 
+            background-color: #ebf5fb; 
+        }
+        .option.correct { 
+            border-color: #2ecc71; 
+            background-color: #eaeded; 
+        }
+        .option.wrong { 
+            border-color: #e74c3c; 
+            background-color: #fdedec; 
+        }
+        .option.disabled { 
+            pointer-events: none; 
+        }
+        .option-label {
+            font-weight: bold; 
+            margin-right: 15px; 
+            background: #2980b9; 
+            color: white; 
+            width: 35px; 
+            height: 35px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 50%; 
+            flex-shrink: 0;
+        }
+        .option.correct .option-label { background: #27ae60; }
+        .option.wrong .option-label { background: #c0392b; }
+        .feedback-container {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .feedback-container.show {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+        .feedback-container.correct-box {
+            background-color: #eafaf1;
+            border-left: 4px solid #27ae60;
+        }
+        .feedback-container.wrong-box {
+            background-color: #fdedec;
+            border-left: 4px solid #c0392b;
+        }
+        .feedback-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .feedback-container.correct-box .feedback-title { color: #27ae60; }
+        .feedback-container.wrong-box .feedback-title { color: #c0392b; }
+        .controls { 
+            display: flex; 
+            justify-content: flex-end; 
+            margin-top: 25px; 
+        }
+        button { 
+            background-color: #3498db; 
+            color: #fff; 
+            border: none; 
+            border-radius: 8px; 
+            padding: 14px 28px; 
+            font-size: 16px; 
+            font-weight: bold;
+            cursor: pointer; 
+            transition: background-color 0.3s ease; 
+        }
+        button:hover { 
+            background-color: #2980b9; 
+        }
+        button:disabled { 
+            background-color: #bdc3c7; 
+            cursor: not-allowed; 
+        }
+        .score-container { 
+            text-align: center; 
+            display: none; 
+        }
+        .score-text { 
+            font-size: 36px; 
+            font-weight: bold; 
+            color: #2c3e50; 
+            margin-bottom: 30px; 
+        }
+        .score-text span {
+            color: #3498db;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <div id="quiz-screen">
+            <h1>AP Calculus BC - Unit 6</h1>
+            <div class="progress" id="progress">Question 1 of 20</div>
+            <div class="question" id="question"></div>
+            <ul class="options" id="options"></ul>
+            
+            <div class="feedback-container" id="feedback">
+                <div class="feedback-title" id="feedback-title"></div>
+                <div id="feedback-text"></div>
+            </div>
+
+            <div class="controls">
+                <button id="submit-btn" disabled>Submit Answer</button>
+                <button id="next-btn" style="display: none;">Next Question</button>
+            </div>
+        </div>
+
+        <div class="score-container" id="score-screen">
+            <h1>Quiz Completed!</h1>
+            <div class="score-text">Your Score: <br> <span id="final-score">0</span> / 20</div>
+            <button onclick="location.reload()">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "Evaluate the limit: \\( \\displaystyle \\lim_{n \\to \\infty} \\sum_{i=1}^{n} \\frac{1}{n} \\sqrt{\\frac{i}{n}} \\).",
+                options: [
+                    "\\( \\frac{1}{3} \\)",
+                    "\\( \\frac{2}{3} \\)",
+                    "\\( 1 \\)",
+                    "\\( \\frac{3}{2} \\)"
+                ],
+                answer: 1,
+                explanation: "This limit represents the definite integral \\( \\int_{0}^{1} \\sqrt{x} \\, dx \\). Using the power rule: \\( \\int x^{1/2} \\, dx = \\frac{2}{3}x^{3/2} \\). Evaluated from 0 to 1, this gives \\( \\frac{2}{3}(1) - 0 = \\frac{2}{3} \\)."
+            },
+            {
+                question: "If \\( F(x) = \\int_{2}^{x^3} \\sin(t^2) \\, dt \\), find \\( F'(x) \\).",
+                options: [
+                    "\\( 3x^2 \\sin(x^6) \\)",
+                    "\\( \\sin(x^6) \\)",
+                    "\\( 3x^2 \\sin(x^2) \\)",
+                    "\\( x^3 \\sin(x^6) - x \\sin(x^2) \\)"
+                ],
+                answer: 0,
+                explanation: "Using the Fundamental Theorem of Calculus Part 1 combined with the Chain Rule: \\( \\frac{d}{dx} \\int_{a}^{u(x)} f(t) \\, dt = f(u(x)) \\cdot u'(x) \\). Here, \\( u(x) = x^3 \\), so \\( u'(x) = 3x^2 \\). Thus, \\( F'(x) = \\sin((x^3)^2) \\cdot 3x^2 = 3x^2 \\sin(x^6) \\)."
+            },
+            {
+                question: "Let \\( G(x) = \\int_{0}^{x} (t^2 - 4) \\, dt \\). On which of the following intervals is \\( G \\) decreasing?",
+                options: [
+                    "\\( x < -2 \\text{ or } x > 2 \\)",
+                    "\\( 0 < x < 2 \\)",
+                    "\\( -2 < x < 2 \\)",
+                    "\\( x > 0 \\)"
+                ],
+                answer: 2,
+                explanation: "A function is decreasing when its derivative is negative. By FTC, \\( G'(x) = x^2 - 4 \\). Setting \\( G'(x) < 0 \\) yields \\( x^2 - 4 < 0 \\implies x^2 < 4 \\implies -2 < x < 2 \\)."
+            },
+            {
+                question: "Evaluate the integral: \\( \\displaystyle \\int_{0}^{\\ln 2} \\frac{e^x}{1 + e^{2x}} \\, dx \\).",
+                options: [
+                    "\\( \\arctan(2) - \\frac{\\pi}{4} \\)",
+                    "\\( \\arctan(2) \\)",
+                    "\\( \\frac{\\pi}{4} \\)",
+                    "\\( \\arctan(4) - \\frac{\\pi}{4} \\)"
+                ],
+                answer: 0,
+                explanation: "Use the substitution \\( u = e^x \\), meaning \\( du = e^x \\, dx \\). The bounds change from \\( x=0 \\) to \\( u=1 \\), and \\( x=\\ln 2 \\) to \\( u=2 \\). The integral becomes \\( \\int_{1}^{2} \\frac{1}{1+u^2} \\, du = [\\arctan(u)]_{1}^{2} = \\arctan(2) - \\arctan(1) = \\arctan(2) - \\frac{\\pi}{4} \\)."
+            },
+            {
+                question: "Use a trapezoidal approximation with 4 subintervals of equal width to estimate \\( \\int_{0}^{4} x^2 \\, dx \\).",
+                options: [
+                    "\\( 21 \\)",
+                    "\\( 21.33 \\)",
+                    "\\( 22 \\)",
+                    "\\( 24 \\)"
+                ],
+                answer: 2,
+                explanation: "The width of each subinterval is \\( \\Delta x = 1 \\). The points are 0, 1, 2, 3, 4. The trapezoidal rule formula is \\( \\frac{\\Delta x}{2} [f(x_0) + 2f(x_1) + 2f(x_2) + 2f(x_3) + f(x_4)] \\). This gives \\( \\frac{1}{2} [0^2 + 2(1^2) + 2(2^2) + 2(3^2) + 4^2] = \\frac{1}{2}[0 + 2 + 8 + 18 + 16] = \\frac{1}{2}[44] = 22 \\)."
+            },
+            {
+                question: "Evaluate the integral: \\( \\displaystyle \\int_{0}^{5} |x - 3| \\, dx \\).",
+                options: [
+                    "\\( 4.5 \\)",
+                    "\\( 6.5 \\)",
+                    "\\( 8.5 \\)",
+                    "\\( 12.5 \\)"
+                ],
+                answer: 1,
+                explanation: "The graph of \\( y = |x - 3| \\) from \\( x=0 \\) to \\( x=5 \\) forms two triangles. The first triangle is from \\( x=0 \\) to \\( x=3 \\) with base 3 and height 3, giving area \\( \\frac{1}{2}(3)(3) = 4.5 \\). The second triangle is from \\( x=3 \\) to \\( x=5 \\) with base 2 and height 2, giving area \\( \\frac{1}{2}(2)(2) = 2 \\). Total area = 4.5 + 2 = 6.5."
+            },
+            {
+                question: "Let \\( f(x) = \\int_{0}^{x} (t^3 - 3t) \\, dt \\). At what value of \\( x \\) does \\( f \\) have a relative maximum?",
+                options: [
+                    "\\( x = -\\sqrt{3} \\)",
+                    "\\( x = 0 \\)",
+                    "\\( x = \\sqrt{3} \\)",
+                    "\\( x = 3 \\)"
+                ],
+                answer: 1,
+                explanation: "\\( f'(x) = x^3 - 3x = x(x^2 - 3) \\). The critical numbers are \\( x=0 \\), \\( x=\\sqrt{3} \\), and \\( x=-\\sqrt{3} \\). A sign chart for \\( f' \\) shows it changes from positive to negative at \\( x=0 \\), indicating a relative maximum."
+            },
+            {
+                question: "Evaluate the integral: \\( \\displaystyle \\int_{0}^{\\pi/2} \\sin(x) \\cos^3(x) \\, dx \\).",
+                options: [
+                    "\\( \\frac{1}{2} \\)",
+                    "\\( \\frac{1}{4} \\)",
+                    "\\( -\\frac{1}{4} \\)",
+                    "\\( \\frac{1}{3} \\)"
+                ],
+                answer: 1,
+                explanation: "Let \\( u = \\cos(x) \\), so \\( du = -\\sin(x) \\, dx \\). The bounds change from \\( \\cos(0)=1 \\) to \\( \\cos(\\pi/2)=0 \\). The integral becomes \\( \\int_{1}^{0} u^3 (-du) = \\int_{0}^{1} u^3 \\, du = \\left[ \\frac{u^4}{4} \\right]_{0}^{1} = \\frac{1}{4} \\)."
+            },
+            {
+                question: "If \\( \\int_{1}^{4} f(x) \\, dx = 8 \\) and \\( \\int_{1}^{4} g(x) \\, dx = -2 \\), find \\( \\int_{1}^{4} [3f(x) - 2g(x)] \\, dx \\).",
+                options: [
+                    "\\( 20 \\)",
+                    "\\( 24 \\)",
+                    "\\( 28 \\)",
+                    "\\( 32 \\)"
+                ],
+                answer: 2,
+                explanation: "Using the linearity properties of definite integrals: \\( 3\\int_{1}^{4} f(x)\\,dx - 2\\int_{1}^{4} g(x)\\,dx = 3(8) - 2(-2) = 24 + 4 = 28 \\)."
+            },
+            {
+                question: "Evaluate the indefinite integral: \\( \\displaystyle \\int \\frac{1}{x(\\ln x)^2} \\, dx \\).",
+                options: [
+                    "\\( \\frac{1}{\\ln x} + C \\)",
+                    "\\( -\\frac{1}{\\ln x} + C \\)",
+                    "\\( -\\frac{1}{x \\ln x} + C \\)",
+                    "\\( \\ln(\\ln x) + C \\)"
+                ],
+                answer: 1,
+                explanation: "Use the substitution \\( u = \\ln x \\), so \\( du = \\frac{1}{x} \\, dx \\). The integral becomes \\( \\int \\frac{1}{u^2} \\, du = \\int u^{-2} \\, du = -u^{-1} + C = -\\frac{1}{\\ln x} + C \\)."
+            },
+            {
+                question: "Evaluate the definite integral: \\( \\displaystyle \\int_{0}^{\\pi/4} \\sec^2(x) e^{\\tan x} \\, dx \\).",
+                options: [
+                    "\\( e - 1 \\)",
+                    "\\( e \\)",
+                    "\\( e + 1 \\)",
+                    "\\( 1 \\)"
+                ],
+                answer: 0,
+                explanation: "Let \\( u = \\tan x \\), so \\( du = \\sec^2 x \\, dx \\). The bounds change from \\( \\tan(0)=0 \\) to \\( \\tan(\\pi/4)=1 \\). The integral becomes \\( \\int_{0}^{1} e^u \\, du = [e^u]_{0}^{1} = e^1 - e^0 = e - 1 \\)."
+            },
+            {
+                question: "Which of the following limits is equivalent to the definite integral \\( \\displaystyle \\int_{0}^{2} x^3 \\, dx \\)?",
+                options: [
+                    "\\( \\displaystyle \\lim_{n \\to \\infty} \\sum_{i=1}^{n} \\frac{2}{n} \\left( \\frac{i}{n} \\right)^3 \\)",
+                    "\\( \\displaystyle \\lim_{n \\to \\infty} \\sum_{i=1}^{n} \\frac{1}{n} \\left( \\frac{2i}{n} \\right)^3 \\)",
+                    "\\( \\displaystyle \\lim_{n \\to \\infty} \\sum_{i=1}^{n} \\frac{2}{n} \\left( \\frac{2i}{n} \\right)^3 \\)",
+                    "\\( \\displaystyle \\lim_{n \\to \\infty} \\sum_{i=1}^{n} \\frac{2}{n} \\left( \\frac{i}{n} \\right)^2 \\)"
+                ],
+                answer: 2,
+                explanation: "The definition of the definite integral as a limit of a right Riemann sum is \\( \\lim_{n \\to \\infty} \\sum_{i=1}^{n} f(a + i\\Delta x)\\Delta x \\). Here \\( a=0 \\), \\( b=2 \\), so \\( \\Delta x = \\frac{2-0}{n} = \\frac{2}{n} \\). Therefore, \\( x_i = 0 + i(\\frac{2}{n}) = \\frac{2i}{n} \\). The sum becomes \\( \\sum_{i=1}^{n} (\\frac{2i}{n})^3 (\\frac{2}{n}) \\)."
+            },
+            {
+                question: "Let \\( F(x) = \\int_{1}^{x} (t^2 - 2t) \\, dt \\). What is the concavity of \\( F(x) \\) at \\( x = 2 \\)?",
+                options: [
+                    "Concave up",
+                    "Concave down",
+                    "It is a point of inflection",
+                    "Cannot be determined"
+                ],
+                answer: 0,
+                explanation: "By FTC, \\( F'(x) = x^2 - 2x \\). To find concavity, look at the second derivative: \\( F''(x) = 2x - 2 \\). At \\( x=2 \\), \\( F''(2) = 2(2) - 2 = 2 \\). Since \\( F''(2) > 0 \\), the graph of \\( F(x) \\) is concave up at \\( x=2 \\)."
+            },
+            {
+                question: "Let \\( g(x) = \\int_{x}^{x^2} \\ln(t) \\, dt \\) for \\( x > 0 \\). Find \\( g'(e) \\).",
+                options: [
+                    "\\( 4e - 1 \\)",
+                    "\\( 2e - 1 \\)",
+                    "\\( 4e \\)",
+                    "\\( 2e \\)"
+                ],
+                answer: 0,
+                explanation: "Using FTC and the Chain Rule: \\( g'(x) = \\ln(x^2) \\cdot (2x) - \\ln(x) \\cdot (1) \\). We can simplify \\( \\ln(x^2) \\) to \\( 2\\ln(x) \\), so \\( g'(x) = 4x\\ln(x) - \\ln(x) = (4x-1)\\ln(x) \\). At \\( x=e \\), \\( g'(e) = (4e-1)\\ln(e) = (4e-1)(1) = 4e-1 \\)."
+            },
+            {
+                question: "The velocity of a particle moving along a line is given by \\( v(t) = 3t^2 - 6t \\). If the particle's initial position is \\( s(0) = 4 \\), what is its position at \\( t = 2 \\)?",
+                options: [
+                    "\\( -4 \\)",
+                    "\\( 0 \\)",
+                    "\\( 4 \\)",
+                    "\\( 8 \\)"
+                ],
+                answer: 1,
+                explanation: "The position function is the antiderivative of velocity: \\( s(t) = \\int (3t^2 - 6t) \\, dt = t^3 - 3t^2 + C \\). Using the initial condition \\( s(0) = 4 \\), we find \\( C = 4 \\), so \\( s(t) = t^3 - 3t^2 + 4 \\). At \\( t=2 \\), \\( s(2) = 2^3 - 3(2^2) + 4 = 8 - 12 + 4 = 0 \\)."
+            },
+            {
+                question: "A particle's velocity is given by \\( v(t) = e^t - 2 \\) m/s. What is the total distance traveled by the particle from \\( t = 0 \\) to \\( t = \\ln(4) \\)?",
+                options: [
+                    "\\( 2 \\)",
+                    "\\( 1 \\)",
+                    "\\( 4 \\)",
+                    "\\( 2 \\ln 2 \\)"
+                ],
+                answer: 1,
+                explanation: "Total distance is \\( \\int_{0}^{\\ln 4} |v(t)| \\, dt \\). \\( v(t) = 0 \\) when \\( e^t = 2 \\implies t = \\ln 2 \\). The integral splits: \\( \\int_{0}^{\\ln 2} (2 - e^t) \\, dt + \\int_{\\ln 2}^{\\ln 4} (e^t - 2) \\, dt \\). <br>First part: \\( [2t - e^t]_{0}^{\\ln 2} = (2\\ln 2 - 2) - (0 - 1) = 2\\ln 2 - 1 \\). <br>Second part: \\( [e^t - 2t]_{\\ln 2}^{\\ln 4} = (4 - 2\\ln 4) - (2 - 2\\ln 2) = (4 - 4\\ln 2) - 2 + 2\\ln 2 = 2 - 2\\ln 2 \\). <br>Adding them together: \\( (2\\ln 2 - 1) + (2 - 2\\ln 2) = 1 \\)."
+            },
+            {
+                question: "Evaluate the integral: \\( \\displaystyle \\int_{1}^{e} \\frac{(\\ln x)^2}{x} \\, dx \\).",
+                options: [
+                    "\\( \\frac{1}{2} \\)",
+                    "\\( \\frac{1}{3} \\)",
+                    "\\( \\frac{e}{3} \\)",
+                    "\\( 1 \\)"
+                ],
+                answer: 1,
+                explanation: "Use the substitution \\( u = \\ln x \\), so \\( du = \\frac{1}{x} \\, dx \\). The bounds change from \\( \\ln(1)=0 \\) to \\( \\ln(e)=1 \\). The integral becomes \\( \\int_{0}^{1} u^2 \\, du = [\\frac{u^3}{3}]_{0}^{1} = \\frac{1}{3} \\)."
+            },
+            {
+                question: "Suppose \\( f \\) is a differentiable function where \\( f'(x) = 2x \\) and \\( f(1) = 5 \\). Find the value of \\( f(3) \\) using the Fundamental Theorem of Calculus.",
+                options: [
+                    "\\( 8 \\)",
+                    "\\( 12 \\)",
+                    "\\( 13 \\)",
+                    "\\( 14 \\)"
+                ],
+                answer: 2,
+                explanation: "By FTC, \\( \\int_{1}^{3} f'(x) \\, dx = f(3) - f(1) \\). We calculate the integral: \\( \\int_{1}^{3} 2x \\, dx = [x^2]_{1}^{3} = 9 - 1 = 8 \\). Therefore, \\( 8 = f(3) - 5 \\implies f(3) = 13 \\)."
+            },
+            {
+                question: "Evaluate the definite integral: \\( \\displaystyle \\int_{0}^{\\pi/4} \\tan^3(x) \\sec^2(x) \\, dx \\).",
+                options: [
+                    "\\( \\frac{1}{2} \\)",
+                    "\\( \\frac{1}{3} \\)",
+                    "\\( 1 \\)",
+                    "\\( \\frac{1}{4} \\)"
+                ],
+                answer: 3,
+                explanation: "Let \\( u = \\tan(x) \\), so \\( du = \\sec^2(x) \\, dx \\). The bounds change from \\( \\tan(0)=0 \\) to \\( \\tan(\\pi/4)=1 \\). The integral becomes \\( \\int_{0}^{1} u^3 \\, du = \\left[ \\frac{u^4}{4} \\right]_{0}^{1} = \\frac{1}{4} - 0 = \\frac{1}{4} \\)."
+            },
+            {
+                question: "Let \\( F(x) = \\int_{0}^{x} \\frac{\\sin t}{t} \\, dt \\) for \\( x > 0 \\), and let \\( F(0) = 0 \\). What is the value of \\( F'(0) \\)?",
+                options: [
+                    "\\( 0 \\)",
+                    "\\( \\frac{1}{2} \\)",
+                    "Undefined",
+                    "\\( 1 \\)"
+                ],
+                answer: 3,
+                explanation: "By the Fundamental Theorem of Calculus, \\( F'(x) = \\frac{\\sin x}{x} \\) for \\( x > 0 \\). As \\( x \\to 0 \\), the limit of \\( F'(x) \\) is \\( \\lim_{x \\to 0} \\frac{\\sin x}{x} = 1 \\). Thus, \\( F'(0) = 1 \\)."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedOption = null;
+
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const feedbackContainer = document.getElementById('feedback');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackText = document.getElementById('feedback-text');
+        const progressEl = document.getElementById('progress');
+        const quizScreen = document.getElementById('quiz-screen');
+        const scoreScreen = document.getElementById('score-screen');
+        const finalScoreEl = document.getElementById('final-score');
+
+        function loadQuestion() {
+            selectedOption = null;
+            feedbackContainer.classList.remove('show', 'correct-box', 'wrong-box');
+            submitBtn.style.display = 'block';
+            submitBtn.disabled = true;
+            nextBtn.style.display = 'none';
+            progressEl.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+
+            const qData = quizData[currentQuestion];
+            questionEl.innerHTML = qData.question;
+            optionsEl.innerHTML = '';
+
+            const letters = ['A', 'B', 'C', 'D'];
+            qData.options.forEach((opt, idx) => {
+                const li = document.createElement('li');
+                li.className = 'option';
+                li.innerHTML = `<span class="option-label">${letters[idx]}</span> ${opt}`;
+                li.onclick = () => selectOption(idx, li);
+                optionsEl.appendChild(li);
+            });
+
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function selectOption(idx, liElement) {
+            const allOptions = optionsEl.children;
+            for (let i = 0; i < allOptions.length; i++) {
+                allOptions[i].classList.remove('selected');
+            }
+            liElement.classList.add('selected');
+            selectedOption = idx;
+            submitBtn.disabled = false;
+        }
+
+        submitBtn.onclick = () => {
+            if (selectedOption === null) return;
+            const qData = quizData[currentQuestion];
+            const allOptions = optionsEl.children;
+
+            for (let i = 0; i < allOptions.length; i++) {
+                allOptions[i].classList.add('disabled');
+            }
+
+            feedbackContainer.classList.add('show');
+
+            if (selectedOption === qData.answer) {
+                allOptions[selectedOption].classList.add('correct');
+                feedbackContainer.classList.add('correct-box');
+                feedbackTitle.textContent = 'Correct!';
+                score++;
+            } else {
+                allOptions[selectedOption].classList.add('wrong');
+                allOptions[qData.answer].classList.add('correct');
+                feedbackContainer.classList.add('wrong-box');
+                feedbackTitle.textContent = 'Incorrect!';
+            }
+            
+            feedbackText.innerHTML = qData.explanation;
+
+            submitBtn.style.display = 'none';
+            nextBtn.style.display = 'block';
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise([feedbackText]);
+            }
+        };
+
+        nextBtn.onclick = () => {
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showScore();
+            }
+        };
+
+        function showScore() {
+            quizScreen.style.display = 'none';
+            scoreScreen.style.display = 'block';
+            finalScoreEl.textContent = score;
+        }
+
+        // Initialize quiz
+        loadQuestion();
+    </script>
+</body>
+</html>
