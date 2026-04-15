@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Calculus BC - Unit 8 Quiz</title>
+    <!-- MathJax for rendering LaTeX math formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f0f4f8; 
+            color: #333; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px; 
+            box-sizing: border-box; 
+        }
+        .quiz-container { 
+            background-color: #fff; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 800px; 
+            padding: 40px; 
+            border-top: 5px solid #27ae60;
+        }
+        h1 { 
+            text-align: center; 
+            color: #2c3e50; 
+            font-size: 26px; 
+            margin-bottom: 20px; 
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        .progress { 
+            text-align: center; 
+            margin-bottom: 25px; 
+            font-weight: bold; 
+            color: #7f8c8d; 
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .question { 
+            font-size: 18px; 
+            font-weight: 600; 
+            margin-bottom: 25px; 
+            line-height: 1.6; 
+        }
+        .options { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+        }
+        .option { 
+            background-color: #f8f9fa; 
+            border: 2px solid #e9ecef; 
+            border-radius: 8px; 
+            padding: 16px; 
+            margin-bottom: 12px; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            display: flex; 
+            align-items: center; 
+            font-size: 16px;
+        }
+        .option:hover { 
+            background-color: #e2e6ea; 
+            border-color: #dae0e5; 
+        }
+        .option.selected { 
+            border-color: #27ae60; 
+            background-color: #eafaf1; 
+        }
+        .option.correct { 
+            border-color: #2ecc71; 
+            background-color: #eaeded; 
+        }
+        .option.wrong { 
+            border-color: #e74c3c; 
+            background-color: #fdedec; 
+        }
+        .option.disabled { 
+            pointer-events: none; 
+        }
+        .option-label {
+            font-weight: bold; 
+            margin-right: 15px; 
+            background: #27ae60; 
+            color: white; 
+            width: 35px; 
+            height: 35px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 50%; 
+            flex-shrink: 0;
+        }
+        .option.correct .option-label { background: #27ae60; }
+        .option.wrong .option-label { background: #c0392b; }
+        .feedback-container {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .feedback-container.show {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+        .feedback-container.correct-box {
+            background-color: #eafaf1;
+            border-left: 4px solid #27ae60;
+        }
+        .feedback-container.wrong-box {
+            background-color: #fdedec;
+            border-left: 4px solid #c0392b;
+        }
+        .feedback-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .feedback-container.correct-box .feedback-title { color: #27ae60; }
+        .feedback-container.wrong-box .feedback-title { color: #c0392b; }
+        .controls { 
+            display: flex; 
+            justify-content: flex-end; 
+            margin-top: 25px; 
+        }
+        button { 
+            background-color: #27ae60; 
+            color: #fff; 
+            border: none; 
+            border-radius: 8px; 
+            padding: 14px 28px; 
+            font-size: 16px; 
+            font-weight: bold;
+            cursor: pointer; 
+            transition: background-color 0.3s ease; 
+        }
+        button:hover { 
+            background-color: #219150; 
+        }
+        button:disabled { 
+            background-color: #bdc3c7; 
+            cursor: not-allowed; 
+        }
+        .score-container { 
+            text-align: center; 
+            display: none; 
+        }
+        .score-text { 
+            font-size: 36px; 
+            font-weight: bold; 
+            color: #2c3e50; 
+            margin-bottom: 30px; 
+        }
+        .score-text span {
+            color: #27ae60;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <div id="quiz-screen">
+            <h1>AP Calculus BC - Unit 8</h1>
+            <p style="text-align: center; color: #7f8c8d; margin-top: -10px; margin-bottom: 20px;">Applications of Integration & Advanced Integration Techniques</p>
+            <div class="progress" id="progress">Question 1 of 20</div>
+            <div class="question" id="question"></div>
+            <ul class="options" id="options"></ul>
+            
+            <div class="feedback-container" id="feedback">
+                <div class="feedback-title" id="feedback-title"></div>
+                <div id="feedback-text"></div>
+            </div>
+
+            <div class="controls">
+                <button id="submit-btn" disabled>Submit Answer</button>
+                <button id="next-btn" style="display: none;">Next Question</button>
+            </div>
+        </div>
+
+        <div class="score-container" id="score-screen">
+            <h1>Quiz Completed!</h1>
+            <div class="score-text">Your Score: <br> <span id="final-score">0</span> / 20</div>
+            <button onclick="location.reload()">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "Find the area of the region bounded by \\( y = x e^{x^2} \\), the x-axis, \\( x = 0 \\), and \\( x = 1 \\).",
+                options: [
+                    "\\( \\frac{1}{2}e \\)",
+                    "\\( e - 1 \\)",
+                    "\\( \\frac{e - 1}{2} \\)",
+                    "\\( \\frac{e^2 - 1}{2} \\)"
+                ],
+                answer: 2,
+                explanation: "We integrate \\( \\int_{0}^{1} x e^{x^2} dx \\). Let \\( u = x^2 \\), \\( du = 2x dx \\). The bounds change to 0 and 1. The integral becomes \\( \\frac{1}{2} \\int_{0}^{1} e^u du = \\frac{1}{2}[e^u]_0^1 = \\frac{1}{2}(e - 1) \\)."
+            },
+            {
+                question: "Find the arc length of the curve \\( y = \\frac{2}{3}x^{3/2} \\) for \\( 0 \\le x \\le 3 \\).",
+                options: [
+                    "\\( \\frac{14}{3} \\)",
+                    "\\( \\frac{16}{3} \\)",
+                    "\\( \\frac{8}{3} \\)",
+                    "\\( 2\\sqrt{3} \\)"
+                ],
+                answer: 0,
+                explanation: "The arc length formula is \\( \\int_{a}^{b} \\sqrt{1 + (y')^2} dx \\). Here, \\( y' = x^{1/2} \\). Squaring it gives \\( (y')^2 = x \\). The integral is \\( \\int_{0}^{3} \\sqrt{1 + x} dx \\). Let \\( u = 1+x \\), so \\( \\int_1^4 u^{1/2} du = [\\frac{2}{3}u^{3/2}]_1^4 = \\frac{2}{3}(8 - 1) = \\frac{14}{3} \\)."
+            },
+            {
+                question: "The base of a solid is the region bounded by \\( y = x^2 \\) and \\( y = 4 \\). Cross sections perpendicular to the y-axis are squares. What is the volume of the solid?",
+                options: [
+                    "\\( 8 \\)",
+                    "\\( 16 \\)",
+                    "\\( 24 \\)",
+                    "\\( 32 \\)"
+                ],
+                answer: 3,
+                explanation: "Since cross sections are perpendicular to the y-axis, we integrate with respect to \\( y \\). The bounds are from 0 to 4. The length of the square's base is the horizontal distance between the curves: \\( s = \\sqrt{y} - (-\\sqrt{y}) = 2\\sqrt{y} \\). The area of the cross section is \\( A(y) = s^2 = 4y \\). The volume is \\( \\int_{0}^{4} 4y dy = [2y^2]_0^4 = 32 - 0 = 32 \\)."
+            },
+            {
+                question: "Find the volume of the solid generated when the region bounded by \\( y = e^x \\), \\( y = 1 \\), and \\( x = 2 \\) is revolved around the x-axis.",
+                options: [
+                    "\\( \\frac{\\pi}{2}(e^4 - 1) \\)",
+                    "\\( \\frac{\\pi}{2}(e^4 - 5) \\)",
+                    "\\( \\pi(e^4 - 3) \\)",
+                    "\\( \\frac{\\pi}{2}e^4 \\)"
+                ],
+                answer: 1,
+                explanation: "Use the washer method. The outer radius is \\( R(x) = e^x \\) and the inner radius is \\( r(x) = 1 \\). The volume is \\( V = \\pi \\int_{0}^{2} ((e^x)^2 - 1^2) dx = \\pi \\int_{0}^{2} (e^{2x} - 1) dx = \\pi[\\frac{1}{2}e^{2x} - x]_0^2 = \\pi ( (\\frac{1}{2}e^4 - 2) - (\\frac{1}{2} - 0) ) = \\frac{\\pi}{2}(e^4 - 5) \\)."
+            },
+            {
+                question: "Evaluate the improper integral representing the area under the curve \\( y = \\frac{1}{x^2+1} \\) from \\( x = 0 \\) to \\( x = \\infty \\).",
+                options: [
+                    "\\( \\frac{\\pi}{2} \\)",
+                    "\\( \\pi \\)",
+                    "\\( \\infty \\)",
+                    "\\( 1 \\)"
+                ],
+                answer: 0,
+                explanation: "The integral is \\( \\int_{0}^{\\infty} \\frac{1}{x^2+1} dx = \\lim_{b \\to \\infty} \\int_{0}^{b} \\frac{1}{x^2+1} dx = \\lim_{b \\to \\infty} [\\arctan(x)]_0^b = \\frac{\\pi}{2} - 0 = \\frac{\\pi}{2} \\)."
+            },
+            {
+                question: "Find the volume of the solid generated by revolving the region bounded by \\( y = \\ln x \\), \\( y = 0 \\), and \\( x = e \\) around the y-axis.",
+                options: [
+                    "\\( \\frac{\\pi}{2}(e^2 - 1) \\)",
+                    "\\( \\pi(e^2 - 1) \\)",
+                    "\\( \\frac{\\pi}{2}(e^2 + 1) \\)",
+                    "\\( \\pi(e^2 + 1) \\)"
+                ],
+                answer: 2,
+                explanation: "We can use horizontal disks. The equations are \\( x = e^y \\) and \\( x = e \\). Since it's around the y-axis, the outer radius is \\( e \\) and the inner radius is \\( e^y \\). The y-bounds are from \\( y=0 \\) to \\( y=1 \\) (since \\( \\ln(e) = 1 \\)). \\( V = \\pi \\int_0^1 (e^2 - (e^y)^2) dy = \\pi [e^2 y - \\frac{1}{2}e^{2y}]_0^1 = \\pi ( (e^2 - \\frac{1}{2}e^2) - (0 - \\frac{1}{2}) ) = \\frac{\\pi}{2}(e^2 + 1) \\)."
+            },
+            {
+                question: "Find the length of the parametric curve defined by \\( x = t^2 \\) and \\( y = t^3 \\) for \\( 0 \\le t \\le 1 \\).",
+                options: [
+                    "\\( \\frac{13\\sqrt{13} - 8}{18} \\)",
+                    "\\( \\frac{13\\sqrt{13} - 8}{27} \\)",
+                    "\\( \\frac{13\\sqrt{13} - 1}{27} \\)",
+                    "\\( \\frac{13\\sqrt{13}}{27} \\)"
+                ],
+                answer: 1,
+                explanation: "The parametric arc length formula is \\( \\int \\sqrt{(dx/dt)^2 + (dy/dt)^2} dt \\). We have \\( dx/dt = 2t \\) and \\( dy/dt = 3t^2 \\). The integral is \\( \\int_{0}^{1} \\sqrt{4t^2 + 9t^4} dt = \\int_{0}^{1} t\\sqrt{4+9t^2} dt \\). Using substitution \\( u = 4+9t^2 \\), \\( du = 18t dt \\), the integral becomes \\( \\frac{1}{18} \\int_{4}^{13} u^{1/2} du = \\frac{1}{18} [\\frac{2}{3}u^{3/2}]_4^{13} = \\frac{1}{27}(13^{3/2} - 8) \\)."
+            },
+            {
+                question: "What is the average value of \\( f(x) = \\sin^2(x) \\) on the interval \\( [0, \\pi] \\)?",
+                options: [
+                    "\\( \\frac{1}{2} \\)",
+                    "\\( \\frac{\\pi}{2} \\)",
+                    "\\( 1 \\)",
+                    "\\( \\frac{\\pi}{4} \\)"
+                ],
+                answer: 0,
+                explanation: "Average value is \\( \\frac{1}{b-a} \\int_{a}^{b} f(x) dx \\). We use the half-angle identity: \\( \\sin^2(x) = \\frac{1 - \\cos(2x)}{2} \\). Then \\( \\frac{1}{\\pi} \\int_{0}^{\\pi} \\frac{1 - \\cos(2x)}{2} dx = \\frac{1}{2\\pi} [x - \\frac{1}{2}\\sin(2x)]_0^{\\pi} = \\frac{1}{2\\pi}(\\pi - 0) = \\frac{1}{2} \\)."
+            },
+            {
+                question: "Using partial fractions, evaluate the area under the curve \\( y = \\frac{1}{x^2 - x} \\) from \\( x = 2 \\) to \\( x = 3 \\).",
+                options: [
+                    "\\( \\ln(3/2) \\)",
+                    "\\( \\ln(4/3) \\)",
+                    "\\( \\ln(2/3) \\)",
+                    "\\( \\ln 2 \\)"
+                ],
+                answer: 1,
+                explanation: "Partial fractions decomposition: \\( \\frac{1}{x(x-1)} = \\frac{A}{x} + \\frac{B}{x-1} \\implies 1 = A(x-1) + Bx \\). Setting \\( x=0 \\implies A=-1 \\). Setting \\( x=1 \\implies B=1 \\). The integral is \\( \\int_{2}^{3} (\\frac{1}{x-1} - \\frac{1}{x}) dx = [\\ln|x-1| - \\ln|x|]_2^3 = (\\ln 2 - \\ln 3) - (\\ln 1 - \\ln 2) = 2\\ln 2 - \\ln 3 = \\ln 4 - \\ln 3 = \\ln(4/3) \\)."
+            },
+            {
+                question: "Find the arc length of the curve \\( y = \\ln(\\cos x) \\) from \\( x = 0 \\) to \\( x = \\pi/4 \\).",
+                options: [
+                    "\\( \\ln(\\sqrt{2} - 1) \\)",
+                    "\\( \\frac{\\pi}{4} \\)",
+                    "\\( \\ln(\\sqrt{2} + 1) \\)",
+                    "\\( \\ln 2 \\)"
+                ],
+                answer: 2,
+                explanation: "\\( y' = \\frac{1}{\\cos x}(-\\sin x) = -\\tan x \\). The integrand for arc length is \\( \\sqrt{1 + (y')^2} = \\sqrt{1 + \\tan^2 x} = \\sqrt{\\sec^2 x} = \\sec x \\) (since secant is positive on \\( [0, \\pi/4] \\)). The integral is \\( \\int_{0}^{\\pi/4} \\sec x dx = [\\ln|\\sec x + \\tan x|]_0^{\\pi/4} = \\ln(\\sqrt{2} + 1) - \\ln(1 + 0) = \\ln(\\sqrt{2} + 1) \\)."
+            },
+            {
+                question: "Find the volume of the solid generated by revolving the region bounded by \\( y = x^2 \\) and \\( y = 2x \\) around the line \\( y = 4 \\).",
+                options: [
+                    "\\( \\frac{16\\pi}{5} \\)",
+                    "\\( \\frac{32\\pi}{5} \\)",
+                    "\\( \\frac{64\\pi}{5} \\)",
+                    "\\( \\frac{8\\pi}{3} \\)"
+                ],
+                answer: 1,
+                explanation: "The curves intersect at \\( x=0 \\) and \\( x=2 \\). The axis of revolution is \\( y=4 \\), which is above the region. The outer radius is \\( R(x) = 4 - x^2 \\) and inner radius is \\( r(x) = 4 - 2x \\). \\( V = \\pi \\int_0^2 ((4-x^2)^2 - (4-2x)^2) dx = \\pi \\int_0^2 (16 - 8x^2 + x^4 - (16 - 16x + 4x^2)) dx = \\pi \\int_0^2 (x^4 - 12x^2 + 16x) dx \\). Evaluating yields \\( \\pi [\\frac{x^5}{5} - 4x^3 + 8x^2]_0^2 = \\pi (\\frac{32}{5} - 32 + 32) = \\frac{32\\pi}{5} \\)."
+            },
+            {
+                question: "An infinitely long funnel is created by revolving the region bounded by \\( y = \\frac{1}{x} \\), \\( y = 0 \\), and \\( x \\ge 1 \\) around the x-axis. What is the volume of this funnel?",
+                options: [
+                    "\\( \\frac{\\pi}{2} \\)",
+                    "\\( \\infty \\)",
+                    "\\( \\pi \\)",
+                    "\\( 2\\pi \\)"
+                ],
+                answer: 2,
+                explanation: "This is an improper integral for volume (Gabriel's Horn). By the disk method: \\( V = \\pi \\int_1^\\infty (\\frac{1}{x})^2 dx = \\pi \\lim_{b \\to \\infty} \\int_1^b x^{-2} dx = \\pi \\lim_{b \\to \\infty} [-\\frac{1}{x}]_1^b = \\pi (0 - (-1)) = \\pi \\)."
+            },
+            {
+                question: "Find the arc length of the polar curve \\( r = e^\\theta \\) for \\( 0 \\le \\theta \\le \\ln 2 \\).",
+                options: [
+                    "\\( \\sqrt{2} \\)",
+                    "\\( 2\\sqrt{2} \\)",
+                    "\\( 2 \\)",
+                    "\\( 1 \\)"
+                ],
+                answer: 0,
+                explanation: "The polar arc length formula is \\( \\int \\sqrt{r^2 + (dr/d\\theta)^2} d\\theta \\). Since \\( r = e^\\theta \\), \\( dr/d\\theta = e^\\theta \\). The integrand is \\( \\sqrt{(e^\\theta)^2 + (e^\\theta)^2} = \\sqrt{2e^{2\\theta}} = \\sqrt{2}e^\\theta \\). Evaluating \\( \\int_{0}^{\\ln 2} \\sqrt{2}e^\\theta d\\theta = \\sqrt{2}[e^\\theta]_0^{\\ln 2} = \\sqrt{2}(e^{\\ln 2} - e^0) = \\sqrt{2}(2 - 1) = \\sqrt{2} \\)."
+            },
+            {
+                question: "Find the area of the region that lies inside the polar curve \\( r = 2\\sin\\theta \\) and outside the polar curve \\( r = 1 \\).",
+                options: [
+                    "\\( \\frac{\\pi}{3} \\)",
+                    "\\( \\frac{\\pi}{2} + \\sqrt{3} \\)",
+                    "\\( \\pi + \\sqrt{3} \\)",
+                    "\\( \\frac{\\pi}{3} + \\frac{\\sqrt{3}}{2} \\)"
+                ],
+                answer: 3,
+                explanation: "The curves intersect where \\( 2\\sin\\theta = 1 \\implies \\theta = \\pi/6, 5\\pi/6 \\). The area is \\( \\frac{1}{2} \\int_{\\pi/6}^{5\\pi/6} ((2\\sin\\theta)^2 - 1^2) d\\theta = \\frac{1}{2} \\int_{\\pi/6}^{5\\pi/6} (4\\sin^2\\theta - 1) d\\theta \\). Use the identity \\( 4\\sin^2\\theta = 2 - 2\\cos(2\\theta) \\). The integrand becomes \\( 1 - 2\\cos(2\\theta) \\). The integral evaluates to \\( \\frac{1}{2} [\\theta - \\sin(2\\theta)]_{\\pi/6}^{5\\pi/6} = \\frac{1}{2} ( (\\frac{5\\pi}{6} + \\frac{\\sqrt{3}}{2}) - (\\frac{\\pi}{6} - \\frac{\\sqrt{3}}{2}) ) = \\frac{1}{2} (\\frac{4\\pi}{6} + \\sqrt{3}) = \\frac{\\pi}{3} + \\frac{\\sqrt{3}}{2} \\)."
+            },
+            {
+                question: "Use integration by parts to evaluate the area bounded by \\( y = \\ln x \\), the x-axis, and \\( x = e \\).",
+                options: [
+                    "\\( 1 \\)",
+                    "\\( e - 1 \\)",
+                    "\\( e \\)",
+                    "\\( \\frac{1}{e} \\)"
+                ],
+                answer: 0,
+                explanation: "We evaluate \\( \\int_{1}^{e} \\ln x dx \\). Let \\( u = \\ln x \\), \\( dv = dx \\), so \\( du = \\frac{1}{x}dx \\) and \\( v = x \\). Then \\( \\int \\ln x dx = x\\ln x - \\int x(\\frac{1}{x})dx = x\\ln x - x \\). Evaluating from 1 to e: \\( (e\\ln e - e) - (1\\ln 1 - 1) = (e - e) - (0 - 1) = 1 \\)."
+            },
+            {
+                question: "What is the average value of \\( f(x) = x e^x \\) on the interval \\( [0, 1] \\)?",
+                options: [
+                    "\\( e - 1 \\)",
+                    "\\( 1 \\)",
+                    "\\( e \\)",
+                    "\\( \\frac{1}{2} \\)"
+                ],
+                answer: 1,
+                explanation: "Average value is \\( \\frac{1}{1-0} \\int_{0}^{1} x e^x dx \\). Use integration by parts: let \\( u = x, dv = e^x dx \\). Then \\( \\int x e^x dx = x e^x - \\int e^x dx = x e^x - e^x \\). Evaluating from 0 to 1 gives \\( (1 e^1 - e^1) - (0 - e^0) = 0 - (-1) = 1 \\)."
+            },
+            {
+                question: "The base of a solid is the circle \\( x^2 + y^2 = 1 \\). Cross sections perpendicular to the x-axis are equilateral triangles. What is the volume of this solid?",
+                options: [
+                    "\\( \\frac{4\\sqrt{3}}{3} \\)",
+                    "\\( \\frac{8\\sqrt{3}}{3} \\)",
+                    "\\( \\frac{2\\sqrt{3}}{3} \\)",
+                    "\\( \\sqrt{3} \\)"
+                ],
+                answer: 0,
+                explanation: "The base length of the triangle is \\( s = 2y = 2\\sqrt{1-x^2} \\). Area of an equilateral triangle is \\( A = \\frac{\\sqrt{3}}{4}s^2 = \\frac{\\sqrt{3}}{4}(4(1-x^2)) = \\sqrt{3}(1-x^2) \\). Volume = \\( \\int_{-1}^{1} \\sqrt{3}(1-x^2) dx = \\sqrt{3} [x - \\frac{x^3}{3}]_{-1}^1 = \\sqrt{3} ( (1 - 1/3) - (-1 + 1/3) ) = \\sqrt{3} (4/3) = \\frac{4\\sqrt{3}}{3} \\)."
+            },
+            {
+                question: "Evaluate the definite integral \\( \\displaystyle \\int_{2}^{4} \\frac{2}{x^2 - 1} dx \\).",
+                options: [
+                    "\\( \\ln(5/3) \\)",
+                    "\\( \\ln(9/5) \\)",
+                    "\\( \\ln 3 \\)",
+                    "\\( \\ln(5/9) \\)"
+                ],
+                answer: 1,
+                explanation: "Use partial fractions: \\( \\frac{2}{(x-1)(x+1)} = \\frac{1}{x-1} - \\frac{1}{x+1} \\). The integral evaluates to \\( [\\ln|x-1| - \\ln|x+1|]_2^4 = \\left[ \\ln\\left|\\frac{x-1}{x+1}\\right| \\right]_2^4 = \\ln(\\frac{3}{5}) - \\ln(\\frac{1}{3}) = \\ln(\\frac{3/5}{1/3}) = \\ln(\\frac{9}{5}) \\)."
+            },
+            {
+                question: "Find the arc length of the curve \\( y = \\cosh x \\) from \\( x = 0 \\) to \\( x = \\ln 2 \\).",
+                options: [
+                    "\\( \\frac{5}{4} \\)",
+                    "\\( \\frac{1}{4} \\)",
+                    "\\( \\frac{3}{4} \\)",
+                    "\\( 1 \\)"
+                ],
+                answer: 2,
+                explanation: "\\( y' = \\sinh x \\). Then \\( \\sqrt{1 + (y')^2} = \\sqrt{1 + \\sinh^2 x} = \\sqrt{\\cosh^2 x} = \\cosh x \\). The integral is \\( \\int_{0}^{\\ln 2} \\cosh x dx = [\\sinh x]_0^{\\ln 2} = \\frac{e^{\\ln 2} - e^{-\\ln 2}}{2} = \\frac{2 - 1/2}{2} = \\frac{3/4}{2} \\times 2 = \\frac{3}{4} \\)."
+            },
+            {
+                question: "Let \\( F(x) = \\int_{1}^{x} \\sqrt{t^4 - 1} dt \\). Find the arc length of the curve \\( y = F(x) \\) from \\( x = 1 \\) to \\( x = 2 \\).",
+                options: [
+                    "\\( \\frac{7}{3} \\)",
+                    "\\( \\frac{8}{3} \\)",
+                    "\\( 3 \\)",
+                    "\\( \\frac{14}{3} \\)"
+                ],
+                answer: 0,
+                explanation: "By the Fundamental Theorem of Calculus, \\( y' = F'(x) = \\sqrt{x^4 - 1} \\). The arc length is \\( \\int_{1}^{2} \\sqrt{1 + (y')^2} dx = \\int_{1}^{2} \\sqrt{1 + (x^4 - 1)} dx = \\int_{1}^{2} \\sqrt{x^4} dx = \\int_{1}^{2} x^2 dx = [\\frac{x^3}{3}]_1^2 = \\frac{8}{3} - \\frac{1}{3} = \\frac{7}{3} \\)."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedOption = null;
+
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const feedbackContainer = document.getElementById('feedback');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackText = document.getElementById('feedback-text');
+        const progressEl = document.getElementById('progress');
+        const quizScreen = document.getElementById('quiz-screen');
+        const scoreScreen = document.getElementById('score-screen');
+        const finalScoreEl = document.getElementById('final-score');
+
+        function loadQuestion() {
+            selectedOption = null;
+            feedbackContainer.classList.remove('show', 'correct-box', 'wrong-box');
+            submitBtn.style.display = 'block';
+            submitBtn.disabled = true;
+            nextBtn.style.display = 'none';
+            progressEl.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+
+            const qData = quizData[currentQuestion];
+            questionEl.innerHTML = qData.question;
+            optionsEl.innerHTML = '';
+
+            const letters = ['A', 'B', 'C', 'D'];
+            qData.options.forEach((opt, idx) => {
+                const li = document.createElement('li');
+                li.className = 'option';
+                li.innerHTML = `<span class="option-label">${letters[idx]}</span> <div>${opt}</div>`;
+                li.onclick = () => selectOption(idx, li);
+                optionsEl.appendChild(li);
+            });
+
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function selectOption(idx, liElement) {
+            const allOptions = optionsEl.children;
+            for (let i = 0; i < allOptions.length; i++) {
+                allOptions[i].classList.remove('selected');
+            }
+            liElement.classList.add('selected');
+            selectedOption = idx;
+            submitBtn.disabled = false;
+        }
+
+        submitBtn.onclick = () => {
+            if (selectedOption === null) return;
+            const qData = quizData[currentQuestion];
+            const allOptions = optionsEl.children;
+
+            for (let i = 0; i < allOptions.length; i++) {
+                allOptions[i].classList.add('disabled');
+            }
+
+            feedbackContainer.classList.add('show');
+
+            if (selectedOption === qData.answer) {
+                allOptions[selectedOption].classList.add('correct');
+                feedbackContainer.classList.add('correct-box');
+                feedbackTitle.textContent = 'Correct!';
+                score++;
+            } else {
+                allOptions[selectedOption].classList.add('wrong');
+                allOptions[qData.answer].classList.add('correct');
+                feedbackContainer.classList.add('wrong-box');
+                feedbackTitle.textContent = 'Incorrect!';
+            }
+            
+            feedbackText.innerHTML = qData.explanation;
+
+            submitBtn.style.display = 'none';
+            nextBtn.style.display = 'block';
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise([feedbackText]);
+            }
+        };
+
+        nextBtn.onclick = () => {
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showScore();
+            }
+        };
+
+        function showScore() {
+            quizScreen.style.display = 'none';
+            scoreScreen.style.display = 'block';
+            finalScoreEl.textContent = score;
+        }
+
+        // Initialize quiz
+        loadQuestion();
+    </script>
+</body>
+</html>
