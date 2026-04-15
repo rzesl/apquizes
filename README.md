@@ -37,6 +37,7 @@ AP Calculus BC
 <br>
 <a href="ap-calc-bc-unit-2.html">AP Calc - Unit 2: Definition and Fundamental Properties</a>
 <br>
+<a href="ap-calc-bc-unit-3.html">AP Calc - Unit 3: Differentiation: Composite, Implicit, and Inverse Functions</a>
 <br>
 AP Lang
 <br>
