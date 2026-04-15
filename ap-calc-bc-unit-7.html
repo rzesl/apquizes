@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Calculus BC - Unit 7 Quiz</title>
+    <!-- MathJax for rendering LaTeX math formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f4f7f6; 
+            color: #333; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px; 
+            box-sizing: border-box; 
+        }
+        .quiz-container { 
+            background-color: #fff; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 800px; 
+            padding: 40px; 
+            border-top: 5px solid #8e44ad;
+        }
+        h1 { 
+            text-align: center; 
+            color: #2c3e50; 
+            font-size: 26px; 
+            margin-bottom: 20px; 
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        .progress { 
+            text-align: center; 
+            margin-bottom: 25px; 
+            font-weight: bold; 
+            color: #7f8c8d; 
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .question { 
+            font-size: 18px; 
+            font-weight: 600; 
+            margin-bottom: 25px; 
+            line-height: 1.6; 
+        }
+        .options { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+        }
+        .option { 
+            background-color: #f8f9fa; 
+            border: 2px solid #e9ecef; 
+            border-radius: 8px; 
+            padding: 16px; 
+            margin-bottom: 12px; 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            display: flex; 
+            align-items: center; 
+            font-size: 16px;
+        }
+        .option:hover { 
+            background-color: #e2e6ea; 
+            border-color: #dae0e5; 
+        }
+        .option.selected { 
+            border-color: #8e44ad; 
+            background-color: #f4ecf7; 
+        }
+        .option.correct { 
+            border-color: #2ecc71; 
+            background-color: #eaeded; 
+        }
+        .option.wrong { 
+            border-color: #e74c3c; 
+            background-color: #fdedec; 
+        }
+        .option.disabled { 
+            pointer-events: none; 
+        }
+        .option-label {
+            font-weight: bold; 
+            margin-right: 15px; 
+            background: #8e44ad; 
+            color: white; 
+            width: 35px; 
+            height: 35px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 50%; 
+            flex-shrink: 0;
+        }
+        .option.correct .option-label { background: #27ae60; }
+        .option.wrong .option-label { background: #c0392b; }
+        .feedback-container {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        .feedback-container.show {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+        .feedback-container.correct-box {
+            background-color: #eafaf1;
+            border-left: 4px solid #27ae60;
+        }
+        .feedback-container.wrong-box {
+            background-color: #fdedec;
+            border-left: 4px solid #c0392b;
+        }
+        .feedback-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .feedback-container.correct-box .feedback-title { color: #27ae60; }
+        .feedback-container.wrong-box .feedback-title { color: #c0392b; }
+        .controls { 
+            display: flex; 
+            justify-content: flex-end; 
+            margin-top: 25px; 
+        }
+        button { 
+            background-color: #8e44ad; 
+            color: #fff; 
+            border: none; 
+            border-radius: 8px; 
+            padding: 14px 28px; 
+            font-size: 16px; 
+            font-weight: bold;
+            cursor: pointer; 
+            transition: background-color 0.3s ease; 
+        }
+        button:hover { 
+            background-color: #732d91; 
+        }
+        button:disabled { 
+            background-color: #bdc3c7; 
+            cursor: not-allowed; 
+        }
+        .score-container { 
+            text-align: center; 
+            display: none; 
+        }
+        .score-text { 
+            font-size: 36px; 
+            font-weight: bold; 
+            color: #2c3e50; 
+            margin-bottom: 30px; 
+        }
+        .score-text span {
+            color: #8e44ad;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <div id="quiz-screen">
+            <h1>AP Calculus BC - Unit 7</h1>
+            <p style="text-align: center; color: #7f8c8d; margin-top: -10px; margin-bottom: 20px;">Differential Equations (including Logistic Models & Euler's Method)</p>
+            <div class="progress" id="progress">Question 1 of 20</div>
+            <div class="question" id="question"></div>
+            <ul class="options" id="options"></ul>
+            
+            <div class="feedback-container" id="feedback">
+                <div class="feedback-title" id="feedback-title"></div>
+                <div id="feedback-text"></div>
+            </div>
+
+            <div class="controls">
+                <button id="submit-btn" disabled>Submit Answer</button>
+                <button id="next-btn" style="display: none;">Next Question</button>
+            </div>
+        </div>
+
+        <div class="score-container" id="score-screen">
+            <h1>Quiz Completed!</h1>
+            <div class="score-text">Your Score: <br> <span id="final-score">0</span> / 20</div>
+            <button onclick="location.reload()">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "The population of a species is modeled by the logistic differential equation \\( \\frac{dP}{dt} = 0.2P\\left(1 - \\frac{P}{500}\\right) \\). What is the carrying capacity of this population?",
+                options: [
+                    "\\( 100 \\)",
+                    "\\( 250 \\)",
+                    "\\( 500 \\)",
+                    "\\( 1000 \\)"
+                ],
+                answer: 2,
+                explanation: "The standard logistic differential equation is \\( \\frac{dP}{dt} = kP\\left(1 - \\frac{P}{M}\\right) \\), where \\( M \\) is the carrying capacity. By comparing equations, it's clear that \\( M = 500 \\)."
+            },
+            {
+                question: "Consider the differential equation \\( \\frac{dy}{dx} = x - y \\) with the initial condition \\( y(0) = 1 \\). Using Euler's method with two steps of equal size \\( \\Delta x = 0.5 \\), what is the approximation for \\( y(1) \\)?",
+                options: [
+                    "\\( 0 \\)",
+                    "\\( 0.5 \\)",
+                    "\\( 1 \\)",
+                    "\\( 1.5 \\)"
+                ],
+                answer: 1,
+                explanation: "Step 1: \\( x_0 = 0 \\), \\( y_0 = 1 \\). Slope \\( m_0 = 0 - 1 = -1 \\). New y: \\( y_1 = 1 + (-1)(0.5) = 0.5 \\).<br>Step 2: \\( x_1 = 0.5 \\), \\( y_1 = 0.5 \\). Slope \\( m_1 = 0.5 - 0.5 = 0 \\). New y: \\( y_2 = 0.5 + (0)(0.5) = 0.5 \\)."
+            },
+            {
+                question: "Find the particular solution \\( y = f(x) \\) to the differential equation \\( \\frac{dy}{dx} = 2xy \\) with the initial condition \\( y(0) = 3 \\).",
+                options: [
+                    "\\( y = 3e^{x^2} \\)",
+                    "\\( y = e^{x^2} + 2 \\)",
+                    "\\( y = 3x^2 \\)",
+                    "\\( y = e^{2x} + 3 \\)"
+                ],
+                answer: 0,
+                explanation: "Separate variables: \\( \\frac{dy}{y} = 2x \\, dx \\). Integrate: \\( \\ln|y| = x^2 + C \\). Solve for y: \\( y = C e^{x^2} \\). Use initial condition \\( y(0) = 3 \\): \\( 3 = C e^0 \\implies C = 3 \\). The solution is \\( y = 3e^{x^2} \\)."
+            },
+            {
+                question: "A population modeled by the differential equation \\( \\frac{dP}{dt} = 2P - 0.01P^2 \\) is growing fastest when the population \\( P \\) is:",
+                options: [
+                    "\\( 50 \\)",
+                    "\\( 100 \\)",
+                    "\\( 200 \\)",
+                    "\\( 400 \\)"
+                ],
+                answer: 1,
+                explanation: "Factor out \\( 2P \\) to get the standard form: \\( \\frac{dP}{dt} = 2P(1 - 0.005P) = 2P(1 - \\frac{P}{200}) \\). The carrying capacity is \\( M = 200 \\). The population grows fastest when \\( P = \\frac{M}{2} = 100 \\)."
+            },
+            {
+                question: "Which of the following differential equations corresponds to a slope field that has horizontal tangents exclusively along the lines \\( y = 2 \\) and \\( y = -2 \\)?",
+                options: [
+                    "\\( \\frac{dy}{dx} = x^2 - 4 \\)",
+                    "\\( \\frac{dy}{dx} = y^2 - 4 \\)",
+                    "\\( \\frac{dy}{dx} = x^2 + y^2 \\)",
+                    "\\( \\frac{dy}{dx} = y(y-2) \\)"
+                ],
+                answer: 1,
+                explanation: "Horizontal tangents occur when \\( \\frac{dy}{dx} = 0 \\). Setting \\( y^2 - 4 = 0 \\) yields \\( y = \\pm 2 \\). This matches the given condition perfectly."
+            },
+            {
+                question: "Given the differential equation \\( \\frac{dy}{dx} = x + y \\) and the initial condition \\( y(1) = 2 \\), use Euler's method with a step size of \\( \\Delta x = 0.1 \\) to estimate \\( y(1.1) \\).",
+                options: [
+                    "\\( 2.1 \\)",
+                    "\\( 2.2 \\)",
+                    "\\( 2.3 \\)",
+                    "\\( 2.4 \\)"
+                ],
+                answer: 2,
+                explanation: "The initial point is \\( (1, 2) \\). The slope is \\( m = 1 + 2 = 3 \\). The linear approximation gives \\( y(1.1) \\approx 2 + 3(0.1) = 2 + 0.3 = 2.3 \\)."
+            },
+            {
+                question: "Let \\( y(t) \\) be the solution to the differential equation \\( \\frac{dy}{dt} = -0.5(y - 20) \\) with \\( y(0) = 80 \\). What is \\( \\displaystyle \\lim_{t \\to \\infty} y(t) \\)?",
+                options: [
+                    "\\( 0 \\)",
+                    "\\( 20 \\)",
+                    "\\( 80 \\)",
+                    "\\( \\infty \\)"
+                ],
+                answer: 1,
+                explanation: "This is Newton's Law of Cooling. The solution has the form \\( y(t) = 20 + C e^{-0.5t} \\). As \\( t \\to \\infty \\), the exponential term goes to 0, leaving the limit as 20."
+            },
+            {
+                question: "What is the general solution to the differential equation \\( \\frac{dy}{dx} = \\frac{y}{x} \\) for \\( x > 0 \\) and \\( y > 0 \\)?",
+                options: [
+                    "\\( y = Cx \\)",
+                    "\\( y = x + C \\)",
+                    "\\( y = Ce^x \\)",
+                    "\\( y = \\ln x + C \\)"
+                ],
+                answer: 0,
+                explanation: "Separate variables: \\( \\frac{dy}{y} = \\frac{dx}{x} \\). Integrate: \\( \\ln y = \\ln x + C_1 \\). Exponentiate both sides: \\( y = e^{\\ln x + C_1} = e^{C_1}x = Cx \\)."
+            },
+            {
+                question: "The size of a population \\( P \\) changes according to the logistic equation \\( \\frac{dP}{dt} = 3P(100 - P) \\). If \\( P(0) = 10 \\), what is \\( \\displaystyle \\lim_{t \\to \\infty} P(t) \\)?",
+                options: [
+                    "\\( 0 \\)",
+                    "\\( 10 \\)",
+                    "\\( 100 \\)",
+                    "\\( 300 \\)"
+                ],
+                answer: 2,
+                explanation: "The differential equation can be factored to show its carrying capacity: \\( \\frac{dP}{dt} = 300P(1 - \\frac{P}{100}) \\). For any initial population \\( P(0) > 0 \\), a logistic model will approach its carrying capacity \\( M = 100 \\) as \\( t \\to \\infty \\)."
+            },
+            {
+                question: "Consider \\( \\frac{dy}{dx} = y \\) with \\( y(0) = 1 \\). If Euler's method with a step size \\( \\Delta x > 0 \\) is used to approximate \\( y(1) \\), will the approximation be an overestimate or an underestimate of the true value?",
+                options: [
+                    "Overestimate",
+                    "Underestimate",
+                    "Exact",
+                    "Cannot be determined"
+                ],
+                answer: 1,
+                explanation: "The exact solution is \\( y = e^x \\). Since \\( y'' = e^x > 0 \\), the solution curve is concave up. Tangent lines lie below concave up curves, so Euler's method (which uses tangent lines) will yield an underestimate."
+            },
+            {
+                question: "Find the value of \\( y(3) \\) for the particular solution to the differential equation \\( \\frac{dy}{dx} = \\frac{x^2}{y^2} \\) given \\( y(0) = 2 \\).",
+                options: [
+                    "\\( \\sqrt[3]{17} \\)",
+                    "\\( 3 \\)",
+                    "\\( \\sqrt[3]{35} \\)",
+                    "\\( 4 \\)"
+                ],
+                answer: 2,
+                explanation: "Separate variables: \\( y^2 dy = x^2 dx \\). Integrate: \\( \\frac{y^3}{3} = \\frac{x^3}{3} + C \\implies y^3 = x^3 + C_1 \\). Apply initial condition: \\( 2^3 = 0 + C_1 \\implies C_1 = 8 \\). The solution is \\( y = \\sqrt[3]{x^3 + 8} \\). At \\( x=3 \\), \\( y(3) = \\sqrt[3]{27 + 8} = \\sqrt[3]{35} \\)."
+            },
+            {
+                question: "A population modeled by the logistic differential equation \\( \\frac{dP}{dt} = kP(M - P) \\) has a point of inflection on its graph of \\( P \\) versus \\( t \\). At what value of \\( P \\) does this occur?",
+                options: [
+                    "\\( \\frac{M}{4} \\)",
+                    "\\( \\frac{M}{2} \\)",
+                    "\\( M \\)",
+                    "\\( 2M \\)"
+                ],
+                answer: 1,
+                explanation: "The point of inflection occurs where the growth rate \\( \\frac{dP}{dt} \\) is maximized. For a logistic equation, this always happens when the population is exactly half of the carrying capacity, or \\( P = \\frac{M}{2} \\)."
+            },
+            {
+                question: "Find the particular solution \\( y(x) \\) to the differential equation \\( \\frac{dy}{dx} = e^{x-y} \\) with the initial condition \\( y(0) = \\ln 2 \\).",
+                options: [
+                    "\\( y = \\ln(e^x) + 1 \\)",
+                    "\\( y = e^x + \\ln 2 - 1 \\)",
+                    "\\( y = x + \\ln 2 \\)",
+                    "\\( y = \\ln(e^x + 1) \\)"
+                ],
+                answer: 3,
+                explanation: "Rewrite as \\( \\frac{dy}{dx} = \\frac{e^x}{e^y} \\). Separate variables: \\( e^y dy = e^x dx \\). Integrate: \\( e^y = e^x + C \\). Apply initial condition: \\( e^{\\ln 2} = e^0 + C \\implies 2 = 1 + C \\implies C = 1 \\). Therefore, \\( e^y = e^x + 1 \\implies y = \\ln(e^x + 1) \\)."
+            },
+            {
+                question: "Which of the following differential equations models a quantity \\( y \\) that grows at a rate proportional to the difference between its current value and 50?",
+                options: [
+                    "\\( \\frac{dy}{dt} = k(50 - y^2) \\)",
+                    "\\( \\frac{dy}{dt} = k(t - 50) \\)",
+                    "\\( \\frac{dy}{dt} = 50 - ky \\)",
+                    "\\( \\frac{dy}{dt} = k(y - 50) \\)"
+                ],
+                answer: 3,
+                explanation: "The phrase 'grows at a rate proportional to' translates to \\( \\frac{dy}{dt} = k \\times \\text{(something)} \\). 'The difference between its current value and 50' translates to \\( (y - 50) \\). Thus, \\( \\frac{dy}{dt} = k(y - 50) \\)."
+            },
+            {
+                question: "Given \\( x \\frac{dy}{dx} = 2y \\) and \\( y(1) = 1 \\), what is the value of \\( y(2) \\)?",
+                options: [
+                    "\\( 2 \\)",
+                    "\\( 4 \\)",
+                    "\\( 8 \\)",
+                    "\\( e^2 \\)"
+                ],
+                answer: 1,
+                explanation: "Separate variables: \\( \\frac{dy}{y} = 2 \\frac{dx}{x} \\). Integrate: \\( \\ln|y| = 2\\ln|x| + C = \\ln(x^2) + C \\). Exponentiate: \\( y = C_1 x^2 \\). Use initial condition \\( y(1) = 1 \\): \\( 1 = C_1(1)^2 \\implies C_1 = 1 \\). The solution is \\( y = x^2 \\). Therefore, \\( y(2) = 2^2 = 4 \\)."
+            },
+            {
+                question: "A population's rate of change is modeled by \\( \\frac{dP}{dt} = 0.1P - 0.001P^2 \\). What is the carrying capacity \\( M \\)?",
+                options: [
+                    "\\( 10 \\)",
+                    "\\( 50 \\)",
+                    "\\( 100 \\)",
+                    "\\( 1000 \\)"
+                ],
+                answer: 2,
+                explanation: "Factor out \\( 0.1P \\) to write it in the form \\( kP(1 - \\frac{P}{M}) \\): \\( \\frac{dP}{dt} = 0.1P(1 - \\frac{0.001}{0.1}P) = 0.1P(1 - 0.01P) = 0.1P(1 - \\frac{P}{100}) \\). Thus, the carrying capacity is \\( M = 100 \\)."
+            },
+            {
+                question: "Which of the following functions is a solution to the differential equation \\( y'' + y = 0 \\)?",
+                options: [
+                    "\\( y = e^x \\)",
+                    "\\( y = \\sin x \\)",
+                    "\\( y = x^2 \\)",
+                    "\\( y = \\ln x \\)"
+                ],
+                answer: 1,
+                explanation: "We need a function whose second derivative is its own negative. If \\( y = \\sin x \\), then \\( y' = \\cos x \\) and \\( y'' = -\\sin x \\). Therefore, \\( y'' + y = -\\sin x + \\sin x = 0 \\)."
+            },
+            {
+                question: "Use Euler's method with a step size of \\( \\Delta x = 0.5 \\) to approximate \\( y(1) \\) for the differential equation \\( y' = xy \\), given \\( y(0) = 2 \\).",
+                options: [
+                    "\\( 2.0 \\)",
+                    "\\( 2.25 \\)",
+                    "\\( 2.5 \\)",
+                    "\\( 3.0 \\)"
+                ],
+                answer: 2,
+                explanation: "Step 1: \\( x_0=0, y_0=2 \\). Slope \\( m_0 = 0 \\times 2 = 0 \\). \\( y_1 = 2 + 0(0.5) = 2 \\).<br>Step 2: \\( x_1=0.5, y_1=2 \\). Slope \\( m_1 = 0.5 \\times 2 = 1 \\). \\( y_2 = 2 + 1(0.5) = 2.5 \\)."
+            },
+            {
+                question: "Find the general solution to the differential equation \\( \\frac{dy}{dx} = \\frac{x}{y+1} \\) given the initial condition \\( y(0) = 1 \\).",
+                options: [
+                    "\\( y = \\sqrt{x^2 + 4} - 1 \\)",
+                    "\\( y = x^2 + 1 \\)",
+                    "\\( y = \\sqrt{x^2 + 1} \\)",
+                    "\\( y = e^{x^2} \\)"
+                ],
+                answer: 0,
+                explanation: "Separate variables: \\( (y+1)dy = x dx \\). Integrate: \\( \\frac{(y+1)^2}{2} = \\frac{x^2}{2} + C \\implies (y+1)^2 = x^2 + C_1 \\). Plug in \\( y(0)=1 \\): \\( (1+1)^2 = 0 + C_1 \\implies 4 = C_1 \\). So, \\( (y+1)^2 = x^2 + 4 \\implies y+1 = \\sqrt{x^2+4} \\implies y = \\sqrt{x^2+4} - 1 \\)."
+            },
+            {
+                question: "A radioactive isotope decays at a rate proportional to its mass. If its half-life is 10 days, what is the decay constant \\( k \\) assuming the model \\( M(t) = M_0 e^{kt} \\)?",
+                options: [
+                    "\\( \\frac{\\ln 2}{10} \\)",
+                    "\\( -\\frac{\\ln 2}{10} \\)",
+                    "\\( -10 \\ln 2 \\)",
+                    "\\( -\\frac{10}{\\ln 2} \\)"
+                ],
+                answer: 1,
+                explanation: "Using the decay model, at \\( t = 10 \\), the mass is half the original: \\( \\frac{1}{2}M_0 = M_0 e^{10k} \\). Divide by \\( M_0 \\) to get \\( \\frac{1}{2} = e^{10k} \\). Take the natural log of both sides: \\( \\ln(\\frac{1}{2}) = 10k \\implies -\\ln 2 = 10k \\implies k = -\\frac{\\ln 2}{10} \\)."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedOption = null;
+
+        const questionEl = document.getElementById('question');
+        const optionsEl = document.getElementById('options');
+        const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const feedbackContainer = document.getElementById('feedback');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackText = document.getElementById('feedback-text');
+        const progressEl = document.getElementById('progress');
+        const quizScreen = document.getElementById('quiz-screen');
+        const scoreScreen = document.getElementById('score-screen');
+        const finalScoreEl = document.getElementById('final-score');
+
+        function loadQuestion() {
+            selectedOption = null;
+            feedbackContainer.classList.remove('show', 'correct-box', 'wrong-box');
+            submitBtn.style.display = 'block';
+            submitBtn.disabled = true;
+            nextBtn.style.display = 'none';
+            progressEl.textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+
+            const qData = quizData[currentQuestion];
+            questionEl.innerHTML = qData.question;
+            optionsEl.innerHTML = '';
+
+            const letters = ['A', 'B', 'C', 'D'];
+            qData.options.forEach((opt, idx) => {
+                const li = document.createElement('li');
+                li.className = 'option';
+                li.innerHTML = `<span class="option-label">${letters[idx]}</span> <div>${opt}</div>`;
+                li.onclick = () => selectOption(idx, li);
+                optionsEl.appendChild(li);
+            });
+
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function selectOption(idx, liElement) {
+            const allOptions = optionsEl.children;
+            for (let i = 0; i < allOptions.length; i++) {
+                allOptions[i].classList.remove('selected');
+            }
+            liElement.classList.add('selected');
+            selectedOption = idx;
+            submitBtn.disabled = false;
+        }
+
+        submitBtn.onclick = () => {
+            if (selectedOption === null) return;
+            const qData = quizData[currentQuestion];
+            const allOptions = optionsEl.children;
+
+            for (let i = 0; i < allOptions.length; i++) {
+                allOptions[i].classList.add('disabled');
+            }
+
+            feedbackContainer.classList.add('show');
+
+            if (selectedOption === qData.answer) {
+                allOptions[selectedOption].classList.add('correct');
+                feedbackContainer.classList.add('correct-box');
+                feedbackTitle.textContent = 'Correct!';
+                score++;
+            } else {
+                allOptions[selectedOption].classList.add('wrong');
+                allOptions[qData.answer].classList.add('correct');
+                feedbackContainer.classList.add('wrong-box');
+                feedbackTitle.textContent = 'Incorrect!';
+            }
+            
+            feedbackText.innerHTML = qData.explanation;
+
+            submitBtn.style.display = 'none';
+            nextBtn.style.display = 'block';
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise([feedbackText]);
+            }
+        };
+
+        nextBtn.onclick = () => {
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showScore();
+            }
+        };
+
+        function showScore() {
+            quizScreen.style.display = 'none';
+            scoreScreen.style.display = 'block';
+            finalScoreEl.textContent = score;
+        }
+
+        // Initialize quiz
+        loadQuestion();
+    </script>
+</body>
+</html>
