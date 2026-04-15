@@ -45,6 +45,8 @@ AP Calculus BC
 <br>
 <a href="ap-calc-bc-unit-6.html">AP Calc - Unit 6: Integration and Accumulation of Change</a>
 <br>
+<a href="ap-calc-bc-unit-7.html">AP Calc - Unit 7: Differential Equations (BC includes Euler's Method and logistic models)</a>
+<br>
 <br>
 AP Lang
 <br>
