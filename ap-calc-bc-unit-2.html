@@ -31,16 +31,21 @@
         }
         .question-card {
             background: #fff;
-            padding: 25px;
+            padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             margin-bottom: 30px;
-            border-left: 5px solid #3498db;
+            border-top: 5px solid #3498db;
+            display: none; /* hidden by default */
+        }
+        .question-card.active {
+            display: block;
+            animation: fadeIn 0.4s;
         }
         .question-header {
             font-weight: 600;
-            font-size: 1.2em;
-            margin-bottom: 15px;
+            font-size: 1.3em;
+            margin-bottom: 20px;
             color: #2c3e50;
         }
         .options {
@@ -55,7 +60,7 @@
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-size: 1.05em;
+            font-size: 1.1em;
             display: flex;
             align-items: center;
         }
@@ -68,8 +73,8 @@
             margin-right: 15px;
             background: #3498db;
             color: white;
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -96,26 +101,83 @@
             pointer-events: none;
             opacity: 0.8;
         }
-        .explanation {
-            margin-top: 20px;
-            padding: 15px 20px;
-            background-color: #eef2f5;
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
             border-radius: 6px;
-            border-left: 4px solid #7f8c8d;
             display: none;
-            font-size: 0.95em;
+            font-size: 1.05em;
         }
-        .explanation.show {
+        .feedback.show {
             display: block;
             animation: fadeIn 0.5s;
+        }
+        .feedback.correct-feedback {
+            background-color: #d4edda;
+            border-left: 5px solid #28a745;
+            color: #155724;
+        }
+        .feedback.incorrect-feedback {
+            background-color: #f8d7da;
+            border-left: 5px solid #dc3545;
+            color: #721c24;
+        }
+        .next-btn {
+            margin-top: 20px;
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            float: right;
+            display: none;
+            transition: background 0.2s;
+        }
+        .next-btn:hover {
+            background-color: #2980b9;
+        }
+        .next-btn.show {
+            display: block;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
         }
         .status-icon {
             margin-left: auto;
             font-weight: bold;
-            font-size: 1.2em;
+            font-size: 1.3em;
+        }
+        #score-container {
+            display: none;
+            text-align: center;
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-top: 5px solid #2ecc71;
+        }
+        #score-container h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        #score-container .score {
+            font-size: 3em;
+            color: #2ecc71;
+            font-weight: bold;
+        }
+        .progress {
+            text-align: center;
+            font-weight: bold;
+            color: #7f8c8d;
+            margin-bottom: 20px;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
+            from { opacity: 0; transform: translateY(-5px); }
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
@@ -123,240 +185,258 @@
 <body>
 
     <h1>AP Calculus BC Quiz<br>Unit 2: Differentiation</h1>
-    <p class="intro">Test your knowledge of the definition of the derivative and fundamental properties. Click an option to reveal the answer and explanation.</p>
+    <p class="intro" id="intro-text">Test your knowledge of the definition of the derivative and fundamental properties. Good luck!</p>
 
+    <div class="progress" id="progress-text">Question 1 of 20</div>
     <div id="quiz-container"></div>
+
+    <div id="score-container">
+        <h2>Quiz Complete!</h2>
+        <p>Your final score is:</p>
+        <div class="score" id="final-score">0 / 20</div>
+    </div>
 
     <script>
         const quizData = [
             {
-                q: "What is the value of \( \displaystyle \lim_{h \to 0} \frac{\tan(\pi/4 + h) - 1}{h} \)?",
+                q: "What is the value of \\( \\displaystyle \\lim_{h \\to 0} \\frac{e^{2+h} - e^2}{h} \\)?",
                 options: [
-                    "\( 2 \)",
-                    "\( 1 \)",
-                    "\( \sqrt{2} \)",
-                    "\( \frac{1}{2} \)"
+                    "\\( e^2 \\)",
+                    "\\( 2e^2 \\)",
+                    "\\( e \\)",
+                    "\\( 0 \\)"
                 ],
                 correct: 0,
-                explanation: "This limit represents the definition of the derivative of \( f(x) = \tan x \) at \( x = \pi/4 \). Since \( f'(x) = \sec^2 x \), we evaluate \( \sec^2(\pi/4) = (\sqrt{2})^2 = 2 \)."
+                explanation: "This limit represents the definition of the derivative of \\( f(x) = e^x \\) evaluated at \\( x = 2 \\). Since \\( f'(x) = e^x \\), the answer is \\( e^2 \\)."
             },
             {
-                q: "Let \( f(x) = \frac{x^2 - x - 2}{x - 2} \) for \( x \neq 2 \). If \( f \) is made continuous at \( x = 2 \), what is the value of \( f'(2) \)?",
+                q: "Let \\( f(x) = \\begin{cases} ax^2+b & x \\le 1 \\\\ 3x - 2 & x > 1 \\end{cases} \\). If \\( f \\) is differentiable at \\( x = 1 \\), what is the value of \\( a + b \\)?",
                 options: [
-                    "\( 0 \)",
-                    "\( 1 \)",
-                    "\( 2 \)",
-                    "\( \text{undefined} \)"
+                    "\\( 0 \\)",
+                    "\\( 1 \\)",
+                    "\\( 2 \\)",
+                    "\\( 3 \\)"
                 ],
                 correct: 1,
-                explanation: "Factoring the numerator gives \( \frac{(x-2)(x+1)}{x-2} = x + 1 \). Since \( f \) is continuous at \( x = 2 \), we can treat \( f(x) = x + 1 \) for all real numbers near 2. The derivative is \( f'(x) = 1 \), so \( f'(2) = 1 \)."
+                explanation: "For differentiability at \\( x=1 \\), the derivatives must match: \\( 2ax = 3 \\implies 2a(1) = 3 \\implies a = 1.5 \\). The function must also be continuous: \\( a(1)^2 + b = 3(1) - 2 \\implies a + b = 1 \\). You don't even need to solve for \\( b \\); the continuity equation directly gives \\( a + b = 1 \\)."
             },
             {
-                q: "If \( y = x^3 e^x \), find \( \frac{dy}{dx} \).",
+                q: "Let \\( f(x) = \\frac{x^2}{e^x} \\). Find \\( f'(2) \\).",
                 options: [
-                    "\( 3x^2 e^x \)",
-                    "\( x^3 e^x - 3x^2 e^x \)",
-                    "\( x^2 e^x (x + 3) \)",
-                    "\( 3x^2 e^x \ln(x) \)"
+                    "\\( 0 \\)",
+                    "\\( \\frac{4}{e^2} \\)",
+                    "\\( -\\frac{4}{e^2} \\)",
+                    "\\( \\frac{2}{e^2} \\)"
+                ],
+                correct: 0,
+                explanation: "Using the quotient rule: \\( f'(x) = \\frac{2x(e^x) - x^2(e^x)}{(e^x)^2} = \\frac{2x - x^2}{e^x} \\). Evaluating at \\( x = 2 \\) gives \\( \\frac{4 - 4}{e^2} = 0 \\)."
+            },
+            {
+                q: "If \\( g(x) = x^2 \\ln(x) \\), what is \\( g'(e) \\)?",
+                options: [
+                    "\\( e \\)",
+                    "\\( 2e \\)",
+                    "\\( 3e \\)",
+                    "\\( e^2 \\)"
                 ],
                 correct: 2,
-                explanation: "Using the product rule: \( \frac{d}{dx}[x^3 e^x] = (3x^2)(e^x) + (x^3)(e^x) = x^2 e^x(3 + x) \)."
+                explanation: "Using the product rule: \\( g'(x) = 2x \\ln(x) + x^2\\left(\\frac{1}{x}\\right) = 2x \\ln(x) + x \\). Plugging in \\( x = e \\), we get \\( 2e \\ln(e) + e = 2e(1) + e = 3e \\)."
             },
             {
-                q: "Given \( f(x) = \frac{e^x}{x^2} \), which of the following is \( f'(x) \)?",
+                q: "Evaluate the limit: \\( \\displaystyle \\lim_{x \\to \\pi/4} \\frac{\\sin x - \\sqrt{2}/2}{x - \\pi/4} \\).",
                 options: [
-                    "\( \frac{e^x}{2x} \)",
-                    "\( \frac{x^2 e^x - 2x e^x}{x^4} \)",
-                    "\( \frac{x^2 e^x + 2x e^x}{x^4} \)",
-                    "\( \frac{x e^x - 2e^x}{x^3} \)"
+                    "\\( \\frac{\\sqrt{2}}{2} \\)",
+                    "\\( -\\frac{\\sqrt{2}}{2} \\)",
+                    "\\( 1 \\)",
+                    "\\( 0 \\)"
+                ],
+                correct: 0,
+                explanation: "This is the alternative limit definition of the derivative for \\( f(x) = \\sin x \\) at \\( x = \\pi/4 \\). Since \\( f'(x) = \\cos x \\), we evaluate \\( \\cos(\\pi/4) = \\frac{\\sqrt{2}}{2} \\)."
+            },
+            {
+                q: "Find the slope of the normal line to the graph of \\( y = \\tan x \\) at \\( x = \\pi/4 \\).",
+                options: [
+                    "\\( \\frac{1}{2} \\)",
+                    "\\( -\\frac{1}{2} \\)",
+                    "\\( 2 \\)",
+                    "\\( -2 \\)"
+                ],
+                correct: 1,
+                explanation: "First, find the slope of the tangent line: \\( y' = \\sec^2 x \\). At \\( x = \\pi/4 \\), \\( y' = (\\sqrt{2})^2 = 2 \\). The slope of the normal line is the negative reciprocal, so \\( m = -\\frac{1}{2} \\)."
+            },
+            {
+                q: "Evaluate \\( \\displaystyle \\lim_{h \\to 0} \\frac{\\cos(\\pi + h) - \\cos(\\pi)}{h} \\).",
+                options: [
+                    "\\( 1 \\)",
+                    "\\( -1 \\)",
+                    "\\( 0 \\)",
+                    "\\( \\pi \\)"
+                ],
+                correct: 2,
+                explanation: "This limit represents the derivative of \\( f(x) = \\cos x \\) at \\( x = \\pi \\). \\( f'(x) = -\\sin x \\), and \\( -\\sin(\\pi) = 0 \\)."
+            },
+            {
+                q: "Which of the following functions is differentiable at \\( x = 0 \\)?",
+                options: [
+                    "\\( f(x) = |x| \\)",
+                    "\\( f(x) = x^{1/3} \\)",
+                    "\\( f(x) = x|x| \\)",
+                    "\\( f(x) = e^{-|x|} \\)"
+                ],
+                correct: 2,
+                explanation: "\\( f(x) = x|x| \\) can be written as \\( x^2 \\) for \\( x \\ge 0 \\) and \\( -x^2 \\) for \\( x < 0 \\). Both left and right hand derivatives at \\( x = 0 \\) equal 0, making it smooth and differentiable."
+            },
+            {
+                q: "Find the derivative of \\( y = 3^x \\) evaluated at \\( x = 1 \\).",
+                options: [
+                    "\\( 3 \\)",
+                    "\\( \\ln 3 \\)",
+                    "\\( 3 \\ln 3 \\)",
+                    "\\( \\frac{3}{\\ln 3} \\)"
+                ],
+                correct: 2,
+                explanation: "The derivative of \\( a^x \\) is \\( a^x \\ln a \\). So, \\( y' = 3^x \\ln 3 \\). At \\( x = 1 \\), we get \\( 3^1 \\ln 3 = 3 \\ln 3 \\)."
+            },
+            {
+                q: "If \\( f(x) = x e^x \\cos x \\), what is \\( f'(0) \\)?",
+                options: [
+                    "\\( 1 \\)",
+                    "\\( 0 \\)",
+                    "\\( -1 \\)",
+                    "\\( e \\)"
+                ],
+                correct: 0,
+                explanation: "Using the extended product rule: \\( f'(x) = 1(e^x \\cos x) + x(e^x \\cos x - e^x \\sin x) \\). Plugging in \\( x=0 \\): \\( 1(1 \\cdot 1) + 0 = 1 \\)."
+            },
+            {
+                q: "Let \\( f(x) = \\frac{\\sin x}{x} \\). Find \\( f'(\\pi) \\).",
+                options: [
+                    "\\( \\frac{1}{\\pi} \\)",
+                    "\\( -\\frac{1}{\\pi} \\)",
+                    "\\( \\frac{1}{\\pi^2} \\)",
+                    "\\( -\\frac{1}{\\pi^2} \\)"
+                ],
+                correct: 1,
+                explanation: "Using the quotient rule: \\( f'(x) = \\frac{x \\cos x - \\sin x}{x^2} \\). At \\( x = \\pi \\): \\( \\frac{\\pi(-1) - 0}{\\pi^2} = -\\frac{\\pi}{\\pi^2} = -\\frac{1}{\\pi} \\)."
+            },
+            {
+                q: "Given \\( y = x^4 - 2x^3 + x - 5 \\), find the third derivative \\( y'''(1) \\).",
+                options: [
+                    "\\( 12 \\)",
+                    "\\( 24 \\)",
+                    "\\( 0 \\)",
+                    "\\( 6 \\)"
+                ],
+                correct: 0,
+                explanation: "\\( y' = 4x^3 - 6x^2 + 1 \\). \\( y'' = 12x^2 - 12x \\). \\( y''' = 24x - 12 \\). Evaluating at \\( x=1 \\), \\( y'''(1) = 24(1) - 12 = 12 \\)."
+            },
+            {
+                q: "Suppose \\( f(2) = 3 \\), \\( f'(2) = -1 \\), \\( g(2) = 4 \\), and \\( g'(2) = 2 \\). If \\( P(x) = f(x)g(x) \\), find \\( P'(2) \\).",
+                options: [
+                    "\\( -2 \\)",
+                    "\\( 2 \\)",
+                    "\\( 10 \\)",
+                    "\\( -10 \\)"
+                ],
+                correct: 1,
+                explanation: "Using the product rule: \\( P'(2) = f'(2)g(2) + f(2)g'(2) = (-1)(4) + (3)(2) = -4 + 6 = 2 \\)."
+            },
+            {
+                q: "Using the same values: \\( f(2) = 3 \\), \\( f'(2) = -1 \\), \\( g(2) = 4 \\), and \\( g'(2) = 2 \\). If \\( Q(x) = \\frac{f(x)}{g(x)} \\), find \\( Q'(2) \\).",
+                options: [
+                    "\\( -\\frac{5}{8} \\)",
+                    "\\( \\frac{5}{8} \\)",
+                    "\\( -\\frac{5}{4} \\)",
+                    "\\( \\frac{5}{4} \\)"
+                ],
+                correct: 0,
+                explanation: "Using the quotient rule: \\( Q'(2) = \\frac{f'(2)g(2) - f(2)g'(2)}{(g(2))^2} = \\frac{(-1)(4) - (3)(2)}{16} = \\frac{-4 - 6}{16} = -\\frac{10}{16} = -\\frac{5}{8} \\)."
+            },
+            {
+                q: "If a function \\( f \\) is differentiable at \\( x = c \\), which of the following MUST be true?",
+                options: [
+                    "\\( \\displaystyle \\lim_{x \\to c} f(x) = f'(c) \\)",
+                    "\\( f(c) = 0 \\)",
+                    "\\( \\displaystyle \\lim_{x \\to c} f(x) = f(c) \\)",
+                    "\\( f \\) has a local maximum or minimum at \\( x = c \\)."
+                ],
+                correct: 2,
+                explanation: "Differentiability implies continuity. The mathematical definition of continuity at a point \\( c \\) is \\( \\lim_{x \\to c} f(x) = f(c) \\)."
+            },
+            {
+                q: "Find the derivative of \\( f(x) = \\frac{1}{\\sqrt{x}} \\) at \\( x = 4 \\).",
+                options: [
+                    "\\( -\\frac{1}{16} \\)",
+                    "\\( \\frac{1}{16} \\)",
+                    "\\( -\\frac{1}{8} \\)",
+                    "\\( -\\frac{1}{32} \\)"
+                ],
+                correct: 0,
+                explanation: "Rewrite the function as \\( f(x) = x^{-1/2} \\). The derivative is \\( f'(x) = -\\frac{1}{2}x^{-3/2} = -\\frac{1}{2x\\sqrt{x}} \\). At \\( x=4 \\), \\( f'(4) = -\\frac{1}{2(4)(2)} = -\\frac{1}{16} \\)."
+            },
+            {
+                q: "What is the equation of the tangent line to the graph of \\( y = e^x \\) at \\( x = 1 \\)?",
+                options: [
+                    "\\( y = ex \\)",
+                    "\\( y = ex + 1 \\)",
+                    "\\( y = x + e - 1 \\)",
+                    "\\( y = e^2 x - e \\)"
+                ],
+                correct: 0,
+                explanation: "The point is \\( (1, e^1) = (1, e) \\). The derivative is \\( y' = e^x \\), so the slope at \\( x=1 \\) is \\( m = e \\). The point-slope equation is \\( y - e = e(x - 1) \\implies y = ex - e + e \\implies y = ex \\)."
+            },
+            {
+                q: "Let \\( y = \\sin x \\cos x \\). Which of the following is equivalent to \\( \\frac{dy}{dx} \\)?",
+                options: [
+                    "\\( \\cos^2 x + \\sin^2 x \\)",
+                    "\\( \\cos^2 x - \\sin^2 x \\)",
+                    "\\( 1 \\)",
+                    "\\( -\\sin^2 x \\)"
+                ],
+                correct: 1,
+                explanation: "Using the product rule: \\( y' = \\frac{d}{dx}(\\sin x)\\cos x + \\sin x \\frac{d}{dx}(\\cos x) = \\cos x \\cos x + \\sin x (-\\sin x) = \\cos^2 x - \\sin^2 x \\)."
+            },
+            {
+                q: "Evaluate the limit: \\( \\displaystyle \\lim_{h \\to 0} \\frac{(x+h)^3 - x^3}{h} \\).",
+                options: [
+                    "\\( 3x \\)",
+                    "\\( x^2 \\)",
+                    "\\( 3x^3 \\)",
+                    "\\( 3x^2 \\)"
                 ],
                 correct: 3,
-                explanation: "Using the quotient rule: \( f'(x) = \frac{x^2(e^x) - e^x(2x)}{(x^2)^2} = \frac{x^2 e^x - 2x e^x}{x^4} \). Factoring out an \( x \) simplifies this to \( \frac{x e^x - 2e^x}{x^3} \)."
+                explanation: "This limit is the formal definition of the derivative for \\( f(x) = x^3 \\). Using the power rule, \\( \\frac{d}{dx}(x^3) = 3x^2 \\)."
             },
             {
-                q: "Find \( y'(1) \) if \( y = \sqrt{x} \ln x \).",
+                q: "Find the equation of the tangent line to \\( f(x) = \\frac{1}{x} \\) at \\( x = -1 \\).",
                 options: [
-                    "\( 1 \)",
-                    "\( 0 \)",
-                    "\( \frac{1}{2} \)",
-                    "\( e \)"
-                ],
-                correct: 0,
-                explanation: "Using the product rule: \( y' = \frac{1}{2\sqrt{x}}\ln x + \sqrt{x}(\frac{1}{x}) = \frac{\ln x}{2\sqrt{x}} + \frac{1}{\sqrt{x}} \). Plugging in \( x = 1 \), we get \( 0 + 1 = 1 \)."
-            },
-            {
-                q: "Which of the following is true about the function \( f(x) = |x - 3| \)?",
-                options: [
-                    "It is differentiable at \( x = 3 \).",
-                    "It is continuous but not differentiable at \( x = 3 \).",
-                    "It is neither continuous nor differentiable at \( x = 3 \).",
-                    "It has a horizontal tangent at \( x = 3 \)."
-                ],
-                correct: 1,
-                explanation: "The absolute value function has a sharp corner (cusp) at \( x = 3 \). The left-hand derivative is \( -1 \) and the right-hand derivative is \( 1 \), so it is not differentiable there, although the graph is unbroken and thus continuous."
-            },
-            {
-                q: "Let \( f(x) = x^2 \cos x \). Find \( f'(\pi) \).",
-                options: [
-                    "\( 2\pi \)",
-                    "\( \pi^2 \)",
-                    "\( -2\pi \)",
-                    "\( -\pi^2 \)"
-                ],
-                correct: 2,
-                explanation: "By the product rule: \( f'(x) = 2x\cos x - x^2\sin x \). Evaluating at \( \pi \): \( 2\pi(-1) - \pi^2(0) = -2\pi \)."
-            },
-            {
-                q: "Evaluate the limit: \( \displaystyle \lim_{x \to e} \frac{\ln x - 1}{x - e} \)",
-                options: [
-                    "\( \frac{1}{e} \)",
-                    "\( 1 \)",
-                    "\( e \)",
-                    "\( 0 \)"
-                ],
-                correct: 0,
-                explanation: "This is the alternative definition of the derivative for \( f(x) = \ln x \) at \( x = e \). Since \( f'(x) = \frac{1}{x} \), evaluated at \( x = e \) it yields \( \frac{1}{e} \)."
-            },
-            {
-                q: "Find the slope of the normal line to the curve \( y = \frac{1}{x} + x \) at \( x = 2 \).",
-                options: [
-                    "\( \frac{3}{4} \)",
-                    "\( -\frac{4}{3} \)",
-                    "\( \frac{4}{3} \)",
-                    "\( -\frac{3}{4} \)"
-                ],
-                correct: 1,
-                explanation: "First find the derivative: \( y' = -\frac{1}{x^2} + 1 \). At \( x = 2 \), \( m_{tangent} = -\frac{1}{4} + 1 = \frac{3}{4} \). The normal line is perpendicular, so its slope is the negative reciprocal: \( -\frac{4}{3} \)."
-            },
-            {
-                q: "Suppose \( f(3) = 2, f'(3) = -1, g(3) = 4 \), and \( g'(3) = 5 \). If \( h(x) = f(x)g(x) \), find \( h'(3) \).",
-                options: [
-                    "\( -5 \)",
-                    "\( 14 \)",
-                    "\( 6 \)",
-                    "\( -6 \)"
-                ],
-                correct: 2,
-                explanation: "Using the product rule: \( h'(3) = f'(3)g(3) + f(3)g'(3) = (-1)(4) + (2)(5) = -4 + 10 = 6 \)."
-            },
-            {
-                q: "Using the same values: \( f(3) = 2, f'(3) = -1, g(3) = 4 \), and \( g'(3) = 5 \). If \( k(x) = \frac{f(x)}{g(x)} \), find \( k'(3) \).",
-                options: [
-                    "\( -\frac{7}{8} \)",
-                    "\( \frac{7}{8} \)",
-                    "\( -\frac{1}{4} \)",
-                    "\( \frac{1}{4} \)"
-                ],
-                correct: 0,
-                explanation: "Using the quotient rule: \( k'(3) = \frac{g(3)f'(3) - f(3)g'(3)}{(g(3))^2} = \frac{(4)(-1) - (2)(5)}{4^2} = \frac{-4 - 10}{16} = -\frac{14}{16} = -\frac{7}{8} \)."
-            },
-            {
-                q: "Evaluate the derivative of \( f(x) = x \log_2 x \) at \( x = 2 \).",
-                options: [
-                    "\( 1 + \ln 2 \)",
-                    "\( 1 + \frac{1}{\ln 2} \)",
-                    "\( \frac{1}{\ln 2} \)",
-                    "\( 2 \)"
-                ],
-                correct: 1,
-                explanation: "Using the product rule and remembering that \( \frac{d}{dx}(\log_2 x) = \frac{1}{x \ln 2} \), we get \( f'(x) = 1 \cdot \log_2 x + x \left( \frac{1}{x \ln 2} \right) = \log_2 x + \frac{1}{\ln 2} \). At \( x = 2 \), \( \log_2 2 = 1 \), yielding \( 1 + \frac{1}{\ln 2} \)."
-            },
-            {
-                q: "Let \( f(x) = \sin x \cos x \). What is \( f'(\pi/6) \)?",
-                options: [
-                    "\( \frac{\sqrt{3}}{2} \)",
-                    "\( -\frac{1}{2} \)",
-                    "\( \frac{1}{2} \)",
-                    "\( 0 \)"
-                ],
-                correct: 2,
-                explanation: "Using the product rule: \( f'(x) = \cos x (\cos x) + \sin x (-\sin x) = \cos^2 x - \sin^2 x \). At \( x = \pi/6 \), \( (\frac{\sqrt{3}}{2})^2 - (\frac{1}{2})^2 = \frac{3}{4} - \frac{1}{4} = \frac{1}{2} \)."
-            },
-            {
-                q: "Find \( f'(x) \) if \( f(x) = \frac{2x^3 - 5x + 1}{x^2} \).",
-                options: [
-                    "\( 2 + \frac{5}{x^2} + \frac{2}{x^3} \)",
-                    "\( 2 - \frac{5}{x^2} - \frac{2}{x^3} \)",
-                    "\( 2x + \frac{5}{x^2} - \frac{2}{x^3} \)",
-                    "\( 2 + \frac{5}{x^2} - \frac{2}{x^3} \)"
+                    "\\( y = x \\)",
+                    "\\( y = -x + 2 \\)",
+                    "\\( y = x - 2 \\)",
+                    "\\( y = -x - 2 \\)"
                 ],
                 correct: 3,
-                explanation: "First, rewrite the function by dividing each term by \( x^2 \): \( f(x) = 2x - 5x^{-1} + x^{-2} \). Then apply the power rule: \( f'(x) = 2 + 5x^{-2} - 2x^{-3} = 2 + \frac{5}{x^2} - \frac{2}{x^3} \)."
-            },
-            {
-                q: "If \( f(x) \) is a differentiable function and \( f'(2) = 0 \), which of the following MUST be true?",
-                options: [
-                    "The tangent line to the graph of \( f \) at \( x = 2 \) is horizontal.",
-                    "\( f(x) \) has a local maximum or minimum at \( x = 2 \).",
-                    "The graph of \( f \) crosses the x-axis at \( x = 2 \).",
-                    "\( f(2) = 0 \)"
-                ],
-                correct: 0,
-                explanation: "A derivative of 0 strictly means the slope of the tangent line at that point is 0 (horizontal). It does NOT guarantee a local extremum (e.g., \( y = x^3 \) at \( x=0 \)) and tells us nothing about the y-value."
-            },
-            {
-                q: "Find the derivative of \( f(x) = \csc x \) evaluated at \( x = \pi/6 \).",
-                options: [
-                    "\( -2 \)",
-                    "\( -2\sqrt{3} \)",
-                    "\( 2\sqrt{3} \)",
-                    "\( -\frac{2}{\sqrt{3}} \)"
-                ],
-                correct: 1,
-                explanation: "The derivative is \( f'(x) = -\csc x \cot x \). At \( \pi/6 \), \( \csc(\pi/6) = 2 \) and \( \cot(\pi/6) = \sqrt{3} \). So, \( f'(\pi/6) = -2\sqrt{3} \)."
-            },
-            {
-                q: "Let \( f(x) = \frac{x}{\ln x} \). What is \( f'(e) \)?",
-                options: [
-                    "\( e \)",
-                    "\( 1 \)",
-                    "\( 0 \)",
-                    "\( \frac{1}{e} \)"
-                ],
-                correct: 2,
-                explanation: "Using the quotient rule: \( f'(x) = \frac{1(\ln x) - x(\frac{1}{x})}{(\ln x)^2} = \frac{\ln x - 1}{(\ln x)^2} \). At \( x = e \), we get \( \frac{1 - 1}{1^2} = 0 \)."
-            },
-            {
-                q: "Which of the following represents the derivative of \( y = a^x \), where \( a > 0 \) and \( a \neq 1 \)?",
-                options: [
-                    "\( a^x \ln a \)",
-                    "\( x a^{x-1} \)",
-                    "\( \frac{a^x}{\ln a} \)",
-                    "\( a^x \)"
-                ],
-                correct: 0,
-                explanation: "The derivative of a general exponential function \( a^x \) is \( a^x \ln a \). Option B is a common mistake applying the power rule inappropriately."
-            },
-            {
-                q: "If \( g(x) = 3x^2 - \frac{2}{x} \), what is the instantaneous rate of change of \( g \) with respect to \( x \) at \( x = 1 \)?",
-                options: [
-                    "\( 4 \)",
-                    "\( 6 \)",
-                    "\( 8 \)",
-                    "\( 10 \)"
-                ],
-                correct: 2,
-                explanation: "Rewrite \( g(x) = 3x^2 - 2x^{-1} \). The derivative is \( g'(x) = 6x + 2x^{-2} = 6x + \frac{2}{x^2} \). At \( x = 1 \), \( g'(1) = 6(1) + \frac{2}{1} = 8 \)."
-            },
-            {
-                q: "Given \( f(x) = e^x \sin x \), find the equation of the tangent line at \( x = 0 \).",
-                options: [
-                    "\( y = x + 1 \)",
-                    "\( y = -x \)",
-                    "\( y = x \)",
-                    "\( y = e x \)"
-                ],
-                correct: 2,
-                explanation: "First find the y-coordinate: \( f(0) = e^0 \sin(0) = 0 \). Then find the slope: \( f'(x) = e^x \sin x + e^x \cos x \), so \( f'(0) = 0 + 1 = 1 \). Point-slope form gives \( y - 0 = 1(x - 0) \), or \( y = x \)."
+                explanation: "The point is \\( (-1, -1) \\). The derivative is \\( f'(x) = -x^{-2} = -\\frac{1}{x^2} \\). The slope at \\( x=-1 \\) is \\( m = -1 \\). Point-slope form gives \\( y - (-1) = -1(x - (-1)) \\implies y + 1 = -x - 1 \\implies y = -x - 2 \\)."
             }
         ];
 
         const labels = ['A', 'B', 'C', 'D'];
         const container = document.getElementById('quiz-container');
+        const progressText = document.getElementById('progress-text');
+        const scoreContainer = document.getElementById('score-container');
+        const finalScoreText = document.getElementById('final-score');
+        const introText = document.getElementById('intro-text');
+        
+        let currentQuestion = 0;
+        let score = 0;
 
-        quizData.forEach((item, index) => {
+        function loadQuestion(index) {
+            container.innerHTML = '';
+            progressText.innerText = `Question ${index + 1} of ${quizData.length}`;
+            
+            const item = quizData[index];
             const card = document.createElement('div');
-            card.className = 'question-card';
+            card.className = 'question-card active';
             
             const header = document.createElement('div');
             header.className = 'question-header';
@@ -386,11 +466,13 @@
 
                 optElement.addEventListener('click', () => {
                     // Prevent multiple clicks
-                    if (optElement.classList.contains('disabled') || optionsDiv.classList.contains('answered')) return;
-                    
+                    if (optionsDiv.classList.contains('answered')) return;
                     optionsDiv.classList.add('answered');
                     
-                    // Disable all options
+                    let isCorrect = (optIndex === item.correct);
+                    if (isCorrect) score++;
+
+                    // Disable all options and show colors
                     Array.from(optionsDiv.children).forEach((child, i) => {
                         child.classList.add('disabled');
                         if (i === item.correct) {
@@ -400,26 +482,70 @@
                     });
 
                     // Mark incorrect if wrong
-                    if (optIndex !== item.correct) {
+                    if (!isCorrect) {
                         optElement.classList.add('incorrect');
                         optElement.querySelector('.status-icon').innerHTML = '✗';
                     }
 
-                    // Show explanation
-                    explanationDiv.classList.add('show');
+                    // Show feedback & explanation
+                    feedbackDiv.innerHTML = isCorrect ? 
+                        `<strong>Correct!</strong> <br><br> ${item.explanation}` : 
+                        `<strong>Incorrect.</strong> <br><br> ${item.explanation}`;
+                    feedbackDiv.className = isCorrect ? 'feedback show correct-feedback' : 'feedback show incorrect-feedback';
+                    
+                    nextBtn.classList.add('show');
+                    
+                    // Trigger MathJax typesetting for dynamically injected content
+                    if (window.MathJax) {
+                        MathJax.typesetPromise([feedbackDiv]);
+                    }
                 });
 
                 optionsDiv.appendChild(optElement);
             });
 
-            const explanationDiv = document.createElement('div');
-            explanationDiv.className = 'explanation';
-            explanationDiv.innerHTML = `<strong>Explanation:</strong> ${item.explanation}`;
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'feedback';
+            
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'next-btn';
+            nextBtn.innerText = index === quizData.length - 1 ? 'Finish Quiz' : 'Next Question ➔';
+            
+            nextBtn.addEventListener('click', () => {
+                currentQuestion++;
+                if (currentQuestion < quizData.length) {
+                    loadQuestion(currentQuestion);
+                } else {
+                    showScore();
+                }
+            });
+
+            const clearfix = document.createElement('div');
+            clearfix.className = 'clearfix';
 
             card.appendChild(optionsDiv);
-            card.appendChild(explanationDiv);
+            card.appendChild(feedbackDiv);
+            card.appendChild(nextBtn);
+            card.appendChild(clearfix);
+            
             container.appendChild(card);
-        });
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise([card]);
+            }
+        }
+
+        function showScore() {
+            container.style.display = 'none';
+            progressText.style.display = 'none';
+            introText.style.display = 'none';
+            scoreContainer.style.display = 'block';
+            finalScoreText.innerText = `${score} / ${quizData.length}`;
+        }
+
+        // Start the quiz
+        loadQuestion(currentQuestion);
+
     </script>
 </body>
 </html>
