@@ -26,7 +26,7 @@ AP Biology
 <br>
 AP Chinese
 <br>
-<a href="ap-chinese-quizes.html">AP Chinese Unit Quizes menu</a>
+<a href="ap-chinese-quizes.html">AP Chinese Unit Quizzes menu</a>
 <br>
 <br>
 AP Calculus BC
