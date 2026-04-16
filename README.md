@@ -28,6 +28,8 @@ AP Chinese
 <br>
 <a href="ap-chinese-quiz-1.html">AP Chinese Quiz 1</a>
 <br>
+<a href="ap-chinese-quizes.html">AP Chinese Unit Quizes menu</a>
+<br>
 <br>
 AP Calculus BC
 <br>
