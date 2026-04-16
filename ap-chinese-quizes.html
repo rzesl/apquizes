@@ -1,226 +1,369 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AP Chinese Quiz Hub</title>
-    <style>
-        :root {
-            --primary: #c0392b;
-            --secondary: #f39c12;
-            --bg: #f9f9f9;
-            --text: #333;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        h1 { color: var(--primary); }
-        .menu {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            width: 100%;
-            max-width: 900px;
-        }
-        .menu-item {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: transform 0.2s;
-            text-align: center;
-            border-left: 5px solid var(--primary);
-            text-decoration: none;
-            color: inherit;
-        }
-        .menu-item:hover {
-            transform: translateY(-5px);
-            background: #fff5f5;
-        }
-        .quiz-container {
-            display: none;
-            width: 100%;
-            max-width: 700px;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        .question {
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .option-btn {
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            background: none;
-            cursor: pointer;
-            text-align: left;
-            font-size: 1em;
-            transition: all 0.2s;
-        }
-        .option-btn:hover:not([disabled]) {
-            background-color: #f0f0f0;
-            border-color: var(--secondary);
-        }
-        .correct {
-            background-color: #d4edda !important;
-            border-color: #28a745 !important;
-            color: #155724;
-        }
-        .wrong {
-            background-color: #f8d7da !important;
-            border-color: #dc3545 !important;
-            color: #721c24;
-        }
-        .explanation {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 4px;
-            background-color: #e2f3f5;
-            display: none;
-            font-style: italic;
-        }
-        .nav-btns {
-            margin-top: 30px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .btn-home { background: #777; color: white; }
-        .btn-next { background: var(--primary); color: white; }
-        .hidden { display: none; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP Chinese Interactive Quizzes</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fa;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+    }
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    h1 {
+        text-align: center;
+        color: #2c3e50;
+    }
+    .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 30px;
+    }
+    .menu button {
+        padding: 15px;
+        font-size: 18px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .menu button:hover {
+        background-color: #2980b9;
+    }
+    #quiz-section {
+        display: none;
+    }
+    .question-card {
+        margin-bottom: 25px;
+        padding: 20px;
+        border: 1px solid #e1e8ed;
+        border-radius: 8px;
+        background-color: #fafbfc;
+    }
+    .question-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+    .options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .option-btn {
+        padding: 10px;
+        font-size: 16px;
+        background-color: #ecf0f1;
+        border: 2px solid #bdc3c7;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.2s;
+    }
+    .option-btn:hover {
+        background-color: #e0e6ed;
+    }
+    .option-btn.correct {
+        background-color: #d4edda;
+        border-color: #28a745;
+        color: #155724;
+    }
+    .option-btn.incorrect {
+        background-color: #f8d7da;
+        border-color: #dc3545;
+        color: #721c24;
+    }
+    .option-btn:disabled {
+        cursor: not-allowed;
+    }
+    .feedback {
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 5px;
+        display: none;
+        font-weight: bold;
+    }
+    .feedback.success {
+        background-color: #d4edda;
+        color: #155724;
+        display: block;
+    }
+    .feedback.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        display: block;
+    }
+    .controls {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .back-btn, .score-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .back-btn {
+        background-color: #95a5a6;
+        color: white;
+    }
+    .back-btn:hover { background-color: #7f8c8d; }
+    .score-btn {
+        background-color: #2ecc71;
+        color: white;
+        display: none;
+    }
+    .score-btn:hover { background-color: #27ae60; }
+    #score-display {
+        font-size: 24px;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-top: 20px;
+        text-align: center;
+        display: none;
+    }
+</style>
 </head>
 <body>
 
-    <header id="main-header">
-        <h1>AP Chinese Prep Quizzes</h1>
-        <p>Select a unit to practice your knowledge and cultural understanding.</p>
-    </header>
-
-    <div class="menu" id="unit-menu">
-        <div class="menu-item" onclick="startQuiz('unit1')"><h3>Unit 1: Families in Different Societies (家庭与社区)</h3></div>
-<div class="menu-item" onclick="startQuiz('unit2')"><h3>Unit 2: Influence of Language and Culture on Identity (语言与文化对身份的影响)</h3></div>
-<div class="menu-item" onclick="startQuiz('unit3')"><h3>Unit 3: Influences of Beauty and Art (美与艺术的影响)</h3></div>
-<div class="menu-item" onclick="startQuiz('unit4')"><h3>Unit 4: How Science and Technology Affect Our Lives (科技对生活的影响)</h3></div>
-<div class="menu-item" onclick="startQuiz('unit5')"><h3>Unit 5: Factors That Impact the Quality of Life (影响生活质量的因素)</h3></div>
-<div class="menu-item" onclick="startQuiz('unit6')"><h3>Unit 6: Environmental, Political, and Societal Challenges (环境、政治及社会挑战)</h3></div>
-
-    </div>
-
-    <div class="quiz-container" id="quiz-container">
-        <div id="quiz-content">
-            <div id="q-count" style="color: #666; margin-bottom: 10px;"></div>
-            <div class="question" id="q-text"></div>
-            <div class="options" id="q-options"></div>
-            <div class="explanation" id="q-explanation"></div>
-        </div>
-        <div class="nav-btns">
-            <button class="btn btn-home" onclick="showMenu()">Back to Menu</button>
-            <button class="btn btn-next hidden" id="next-btn" onclick="nextQuestion()">Next Question</button>
+<div class="container">
+    <div id="menu-section">
+        <h1>AP Chinese Interactive Quizzes</h1>
+        <p style="text-align:center;">Select a unit to start your practice. Each quiz contains 10 questions.</p>
+        <div class="menu" id="menu-container">
+            <!-- Menu buttons injected by JS -->
         </div>
     </div>
 
-    <script>
-        const quizData = {"unit1": [{"q": "In traditional Chinese culture, which concept emphasizes respect for one's parents and elders?", "a": ["A. \u53cb\u8c0a (Friendship)", "B. \u5b5d\u987a (Filial Piety)", "C. \u7ade\u4e89 (Competition)", "D. \u81ea\u7531 (Freedom)"], "c": 1, "e": "\u5b5d\u987a (Xi\u00e0osh\u00f9n) is a core Confucian value regarding respect for elders."}, {"q": "Which of these is a common traditional Chinese living arrangement for multiple generations?", "a": ["A. \u56db\u5408\u9662 (Siheyuan)", "B. \u516c\u5bd3 (Apartment)", "C. \u522b\u5885 (Villa)", "D. \u5e10\u7bf7 (Tent)"], "c": 0, "e": "Siheyuan is a historical type of residence where a whole family lived together around a courtyard."}, {"q": "What does '\u76f8\u4eb2' (xi\u0101ngq\u012bn) refer to?", "a": ["A. Cooking together", "B. A graduation ceremony", "C. A blind date or organized matchmaking", "D. Traveling abroad"], "c": 2, "e": "Xi\u0101ngq\u012bn is the practice of meeting a potential partner arranged by parents or matchmakers."}, {"q": "The 'One-Child Policy' was replaced by which policy to address aging population concerns?", "a": ["A. No-Child Policy", "B. Two-Child Policy (now Three-Child)", "C. Mandatory Migration", "D. Urbanization Policy"], "c": 1, "e": "China moved to a two-child and then three-child policy to combat demographic shifts."}, {"q": "Which term describes the social network and connections vital in Chinese society?", "a": ["A. \u5173\u7cfb (Guanxi)", "B. \u8282\u65e5 (Festival)", "C. \u5386\u53f2 (History)", "D. \u5929\u6c14 (Weather)"], "c": 0, "e": "Guanxi refers to the system of social networks and influential relationships."}], "unit2": [{"q": "The idiom '\u5165\u4e61\u968f\u4fd7' (r\u00f9 xi\u0101ng su\u00ed s\u00fa) means:", "a": ["A. When in Rome, do as the Romans do", "B. Study hard every day", "C. Home is where the heart is", "D. All roads lead to Beijing"], "c": 0, "e": "It literally means 'enter a village, follow the customs.'"}, {"q": "Which dialect is the basis for Modern Standard Chinese (Mandarin)?", "a": ["A. Cantonese", "B. Shanghainese", "C. Fujianese", "D. Beijing dialect"], "c": 3, "e": "Mandarin (P\u01d4t\u014dnghu\u00e0) is phonologically based on the Beijing dialect. (D Answer)"}, {"q": "Which festival celebrates the legend of Qu Yuan?", "a": ["A. Spring Festival", "B. Dragon Boat Festival", "C. Mid-Autumn Festival", "D. Lantern Festival"], "c": 1, "e": "The Dragon Boat Festival (Du\u0101nw\u01d4ji\u00e9) commemorates the poet Qu Yuan."}, {"q": "What is the primary purpose of the 'Hanyu Shuiping Kaoshi' (HSK)?", "a": ["A. Cooking proficiency", "B. Driving license", "C. Chinese language proficiency for non-native speakers", "D. Martial arts ranking"], "c": 2, "e": "HSK is the standardized test for Chinese language proficiency."}, {"q": "The concept of '\u9762\u5b50' (mi\u00e0nzi) refers to:", "a": ["A. Making noodles", "B. Cleaning the house", "C. Personal health", "D. Social honor or 'face'"], "c": 3, "e": "Mi\u00e0nzi is the social standing or prestige one has in the eyes of others. (D Answer)"}], "unit3": [{"q": "Which of these is NOT one of the 'Four Treasures of the Study'?", "a": ["A. Ink stick", "B. Rice paper", "C. Ink stone", "D. Chopsticks"], "c": 3, "e": "The Four Treasures are Brush, Ink, Paper, and Inkstone. Chopsticks are for eating. (D Answer)"}, {"q": "Chinese Opera (like Beijing Opera) uses different mask colors. What does 'Red' usually symbolize?", "a": ["A. Treachery", "B. Loyalty and bravery", "C. Cowardice", "D. Loneliness"], "c": 1, "e": "Red in Beijing Opera represents positive traits like loyalty."}, {"q": "Which dynasty is famous for its distinctive blue and white porcelain?", "a": ["A. Ming Dynasty", "B. Qin Dynasty", "C. Zhou Dynasty", "D. Han Dynasty"], "c": 0, "e": "The Ming Dynasty is world-renowned for its blue and white porcelain."}, {"q": "In Chinese landscape painting, what is 'Shanshui' (\u5c71\u6c34)?", "a": ["A. Cityscapes", "B. Portraits", "C. Mountains and water", "D. Abstract fruit"], "c": 2, "e": "Shanshui literally means 'Mountain-Water.'"}, {"q": "The Qipao (Cheongsam) originated from the dress of which ethnic group?", "a": ["A. Han", "B. Manchu", "C. Tibetan", "D. Mongol"], "c": 1, "e": "The Qipao evolved from the long robes of the Manchu people."}], "unit4": [{"q": "Which of the following is one of the 'Four Great Inventions' of ancient China?", "a": ["A. Steam engine", "B. Compass", "C. Electricity", "D. Internet"], "c": 1, "e": "The four are Compass, Gunpowder, Papermaking, and Printing."}, {"q": "What is the most popular 'super-app' in China used for messaging and payments?", "a": ["A. Facebook", "B. WeChat (\u5fae\u4fe1)", "C. Twitter", "D. WhatsApp"], "c": 1, "e": "WeChat is essential for daily life in modern China."}, {"q": "China is a world leader in which transportation technology?", "a": ["A. Steam trains", "B. High-speed rail (\u9ad8\u94c1)", "C. Horse-drawn carriages", "D. Hot air balloons"], "c": 1, "e": "China has the world's largest high-speed rail network."}, {"q": "How do many people in Chinese cities pay for groceries today?", "a": ["A. Bartering", "B. Gold coins", "C. Checks", "D. Mobile payment (Alipay/WeChat Pay)"], "c": 3, "e": "Mobile payment is ubiquitous in Chinese urban areas. (D Answer)"}, {"q": "The 'Great Firewall' refers to:", "a": ["A. A physical wall", "B. Internet censorship and regulation in China", "C. A firefighting squad", "D. A software for cooking"], "c": 1, "e": "It is the combination of legislative actions and technologies used to regulate the internet in China."}], "unit5": [{"q": "What is the main goal of 'Gaokao' (\u9ad8\u8003)?", "a": ["A. Finding a job", "B. University entrance", "C. Getting a driver's license", "D. Joining the army"], "c": 1, "e": "The Gaokao is the high-stakes National College Entrance Examination."}, {"q": "Which activity is very common among the elderly in Chinese public parks?", "a": ["A. Skateboarding", "B. Surfing", "C. Square dancing (\u5e7f\u573a\u821e)", "D. Bungee jumping"], "c": 2, "e": "Square dancing is a popular social and fitness activity for seniors."}, {"q": "Traditional Chinese Medicine (TCM) often uses which practice?", "a": ["A. Acupuncture", "B. Surgery", "C. Radiation", "D. DNA sequencing"], "c": 0, "e": "Acupuncture is a key component of TCM."}, {"q": "The concept of '\u517b\u8001' (y\u01cengl\u01ceo) refers to:", "a": ["A. Raising children", "B. Providing for the elderly", "C. Buying a new car", "D. Studying history"], "c": 1, "e": "Y\u01cengl\u01ceo refers to the care and support of the elderly."}, {"q": "What does the term '\u5185\u5377' (n\u00e8iju\u01cen - involution) describe in modern China?", "a": ["A. A type of food", "B. Traditional clothing", "C. Intense social competition with diminishing returns", "D. A new dance move"], "c": 2, "e": "Involution describes the burnout and hyper-competition in education and the workplace."}], "unit6": [{"q": "Which environmental issue has been a major concern for Beijing in recent decades?", "a": ["A. Hurricanes", "B. Smog/Air pollution", "C. Volcanic eruptions", "D. Blizzard"], "c": 1, "e": "Air quality and PM2.5 levels have been a significant focus of policy."}, {"q": "The 'Belt and Road Initiative' (\u4e00\u5e26\u4e00\u8def) focuses on:", "a": ["A. Domestic fashion", "B. Culinary arts", "C. Space exploration", "D. Global infrastructure and trade development"], "c": 3, "e": "It is a global infrastructure development strategy. (D Answer)"}, {"q": "What is the 'Spring Festival Travel Rush' often called?", "a": ["A. Chunyun (\u6625\u8fd0)", "B. Holiday Rush", "C. Great Migration", "D. Winter Travel"], "c": 0, "e": "Chunyun is the world's largest annual human migration."}, {"q": "China's 'Left-behind children' (\u7559\u5b88\u513f\u7ae5) usually stay in villages while parents:", "a": ["A. Go on vacation", "B. Go to school", "C. Work in cities", "D. Join the circus"], "c": 2, "e": "Rural-to-urban migration often leaves children in the care of grandparents in villages."}, {"q": "What is the official currency of the People's Republic of China?", "a": ["A. Yen", "B. Won", "C. Dollar", "D. Renminbi (Yuan)"], "c": 3, "e": "The Renminbi (RMB) is the official currency. (D Answer)"}]};
-        let currentUnit = "";
-        let currentQuestionIndex = 0;
+    <div id="quiz-section">
+        <h2 id="quiz-title">Unit Title</h2>
+        <div id="questions-container">
+            <!-- Questions injected by JS -->
+        </div>
+        <div class="controls">
+            <button class="back-btn" onclick="showMenu()">Back to Menu</button>
+            <button class="score-btn" id="finish-btn" onclick="showScore()">Finish & See Score</button>
+        </div>
+        <div id="score-display"></div>
+    </div>
+</div>
 
-        function startQuiz(unitId) {
-            currentUnit = unitId;
-            currentQuestionIndex = 0;
-            document.getElementById('unit-menu').classList.add('hidden');
-            document.getElementById('main-header').classList.add('hidden');
-            document.getElementById('quiz-container').style.display = 'block';
-            loadQuestion();
+<script>
+    const quizData = {
+        unit1: {
+            title: "Unit 1: Families and Communities",
+            questions: [
+                { q: "What is the Chinese term for 'Nuclear Family'?", options: ["A. 大家庭 (dàjiātíng)", "B. 单亲家庭 (dānqīnjiātíng)", "C. 核心家庭 (héxīnjiātíng)", "D. 丁克家庭 (dīngkèjiātíng)"], correct: 2, exp: "核心家庭 (héxīnjiātíng) specifically refers to a nuclear family. 大家庭 is extended family." },
+                { q: "Which term means 'Single-parent family'?", options: ["A. 小家庭 (xiǎojiātíng)", "B. 单亲家庭 (dānqīnjiātíng)", "C. 邻居 (línjū)", "D. 亲戚 (qīnqi)"], correct: 1, exp: "单亲 (dānqīn) means single parent, making 单亲家庭 the correct term." },
+                { q: "How do you say 'to respect elders' (filial piety)?", options: ["A. 孝敬长辈 (xiàojìng zhǎngbèi)", "B. 溺爱孩子 (nì'ài háizi)", "C. 重男轻女 (zhòngnán qīngnǚ)", "D. 尊师重道 (zūnshī zhòngdào)"], correct: 0, exp: "孝敬长辈 (xiàojìng zhǎngbèi) means to show filial respect to one's elders." },
+                { q: "What is the term for 'Generation Gap'?", options: ["A. 矛盾 (máodùn)", "B. 冲突 (chōngtū)", "C. 交流 (jiāoliú)", "D. 代沟 (dàigōu)"], correct: 3, exp: "代沟 (dàigōu) literally translates to 'generation ditch/gap', representing the disconnect between different generations." },
+                { q: "Which word means 'Community'?", options: ["A. 社区 (shèqū)", "B. 社会 (shèhuì)", "C. 城市 (chéngshì)", "D. 郊区 (jiāoqū)"], correct: 0, exp: "社区 (shèqū) refers to a community or neighborhood. 社会 is society." },
+                { q: "What is a 'Volunteer' in Chinese?", options: ["A. 义工 (yìgōng)", "B. 志愿者 (zhìyuànzhě)", "C. Both A and B", "D. 员工 (yuángōng)"], correct: 2, exp: "Both 义工 (yìgōng) and 志愿者 (zhìyuànzhě) are commonly used terms for volunteer." },
+                { q: "How do you say 'Neighbor'?", options: ["A. 朋友 (péngyǒu)", "B. 同事 (tóngshì)", "C. 邻居 (línjū)", "D. 亲戚 (qīnqi)"], correct: 2, exp: "邻居 (línjū) means neighbor. 朋友 is friend, 同事 is colleague, 亲戚 is relative." },
+                { q: "What is a traditional Chinese courtyard house called?", options: ["A. 公寓 (gōngyù)", "B. 四合院 (sìhéyuàn)", "C. 别墅 (biéshù)", "D. 高楼 (gāolóu)"], correct: 1, exp: "四合院 (sìhéyuàn) is a historical type of residence common in Beijing, featuring a courtyard surrounded by buildings on all four sides." },
+                { q: "What is the term for a highly strict and demanding mother?", options: ["A. 继母 (jìmǔ)", "B. 养母 (yǎngmǔ)", "C. 祖母 (zǔmǔ)", "D. 虎妈 (hǔmā)"], correct: 3, exp: "虎妈 (hǔmā) translates to 'Tiger Mom', denoting a strict parenting style." },
+                { q: "How do you say 'Equality' (e.g., in a family setting)?", options: ["A. 平等 (píngděng)", "B. 自由 (zìyóu)", "C. 独立 (dúlì)", "D. 依赖 (yīlài)"], correct: 0, exp: "平等 (píngděng) means equality. 自由 is freedom, 独立 is independence." }
+            ]
+        },
+        unit2: {
+            title: "Unit 2: Personal and Public Identities",
+            questions: [
+                { q: "Which phrase means 'Gender Equality'?", options: ["A. 男女平等 (nánnǚ píngděng)", "B. 重男轻女 (zhòngnán qīngnǚ)", "C. 妇女能顶半边天 (fùnǚ néng dǐng bànbiāntiān)", "D. 男尊女卑 (nánzūn nǚbēi)"], correct: 0, exp: "男女平等 means men and women are equal. Option B and D are traditional unequal views." },
+                { q: "What is the Chinese word for 'Identity'?", options: ["A. 名字 (míngzi)", "B. 性格 (xìnggé)", "C. 职业 (zhíyè)", "D. 身份 (shēnfèn)"], correct: 3, exp: "身份 (shēnfèn) means identity or status." },
+                { q: "How do you say 'Personal Space'?", options: ["A. 公共空间 (gōnggòng kōngjiān)", "B. 个人空间 (gèrén kōngjiān)", "C. 隐私 (yǐnsī)", "D. 距离 (jùlí)"], correct: 1, exp: "个人 (personal) + 空间 (space) = 个人空间." },
+                { q: "Which word means 'Public'?", options: ["A. 私人 (sīrén)", "B. 个人 (gèrén)", "C. 公共 (gōnggòng)", "D. 秘密 (mìmì)"], correct: 2, exp: "公共 (gōnggòng) means public, as in 公共场所 (public places)." },
+                { q: "What is the term for 'Stereotype'?", options: ["A. 刻板印象 (kèbǎn yìnxiàng)", "B. 第一印象 (dìyī yìnxiàng)", "C. 偏见 (piānjiàn)", "D. 歧视 (qíshì)"], correct: 0, exp: "刻板印象 (kèbǎn yìnxiàng) means stereotype. 偏见 is prejudice." },
+                { q: "How do you say 'Dialect'?", options: ["A. 普通话 (pǔtōnghuà)", "B. 方言 (fāngyán)", "C. 外语 (wàiyǔ)", "D. 口音 (kǒuyīn)"], correct: 1, exp: "方言 (fāngyán) refers to local dialects. 普通话 is Mandarin." },
+                { q: "Which word means 'Confident'?", options: ["A. 自卑 (zìbēi)", "B. 骄傲 (jiāo'ào)", "C. 害羞 (hàixiū)", "D. 自信 (zìxìn)"], correct: 3, exp: "自信 (zìxìn) means self-confident. 自卑 is feeling inferior." },
+                { q: "What does '独立 (dúlì)' mean?", options: ["A. Lonely", "B. Dependent", "C. Independent", "D. Stubborn"], correct: 2, exp: "独立 (dúlì) means independent, an important trait in modern personal identity." },
+                { q: "How do you say 'Characteristics' or 'Features'?", options: ["A. 特点 (tèdiǎn)", "B. 优点 (yōudiǎn)", "C. 缺点 (quēdiǎn)", "D. 兴趣 (xìngqù)"], correct: 0, exp: "特点 (tèdiǎn) means characteristics. 优点 are strengths, 缺点 are weaknesses." },
+                { q: "Which term translates to 'Privacy'?", options: ["A. 秘密 (mìmì)", "B. 隐蔽 (yǐnbì)", "C. 空间 (kōngjiān)", "D. 隐私 (yǐnsī)"], correct: 3, exp: "隐私 (yǐnsī) specifically means privacy, a key concept in personal boundaries." }
+            ]
+        },
+        unit3: {
+            title: "Unit 3: Beauty and Aesthetics",
+            questions: [
+                { q: "What is the Chinese term for 'Calligraphy'?", options: ["A. 书法 (shūfǎ)", "B. 国画 (guóhuà)", "C. 水墨画 (shuǐmòhuà)", "D. 素描 (sùmiáo)"], correct: 0, exp: "书法 (shūfǎ) is the traditional art of writing Chinese characters." },
+                { q: "Which of the following is 'Beijing Opera'?", options: ["A. 昆曲 (kūnqǔ)", "B. 京剧 (jīngjù)", "C. 越剧 (yuèjù)", "D. 评剧 (píngjù)"], correct: 1, exp: "京剧 (jīngjù) is Peking/Beijing Opera, combining music, vocal performance, mime, dance, and acrobatics." },
+                { q: "What is traditional Chinese 'Paper Cutting' art called?", options: ["A. 折纸 (zhézhǐ)", "B. 刺绣 (cìxiù)", "C. 泥人 (nírén)", "D. 剪纸 (jiǎnzhǐ)"], correct: 3, exp: "剪纸 (jiǎnzhǐ) is paper cutting, often used for decoration during festivals." },
+                { q: "How do you say 'Traditional Chinese Painting'?", options: ["A. 油画 (yóuhuà)", "B. 版画 (bǎnhuà)", "C. 国画 (guóhuà)", "D. 水彩画 (shuǐcǎihuà)"], correct: 2, exp: "国画 (guóhuà) literally means 'national painting', referring to traditional Chinese brush painting." },
+                { q: "Which word means 'Poetry'?", options: ["A. 诗歌 (shīgē)", "B. 小说 (xiǎoshuō)", "C. 散文 (sǎnwén)", "D. 戏剧 (xìjù)"], correct: 0, exp: "诗歌 (shīgē) means poetry, a major part of traditional Chinese aesthetics." },
+                { q: "What is the term for Chinese 'Martial Arts'?", options: ["A. 太极 (tàijí)", "B. 武术 (wǔshù)", "C. 气功 (qìgōng)", "D. 功夫 (gōngfu)"], correct: 1, exp: "武术 (wǔshù) is the formal term for martial arts (Wushu). 功夫 is also used but 武术 is the broad formal category." },
+                { q: "How do you say 'Architecture'?", options: ["A. 建筑 (jiànzhù)", "B. 雕塑 (diāosù)", "C. 装修 (zhuāngxiū)", "D. 设计 (shèjì)"], correct: 0, exp: "建筑 (jiànzhù) means architecture or building." },
+                { q: "What is the Chinese term for 'Embroidery'?", options: ["A. 编织 (biānzhī)", "B. 缝纫 (féngrèn)", "C. 染布 (rǎnbù)", "D. 刺绣 (cìxiù)"], correct: 3, exp: "刺绣 (cìxiù) is the art of embroidery, very famous in regions like Suzhou (Su embroidery)." },
+                { q: "Which word means 'Porcelain/Ceramics'?", options: ["A. 玻璃 (bōlí)", "B. 青铜器 (qīngtóngqì)", "C. 瓷器 (cíqì)", "D. 玉器 (yùqì)"], correct: 2, exp: "瓷器 (cíqì) means porcelain. China is historically famous for its ceramics." },
+                { q: "What is 'Tea Culture' in Chinese?", options: ["A. 茶文化 (chá wénhuà)", "B. 酒文化 (jiǔ wénhuà)", "C. 饮食文化 (yǐnshí wénhuà)", "D. 传统文化 (chuántǒng wénhuà)"], correct: 0, exp: "茶文化 (chá wénhuà) represents the aesthetic and traditional practices surrounding tea preparation and consumption." }
+            ]
+        },
+        unit4: {
+            title: "Unit 4: Science and Technology",
+            questions: [
+                { q: "What does 'AI' stand for in Chinese?", options: ["A. 虚拟现实 (xūnǐ xiànshí)", "B. 增强现实 (zēngqiáng xiànshí)", "C. 机器人 (jīqìrén)", "D. 人工智能 (réngōng zhìnéng)"], correct: 3, exp: "人工智能 (réngōng zhìnéng) literally translates to Artificial (人工) Intelligence (智能)." },
+                { q: "How do you say 'High-speed rail'?", options: ["A. 高铁 (gāotiě)", "B. 地铁 (dìtiě)", "C. 火车 (huǒchē)", "D. 动车 (dòngchē)"], correct: 0, exp: "高铁 (gāotiě) is short for 高速铁路 (high-speed railway), a major modern tech achievement in China." },
+                { q: "What is 'Mobile Payment'?", options: ["A. 现金支付 (xiànjīn zhīfù)", "B. 移动支付 (yídòng zhīfù)", "C. 信用卡 (xìnyòngkǎ)", "D. 刷卡 (shuākǎ)"], correct: 1, exp: "移动支付 (yídòng zhīfù) means mobile payment, such as WeChat Pay or Alipay." },
+                { q: "How do you say 'Smartphone'?", options: ["A. 电话 (diànhuà)", "B. 手机 (shǒujī)", "C. 智能手机 (zhìnéng shǒujī)", "D. 平板电脑 (píngbǎn diànnǎo)"], correct: 2, exp: "智能 (smart) + 手机 (mobile phone) = 智能手机." },
+                { q: "Which term means 'Social Media'?", options: ["A. 报纸 (bàozhǐ)", "B. 新闻 (xīnwén)", "C. 电视 (diànshì)", "D. 社交媒体 (shèjiāo méitǐ)"], correct: 3, exp: "社交 (social) + 媒体 (media) = 社交媒体." },
+                { q: "What is the Chinese word for 'Internet'?", options: ["A. 互联网 (hùliánwǎng)", "B. 电脑网 (diànnǎowǎng)", "C. 网站 (wǎngzhàn)", "D. 网页 (wǎngyè)"], correct: 0, exp: "互联网 (hùliánwǎng) is the standard term for the internet. 网络 (wǎngluò) is also used for network/web." },
+                { q: "How do you say 'Online Shopping'?", options: ["A. 逛街 (guàngjiē)", "B. 网购 (wǎnggòu)", "C. 超市 (chāoshì)", "D. 买东西 (mǎi dōngxi)"], correct: 1, exp: "网购 (wǎnggòu) is short for 网络购物 (internet shopping)." },
+                { q: "Which word means 'to Download'?", options: ["A. 上传 (shàngchuán)", "B. 复制 (fùzhì)", "C. 下载 (xiàzǎi)", "D. 粘贴 (zhāntiē)"], correct: 2, exp: "下载 (xiàzǎi) means to download. 上传 is to upload." },
+                { q: "What is the term for 'Password'?", options: ["A. 账号 (zhànghào)", "B. 名字 (míngzi)", "C. 钥匙 (yàoshi)", "D. 密码 (mìmǎ)"], correct: 3, exp: "密码 (mìmǎ) means password or secret code." },
+                { q: "How do you say 'Robot'?", options: ["A. 机器人 (jīqìrén)", "B. 外星人 (wàixīngrén)", "C. 电脑 (diànnǎo)", "D. 机器 (jīqì)"], correct: 0, exp: "机器 (machine) + 人 (person) = 机器人 (robot)." }
+            ]
+        },
+        unit5: {
+            title: "Unit 5: Contemporary Life",
+            questions: [
+                { q: "What is the 'Gaokao'?", options: ["A. 高考 (gāokǎo) - College Entrance Exam", "B. 中考 (zhōngkǎo) - High School Exam", "C. 期末考试 (qīmò kǎoshì) - Finals", "D. 托福 (tuōfú) - TOEFL"], correct: 0, exp: "高考 (gāokǎo) is the highly competitive National College Entrance Examination in China." },
+                { q: "How do you say 'to do a part-time job'?", options: ["A. 上班 (shàngbān)", "B. 打工 (dǎgōng)", "C. 学习 (xuéxí)", "D. 休息 (xiūxi)"], correct: 1, exp: "打工 (dǎgōng) generally means to work a part-time or manual labor job, often used by students." },
+                { q: "What does '饮食均衡 (yǐnshí jūnhéng)' mean?", options: ["A. Fast food", "B. Vegetarian diet", "C. Balanced diet", "D. Malnutrition"], correct: 2, exp: "饮食 (diet/food) + 均衡 (balanced) = balanced diet, an important topic in modern health." },
+                { q: "Which word means 'Pressure / Stress'?", options: ["A. 动力 (dònglì)", "B. 轻松 (qīngsōng)", "C. 麻烦 (máfan)", "D. 压力 (yālì)"], correct: 3, exp: "压力 (yālì) means pressure or stress, common in contemporary student and work life." },
+                { q: "How do you say 'Environmental Protection'?", options: ["A. 环保 (huánbǎo)", "B. 污染 (wūrǎn)", "C. 发展 (fāzhǎn)", "D. 破坏 (pòhuài)"], correct: 0, exp: "环保 (huánbǎo) is short for 环境保护 (environmental protection)." },
+                { q: "What is the term for 'to exercise / workout'?", options: ["A. 睡觉 (shuìjiào)", "B. 吃饭 (chīfàn)", "C. 学习 (xuéxí)", "D. 锻炼 (duànliàn)"], correct: 3, exp: "锻炼 (duànliàn) or 运动 (yùndòng) means to exercise to stay healthy." },
+                { q: "How do you say 'to travel'?", options: ["A. 出差 (chūchāi)", "B. 散步 (sànbù)", "C. 旅游 (lǚyóu)", "D. 搬家 (bānjiā)"], correct: 2, exp: "旅游 (lǚyóu) or 旅行 (lǚxíng) means to travel for leisure." },
+                { q: "Which word means 'Entertainment'?", options: ["A. 商业 (shāngyè)", "B. 娱乐 (yúlè)", "C. 教育 (jiàoyù)", "D. 政治 (zhèngzhì)"], correct: 1, exp: "娱乐 (yúlè) means entertainment or amusement." },
+                { q: "What is the Chinese term for 'Fast Food'?", options: ["A. 快餐 (kuàicān)", "B. 正餐 (zhèngcān)", "C. 零食 (língshí)", "D. 夜宵 (yèxiāo)"], correct: 0, exp: "快餐 (kuàicān) literally means 'fast meal'." },
+                { q: "How do you say 'Popular / Trendy'?", options: ["A. 古老 (gǔlǎo)", "B. 传统 (chuántǒng)", "C. 流行 (liúxíng)", "D. 奇怪 (qíguài)"], correct: 2, exp: "流行 (liúxíng) means popular or trendy." }
+            ]
+        },
+        unit6: {
+            title: "Unit 6: Global Challenges",
+            questions: [
+                { q: "What is 'Global Warming' in Chinese?", options: ["A. 全球变暖 (quánqiú biànnuǎn)", "B. 气候变化 (qìhòu biànhuà)", "C. 空气污染 (kōngqì wūrǎn)", "D. 冰川融化 (bīngchuān rónghuà)"], correct: 0, exp: "全球 (global) + 变暖 (become warm) = 全球变暖." },
+                { q: "How do you say 'Air Pollution'?", options: ["A. 水污染 (shuǐ wūrǎn)", "B. 噪音污染 (zàoyīn wūrǎn)", "C. 光污染 (guāng wūrǎn)", "D. 空气污染 (kōngqì wūrǎn)"], correct: 3, exp: "空气 (air) + 污染 (pollution) = 空气污染." },
+                { q: "Which word means 'to Recycle'?", options: ["A. 扔掉 (rēngdiào)", "B. 回收 (huíshōu)", "C. 浪费 (làngfèi)", "D. 破坏 (pòhuài)"], correct: 1, exp: "回收 (huíshōu) means to recycle or reclaim materials." },
+                { q: "What is the Chinese term for 'Economy'?", options: ["A. 政治 (zhèngzhì)", "B. 文化 (wénhuà)", "C. 经济 (jīngjì)", "D. 社会 (shèhuì)"], correct: 2, exp: "经济 (jīngjì) means economy, a major global topic." },
+                { q: "How do you say 'Population'?", options: ["A. 人口 (rénkǒu)", "B. 人民 (rénmín)", "C. 人类 (rénlèi)", "D. 人群 (rénqún)"], correct: 0, exp: "人口 (rénkǒu) means population (literally 'person mouths')." },
+                { q: "Which word means 'Poverty'?", options: ["A. 富裕 (fùyù)", "B. 贫困 (pínkùn)", "C. 发展 (fāzhǎn)", "D. 落后 (luòhòu)"], correct: 1, exp: "贫困 (pínkùn) or 贫穷 (pínqióng) refers to poverty." },
+                { q: "What does '和平 (hépíng)' mean?", options: ["A. War", "B. Conflict", "C. Peace", "D. Justice"], correct: 2, exp: "和平 (hépíng) means peace." },
+                { q: "How do you say 'International'?", options: ["A. 国内 (guónèi)", "B. 国家 (guójiā)", "C. 全球 (quánqiú)", "D. 国际 (guójì)"], correct: 3, exp: "国际 (guójì) means international." },
+                { q: "What is the term for 'Energy' (e.g., renewable energy)?", options: ["A. 能源 (néngyuán)", "B. 力量 (lìliàng)", "C. 电力 (diànlì)", "D. 资源 (zīyuán)"], correct: 0, exp: "能源 (néngyuán) refers to energy sources." },
+                { q: "How do you say 'Challenge'?", options: ["A. 机会 (jīhuì)", "B. 危险 (wēixiǎn)", "C. 困难 (kùnnan)", "D. 挑战 (tiǎozhàn)"], correct: 3, exp: "挑战 (tiǎozhàn) means a challenge, as in Global Challenges (全球挑战)." }
+            ]
         }
+    };
 
-        function showMenu() {
-            document.getElementById('unit-menu').classList.remove('hidden');
-            document.getElementById('main-header').classList.remove('hidden');
-            document.getElementById('quiz-container').style.display = 'none';
-        }
+    let currentUnit = null;
+    let currentScore = 0;
+    let questionsAnswered = 0;
 
-        function loadQuestion() {
-            const unitQuestions = quizData[currentUnit];
-            const q = unitQuestions[currentQuestionIndex];
+    // Initialize Menu
+    const menuContainer = document.getElementById('menu-container');
+    for (const key in quizData) {
+        const btn = document.createElement('button');
+        btn.textContent = quizData[key].title;
+        btn.onclick = () => startQuiz(key);
+        menuContainer.appendChild(btn);
+    }
+
+    function showMenu() {
+        document.getElementById('menu-section').style.display = 'block';
+        document.getElementById('quiz-section').style.display = 'none';
+        document.getElementById('score-display').style.display = 'none';
+        document.getElementById('finish-btn').style.display = 'none';
+    }
+
+    function startQuiz(unitKey) {
+        currentUnit = unitKey;
+        currentScore = 0;
+        questionsAnswered = 0;
+        
+        const quiz = quizData[unitKey];
+        document.getElementById('quiz-title').textContent = quiz.title;
+        
+        const qContainer = document.getElementById('questions-container');
+        qContainer.innerHTML = ''; // clear previous
+        
+        quiz.questions.forEach((qObj, qIndex) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
             
-            document.getElementById('q-count').innerText = `Question ${currentQuestionIndex + 1} of ${unitQuestions.length}`;
-            document.getElementById('q-text').innerText = q.q;
-            document.getElementById('q-explanation').style.display = 'none';
-            document.getElementById('next-btn').classList.add('hidden');
+            const qTitle = document.createElement('div');
+            qTitle.className = 'question-title';
+            qTitle.textContent = `${qIndex + 1}. ${qObj.q}`;
+            card.appendChild(qTitle);
             
-            const optionsDiv = document.getElementById('q-options');
-            optionsDiv.innerHTML = '';
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options';
             
-            q.a.forEach((opt, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = opt;
-                btn.onclick = () => checkAnswer(index, q.c, q.e);
-                optionsDiv.appendChild(btn);
+            qObj.options.forEach((optText, optIndex) => {
+                const optBtn = document.createElement('button');
+                optBtn.className = 'option-btn';
+                optBtn.textContent = optText;
+                optBtn.onclick = function() {
+                    handleAnswer(this, qIndex, optIndex, card);
+                };
+                optionsDiv.appendChild(optBtn);
             });
-        }
-
-        function checkAnswer(selected, correct, explanation) {
-            const btns = document.querySelectorAll('.option-btn');
-            btns.forEach((btn, index) => {
-                btn.disabled = true;
-                if (index === correct) {
-                    btn.classList.add('correct');
-                } else if (index === selected) {
-                    btn.classList.add('wrong');
-                }
-            });
-
-            const expDiv = document.getElementById('q-explanation');
-            expDiv.innerHTML = `<strong>${selected === correct ? 'Correct!' : 'Incorrect.'}</strong><br>${explanation}`;
-            expDiv.style.display = 'block';
             
-            document.getElementById('next-btn').classList.remove('hidden');
+            card.appendChild(optionsDiv);
             
-            if (currentQuestionIndex === quizData[currentUnit].length - 1) {
-                document.getElementById('next-btn').innerText = "Finish Quiz";
-            } else {
-                document.getElementById('next-btn').innerText = "Next Question";
-            }
-        }
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'feedback';
+            card.appendChild(feedbackDiv);
+            
+            qContainer.appendChild(card);
+        });
 
-        function nextQuestion() {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < quizData[currentUnit].length) {
-                loadQuestion();
-            } else {
-                alert("Unit Complete!");
-                showMenu();
-            }
+        document.getElementById('menu-section').style.display = 'none';
+        document.getElementById('quiz-section').style.display = 'block';
+        document.getElementById('score-display').style.display = 'none';
+        document.getElementById('finish-btn').style.display = 'none';
+    }
+
+    function handleAnswer(btn, qIndex, optIndex, card) {
+        const quiz = quizData[currentUnit];
+        const question = quiz.questions[qIndex];
+        const isCorrect = (optIndex === question.correct);
+        
+        // Disable all buttons in this card
+        const allBtns = card.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+        
+        const feedbackDiv = card.querySelector('.feedback');
+        
+        if (isCorrect) {
+            btn.classList.add('correct');
+            feedbackDiv.textContent = `Correct! ${question.exp}`;
+            feedbackDiv.classList.add('success');
+            currentScore++;
+        } else {
+            btn.classList.add('incorrect');
+            // Highlight correct answer
+            allBtns[question.correct].classList.add('correct');
+            feedbackDiv.textContent = `Incorrect! ${question.exp}`;
+            feedbackDiv.classList.add('error');
         }
-    </script>
+        
+        questionsAnswered++;
+        if (questionsAnswered === quiz.questions.length) {
+            document.getElementById('finish-btn').style.display = 'block';
+        }
+    }
+
+    function showScore() {
+        const scoreDisplay = document.getElementById('score-display');
+        scoreDisplay.textContent = `You scored ${currentScore} out of 10!`;
+        scoreDisplay.style.display = 'block';
+        document.getElementById('finish-btn').style.display = 'none';
+    }
+
+</script>
+
 </body>
 </html>
