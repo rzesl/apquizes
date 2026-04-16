@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP Chinese Quiz Hub</title>
+    <style>
+        :root {
+            --primary: #c0392b;
+            --secondary: #f39c12;
+            --bg: #f9f9f9;
+            --text: #333;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h1 { color: var(--primary); }
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+        }
+        .menu-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+            text-align: center;
+            border-left: 5px solid var(--primary);
+            text-decoration: none;
+            color: inherit;
+        }
+        .menu-item:hover {
+            transform: translateY(-5px);
+            background: #fff5f5;
+        }
+        .quiz-container {
+            display: none;
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .question {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-btn {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            background: none;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1em;
+            transition: all 0.2s;
+        }
+        .option-btn:hover:not([disabled]) {
+            background-color: #f0f0f0;
+            border-color: var(--secondary);
+        }
+        .correct {
+            background-color: #d4edda !important;
+            border-color: #28a745 !important;
+            color: #155724;
+        }
+        .wrong {
+            background-color: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24;
+        }
+        .explanation {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #e2f3f5;
+            display: none;
+            font-style: italic;
+        }
+        .nav-btns {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-home { background: #777; color: white; }
+        .btn-next { background: var(--primary); color: white; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <header id="main-header">
+        <h1>AP Chinese Prep Quizzes</h1>
+        <p>Select a unit to practice your knowledge and cultural understanding.</p>
+    </header>
+
+    <div class="menu" id="unit-menu">
+        <div class="menu-item" onclick="startQuiz('unit1')"><h3>Unit 1: Families in Different Societies (家庭与社区)</h3></div>
+<div class="menu-item" onclick="startQuiz('unit2')"><h3>Unit 2: Influence of Language and Culture on Identity (语言与文化对身份的影响)</h3></div>
+<div class="menu-item" onclick="startQuiz('unit3')"><h3>Unit 3: Influences of Beauty and Art (美与艺术的影响)</h3></div>
+<div class="menu-item" onclick="startQuiz('unit4')"><h3>Unit 4: How Science and Technology Affect Our Lives (科技对生活的影响)</h3></div>
+<div class="menu-item" onclick="startQuiz('unit5')"><h3>Unit 5: Factors That Impact the Quality of Life (影响生活质量的因素)</h3></div>
+<div class="menu-item" onclick="startQuiz('unit6')"><h3>Unit 6: Environmental, Political, and Societal Challenges (环境、政治及社会挑战)</h3></div>
+
+    </div>
+
+    <div class="quiz-container" id="quiz-container">
+        <div id="quiz-content">
+            <div id="q-count" style="color: #666; margin-bottom: 10px;"></div>
+            <div class="question" id="q-text"></div>
+            <div class="options" id="q-options"></div>
+            <div class="explanation" id="q-explanation"></div>
+        </div>
+        <div class="nav-btns">
+            <button class="btn btn-home" onclick="showMenu()">Back to Menu</button>
+            <button class="btn btn-next hidden" id="next-btn" onclick="nextQuestion()">Next Question</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = {"unit1": [{"q": "In traditional Chinese culture, which concept emphasizes respect for one's parents and elders?", "a": ["A. \u53cb\u8c0a (Friendship)", "B. \u5b5d\u987a (Filial Piety)", "C. \u7ade\u4e89 (Competition)", "D. \u81ea\u7531 (Freedom)"], "c": 1, "e": "\u5b5d\u987a (Xi\u00e0osh\u00f9n) is a core Confucian value regarding respect for elders."}, {"q": "Which of these is a common traditional Chinese living arrangement for multiple generations?", "a": ["A. \u56db\u5408\u9662 (Siheyuan)", "B. \u516c\u5bd3 (Apartment)", "C. \u522b\u5885 (Villa)", "D. \u5e10\u7bf7 (Tent)"], "c": 0, "e": "Siheyuan is a historical type of residence where a whole family lived together around a courtyard."}, {"q": "What does '\u76f8\u4eb2' (xi\u0101ngq\u012bn) refer to?", "a": ["A. Cooking together", "B. A graduation ceremony", "C. A blind date or organized matchmaking", "D. Traveling abroad"], "c": 2, "e": "Xi\u0101ngq\u012bn is the practice of meeting a potential partner arranged by parents or matchmakers."}, {"q": "The 'One-Child Policy' was replaced by which policy to address aging population concerns?", "a": ["A. No-Child Policy", "B. Two-Child Policy (now Three-Child)", "C. Mandatory Migration", "D. Urbanization Policy"], "c": 1, "e": "China moved to a two-child and then three-child policy to combat demographic shifts."}, {"q": "Which term describes the social network and connections vital in Chinese society?", "a": ["A. \u5173\u7cfb (Guanxi)", "B. \u8282\u65e5 (Festival)", "C. \u5386\u53f2 (History)", "D. \u5929\u6c14 (Weather)"], "c": 0, "e": "Guanxi refers to the system of social networks and influential relationships."}], "unit2": [{"q": "The idiom '\u5165\u4e61\u968f\u4fd7' (r\u00f9 xi\u0101ng su\u00ed s\u00fa) means:", "a": ["A. When in Rome, do as the Romans do", "B. Study hard every day", "C. Home is where the heart is", "D. All roads lead to Beijing"], "c": 0, "e": "It literally means 'enter a village, follow the customs.'"}, {"q": "Which dialect is the basis for Modern Standard Chinese (Mandarin)?", "a": ["A. Cantonese", "B. Shanghainese", "C. Fujianese", "D. Beijing dialect"], "c": 3, "e": "Mandarin (P\u01d4t\u014dnghu\u00e0) is phonologically based on the Beijing dialect. (D Answer)"}, {"q": "Which festival celebrates the legend of Qu Yuan?", "a": ["A. Spring Festival", "B. Dragon Boat Festival", "C. Mid-Autumn Festival", "D. Lantern Festival"], "c": 1, "e": "The Dragon Boat Festival (Du\u0101nw\u01d4ji\u00e9) commemorates the poet Qu Yuan."}, {"q": "What is the primary purpose of the 'Hanyu Shuiping Kaoshi' (HSK)?", "a": ["A. Cooking proficiency", "B. Driving license", "C. Chinese language proficiency for non-native speakers", "D. Martial arts ranking"], "c": 2, "e": "HSK is the standardized test for Chinese language proficiency."}, {"q": "The concept of '\u9762\u5b50' (mi\u00e0nzi) refers to:", "a": ["A. Making noodles", "B. Cleaning the house", "C. Personal health", "D. Social honor or 'face'"], "c": 3, "e": "Mi\u00e0nzi is the social standing or prestige one has in the eyes of others. (D Answer)"}], "unit3": [{"q": "Which of these is NOT one of the 'Four Treasures of the Study'?", "a": ["A. Ink stick", "B. Rice paper", "C. Ink stone", "D. Chopsticks"], "c": 3, "e": "The Four Treasures are Brush, Ink, Paper, and Inkstone. Chopsticks are for eating. (D Answer)"}, {"q": "Chinese Opera (like Beijing Opera) uses different mask colors. What does 'Red' usually symbolize?", "a": ["A. Treachery", "B. Loyalty and bravery", "C. Cowardice", "D. Loneliness"], "c": 1, "e": "Red in Beijing Opera represents positive traits like loyalty."}, {"q": "Which dynasty is famous for its distinctive blue and white porcelain?", "a": ["A. Ming Dynasty", "B. Qin Dynasty", "C. Zhou Dynasty", "D. Han Dynasty"], "c": 0, "e": "The Ming Dynasty is world-renowned for its blue and white porcelain."}, {"q": "In Chinese landscape painting, what is 'Shanshui' (\u5c71\u6c34)?", "a": ["A. Cityscapes", "B. Portraits", "C. Mountains and water", "D. Abstract fruit"], "c": 2, "e": "Shanshui literally means 'Mountain-Water.'"}, {"q": "The Qipao (Cheongsam) originated from the dress of which ethnic group?", "a": ["A. Han", "B. Manchu", "C. Tibetan", "D. Mongol"], "c": 1, "e": "The Qipao evolved from the long robes of the Manchu people."}], "unit4": [{"q": "Which of the following is one of the 'Four Great Inventions' of ancient China?", "a": ["A. Steam engine", "B. Compass", "C. Electricity", "D. Internet"], "c": 1, "e": "The four are Compass, Gunpowder, Papermaking, and Printing."}, {"q": "What is the most popular 'super-app' in China used for messaging and payments?", "a": ["A. Facebook", "B. WeChat (\u5fae\u4fe1)", "C. Twitter", "D. WhatsApp"], "c": 1, "e": "WeChat is essential for daily life in modern China."}, {"q": "China is a world leader in which transportation technology?", "a": ["A. Steam trains", "B. High-speed rail (\u9ad8\u94c1)", "C. Horse-drawn carriages", "D. Hot air balloons"], "c": 1, "e": "China has the world's largest high-speed rail network."}, {"q": "How do many people in Chinese cities pay for groceries today?", "a": ["A. Bartering", "B. Gold coins", "C. Checks", "D. Mobile payment (Alipay/WeChat Pay)"], "c": 3, "e": "Mobile payment is ubiquitous in Chinese urban areas. (D Answer)"}, {"q": "The 'Great Firewall' refers to:", "a": ["A. A physical wall", "B. Internet censorship and regulation in China", "C. A firefighting squad", "D. A software for cooking"], "c": 1, "e": "It is the combination of legislative actions and technologies used to regulate the internet in China."}], "unit5": [{"q": "What is the main goal of 'Gaokao' (\u9ad8\u8003)?", "a": ["A. Finding a job", "B. University entrance", "C. Getting a driver's license", "D. Joining the army"], "c": 1, "e": "The Gaokao is the high-stakes National College Entrance Examination."}, {"q": "Which activity is very common among the elderly in Chinese public parks?", "a": ["A. Skateboarding", "B. Surfing", "C. Square dancing (\u5e7f\u573a\u821e)", "D. Bungee jumping"], "c": 2, "e": "Square dancing is a popular social and fitness activity for seniors."}, {"q": "Traditional Chinese Medicine (TCM) often uses which practice?", "a": ["A. Acupuncture", "B. Surgery", "C. Radiation", "D. DNA sequencing"], "c": 0, "e": "Acupuncture is a key component of TCM."}, {"q": "The concept of '\u517b\u8001' (y\u01cengl\u01ceo) refers to:", "a": ["A. Raising children", "B. Providing for the elderly", "C. Buying a new car", "D. Studying history"], "c": 1, "e": "Y\u01cengl\u01ceo refers to the care and support of the elderly."}, {"q": "What does the term '\u5185\u5377' (n\u00e8iju\u01cen - involution) describe in modern China?", "a": ["A. A type of food", "B. Traditional clothing", "C. Intense social competition with diminishing returns", "D. A new dance move"], "c": 2, "e": "Involution describes the burnout and hyper-competition in education and the workplace."}], "unit6": [{"q": "Which environmental issue has been a major concern for Beijing in recent decades?", "a": ["A. Hurricanes", "B. Smog/Air pollution", "C. Volcanic eruptions", "D. Blizzard"], "c": 1, "e": "Air quality and PM2.5 levels have been a significant focus of policy."}, {"q": "The 'Belt and Road Initiative' (\u4e00\u5e26\u4e00\u8def) focuses on:", "a": ["A. Domestic fashion", "B. Culinary arts", "C. Space exploration", "D. Global infrastructure and trade development"], "c": 3, "e": "It is a global infrastructure development strategy. (D Answer)"}, {"q": "What is the 'Spring Festival Travel Rush' often called?", "a": ["A. Chunyun (\u6625\u8fd0)", "B. Holiday Rush", "C. Great Migration", "D. Winter Travel"], "c": 0, "e": "Chunyun is the world's largest annual human migration."}, {"q": "China's 'Left-behind children' (\u7559\u5b88\u513f\u7ae5) usually stay in villages while parents:", "a": ["A. Go on vacation", "B. Go to school", "C. Work in cities", "D. Join the circus"], "c": 2, "e": "Rural-to-urban migration often leaves children in the care of grandparents in villages."}, {"q": "What is the official currency of the People's Republic of China?", "a": ["A. Yen", "B. Won", "C. Dollar", "D. Renminbi (Yuan)"], "c": 3, "e": "The Renminbi (RMB) is the official currency. (D Answer)"}]};
+        let currentUnit = "";
+        let currentQuestionIndex = 0;
+
+        function startQuiz(unitId) {
+            currentUnit = unitId;
+            currentQuestionIndex = 0;
+            document.getElementById('unit-menu').classList.add('hidden');
+            document.getElementById('main-header').classList.add('hidden');
+            document.getElementById('quiz-container').style.display = 'block';
+            loadQuestion();
+        }
+
+        function showMenu() {
+            document.getElementById('unit-menu').classList.remove('hidden');
+            document.getElementById('main-header').classList.remove('hidden');
+            document.getElementById('quiz-container').style.display = 'none';
+        }
+
+        function loadQuestion() {
+            const unitQuestions = quizData[currentUnit];
+            const q = unitQuestions[currentQuestionIndex];
+            
+            document.getElementById('q-count').innerText = `Question ${currentQuestionIndex + 1} of ${unitQuestions.length}`;
+            document.getElementById('q-text').innerText = q.q;
+            document.getElementById('q-explanation').style.display = 'none';
+            document.getElementById('next-btn').classList.add('hidden');
+            
+            const optionsDiv = document.getElementById('q-options');
+            optionsDiv.innerHTML = '';
+            
+            q.a.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index, q.c, q.e);
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected, correct, explanation) {
+            const btns = document.querySelectorAll('.option-btn');
+            btns.forEach((btn, index) => {
+                btn.disabled = true;
+                if (index === correct) {
+                    btn.classList.add('correct');
+                } else if (index === selected) {
+                    btn.classList.add('wrong');
+                }
+            });
+
+            const expDiv = document.getElementById('q-explanation');
+            expDiv.innerHTML = `<strong>${selected === correct ? 'Correct!' : 'Incorrect.'}</strong><br>${explanation}`;
+            expDiv.style.display = 'block';
+            
+            document.getElementById('next-btn').classList.remove('hidden');
+            
+            if (currentQuestionIndex === quizData[currentUnit].length - 1) {
+                document.getElementById('next-btn').innerText = "Finish Quiz";
+            } else {
+                document.getElementById('next-btn').innerText = "Next Question";
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData[currentUnit].length) {
+                loadQuestion();
+            } else {
+                alert("Unit Complete!");
+                showMenu();
+            }
+        }
+    </script>
+</body>
+</html>
