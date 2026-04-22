@@ -1,3 +1,5 @@
+<a href="ap_quizzes_mathjax.html">AP Quiz Menu</a>
+<!--
 Welcome to AP Quizes
 <br>
 <br>
@@ -57,3 +59,4 @@ AP Calculus BC
 AP Lang
 <br>
 <a href="ap-lang-quiz-1.html">AP Lang Quiz 1</a>
+-->
