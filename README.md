@@ -1,4 +1,5 @@
 <a href="ap_quizzes_mathjax.html">AP Quiz Menu</a>
+<a href="aws_genai_pro_quiz_menu.html">AWS GenAI Dev Pro Quiz Menu</a>
 <!--
 Welcome to AP Quizes
 <br>
