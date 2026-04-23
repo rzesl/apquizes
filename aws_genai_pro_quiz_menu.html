@@ -1264,3 +1264,93 @@
             const isCorrect = JSON.stringify(selectedVals) === JSON.stringify(correctVals);
             
             if (isCorrect) {
+                score++;
+            }
+
+            updateScoreboard(true);
+            showFeedback(isCorrect, q);
+            
+            // Highlight correct and incorrect in UI
+            const labels = document.querySelectorAll('.option-label');
+            labels.forEach((label, i) => {
+                const input = label.querySelector('input');
+                input.disabled = true; // disable all
+                if (q.correct.includes(i)) {
+                    label.style.backgroundColor = '#E9F5E6';
+                    label.style.borderColor = '#1D8102'; // Correct color
+                    label.style.fontWeight = 'bold';
+                } else if (input.checked && !q.correct.includes(i)) {
+                    label.style.backgroundColor = '#FCEAE8';
+                    label.style.borderColor = '#D13212'; // Incorrect color
+                }
+            });
+        }
+
+        function updateScoreboard(answeredCurrent = false) {
+            let answered = currentIndex;
+            if (answeredCurrent) answered++;
+            
+            let pct = 0;
+            if (answered > 0) {
+                pct = Math.round((score / answered) * 100);
+            }
+            document.getElementById('scoreboard').innerText = `Score: ${score} / ${answered} (${pct}%)`;
+        }
+
+        function showFeedback(isCorrect, q) {
+            const container = document.getElementById('feedbackContainer');
+            const title = document.getElementById('feedbackTitle');
+            const exp = document.getElementById('feedbackExplanation');
+            
+            container.style.display = 'block';
+            container.className = 'feedback-container ' + (isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+            
+            title.innerText = isCorrect ? 'Correct!' : 'Incorrect';
+            
+            let correctLetters = q.correct.map(idx => String.fromCharCode(65 + idx)).join(', ');
+            let explanationHTML = `<strong>Correct Answer: ${correctLetters}</strong><br><br>${q.explanation}`;
+            exp.innerHTML = explanationHTML;
+            
+            if (currentIndex === currentQuestions.length - 1) {
+                document.getElementById('nextBtn').innerText = 'Finish Quiz';
+            } else {
+                document.getElementById('nextBtn').innerText = 'Next Question';
+            }
+        }
+
+        function nextQuestion() {
+            if (currentIndex < currentQuestions.length - 1) {
+                currentIndex++;
+                renderQuestion();
+            } else {
+                showSummary();
+            }
+        }
+        
+        function showSummary() {
+            document.getElementById('quizContainer').style.display = 'none';
+            document.getElementById('summaryScreen').style.display = 'block';
+            
+            const pct = Math.round((score / currentQuestions.length) * 100);
+            document.getElementById('finalScoreCircle').innerText = `${pct}%`;
+            document.getElementById('finalScoreText').innerText = `You scored ${score} out of ${currentQuestions.length} correct.`;
+            
+            let color = '#232F3E'; // Default navy
+            if (pct >= 80) color = '#1D8102'; // correct color
+            if (pct < 65) color = '#D13212';  // incorrect color
+            document.getElementById('finalScoreCircle').style.borderColor = color;
+        }
+
+        function returnToMenu() {
+            document.getElementById('quizContainer').style.display = 'none';
+            document.getElementById('summaryScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'grid';
+            document.getElementById('backBtn').style.display = 'none';
+        }
+
+        // Run on load
+        window.onload = initMenu;
+
+    </script>
+</body>
+</html>
