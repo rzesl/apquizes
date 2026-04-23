@@ -264,12 +264,10 @@
 
     <div class="container">
         
-        <!-- Dashboard / Menu -->
         <div id="dashboard">
             <h2 style="margin-bottom: 20px;">Select a Practice Exam</h2>
             <div class="dashboard" id="topicCards">
-                <!-- Populated by JS -->
-            </div>
+                </div>
             
             <h2 style="margin-top: 40px; margin-bottom: 20px;">Mixed Practice Exams</h2>
             <div class="dashboard">
@@ -288,7 +286,6 @@
             </div>
         </div>
 
-        <!-- Quiz Interface -->
         <div id="quizContainer" class="quiz-container">
             <div class="scoreboard-nav">
                 <span id="quizTitle">Topic Name</span>
@@ -304,8 +301,7 @@
             </div>
             
             <div id="optionsContainer" class="options-container">
-                <!-- Options populated by JS -->
-            </div>
+                </div>
 
             <div class="actions">
                 <button id="submitBtn" class="btn" onclick="submitAnswer()">Submit Answer</button>
@@ -320,7 +316,6 @@
             </div>
         </div>
         
-        <!-- Summary Screen -->
         <div id="summaryScreen" class="summary-screen quiz-container">
             <h2>Quiz Complete!</h2>
             <div class="score-circle" id="finalScoreCircle">
@@ -335,10 +330,810 @@
     </div>
 
     <script>
-        // Inject question data from Python
-        const allQuestions = [{"topic": "Fundamentals of Generative AI", "question": "A developer wants to use a generative AI model to translate highly technical medical text. Which approach will MOST likely yield the best results without altering the underlying model weights?", "type": "single", "options": ["Providing the model with a large set of examples in the prompt (Few-shot prompting).", "Increasing the temperature parameter to 1.0.", "Applying a parameter-efficient fine-tuning (PEFT) technique.", "Using the model's default settings with a simple zero-shot prompt."], "correct": [0], "explanation": "Few-shot prompting provides the model with context and examples of the expected output format and domain-specific terminology, which significantly improves performance on specialized tasks without the need to update model weights."}, {"topic": "Fundamentals of Generative AI", "question": "When generating responses with a large language model, a developer notices the output is repetitive and lacks creative phrasing. Which two parameters should the developer adjust to increase the variety and creativity of the generated text? (Select TWO.)", "type": "multi_2", "options": ["Decrease the Top-K value.", "Increase the Temperature.", "Decrease the Top-P value.", "Increase the Top-P value.", "Decrease the Maximum Length."], "correct": [1, 3], "explanation": "Temperature controls the randomness of predictions; higher values increase creativity. Top-P (nucleus sampling) controls the cumulative probability of token selection; higher values allow more diverse tokens to be considered. Adjusting these two will increase output variety."}, {"topic": "Fundamentals of Generative AI", "question": "Which of the following techniques represent valid ways to ground a foundation model's responses in verifiable facts to reduce hallucinations? (Select THREE.)", "type": "multi_3", "options": ["Retrieval-Augmented Generation (RAG)", "Providing exact contextual documents inside the prompt", "Decreasing the model's Top-K parameter to 1", "Using an external tool or Agent to query a live database", "Increasing the length penalty of the generation"], "correct": [0, 1, 3], "explanation": "RAG, injecting contextual documents directly into the prompt, and using Agents/Tools to query live data are all proven mechanisms for grounding an LLM's response in factual data, thereby minimizing hallucinations. Altering Top-K or length penalty does not ground the model in facts."}, {"topic": "Fundamentals of Generative AI", "question": "A data science team is comparing evaluation metrics for an abstractive summarization task. Which metric is MOST appropriate for measuring the overlap of n-grams between the model's summary and a human reference summary?", "type": "single", "options": ["BLEU", "ROUGE", "Perplexity", "F1 Score"], "correct": [1], "explanation": "ROUGE (Recall-Oriented Understudy for Gisting Evaluation) is the standard metric for evaluating summarization tasks, as it measures the overlap of n-grams between the generated text and a set of reference texts."}, {"topic": "Fundamentals of Generative AI", "question": "What is the primary function of the 'attention mechanism' in modern transformer-based foundation models?", "type": "single", "options": ["To compress the input data into a smaller latent space.", "To weigh the importance of different words in the input sequence relative to each other.", "To filter out biased or toxic language during inference.", "To determine the optimal chunk size for RAG applications."], "correct": [1], "explanation": "The attention mechanism in transformers allows the model to look at other words in the input sequence (self-attention) to understand the context and relationships, weighing their importance when encoding or decoding representations."}, {"topic": "Fundamentals of Generative AI", "question": "A developer is writing a prompt for a complex reasoning task. Instead of asking for the final answer immediately, the developer instructs the model to 'think step-by-step.' What is this prompting technique called?", "type": "single", "options": ["Chain-of-Thought Prompting", "Few-Shot Prompting", "Zero-Shot Prompting", "Contrastive Prompting"], "correct": [0], "explanation": "Chain-of-Thought (CoT) prompting encourages the model to generate intermediate reasoning steps before arriving at the final answer, which significantly improves performance on complex logic and math tasks."}, {"topic": "Fundamentals of Generative AI", "question": "Which of the following are primary advantages of using decoder-only transformer architectures (like GPT or Claude) compared to encoder-only architectures (like BERT)? (Select TWO.)", "type": "multi_2", "options": ["They are better suited for open-ended text generation tasks.", "They inherently require less training data to achieve the same accuracy.", "They perform bidirectional context understanding out-of-the-box.", "They excel at autoregressive next-token prediction.", "They cannot be used for zero-shot tasks."], "correct": [0, 3], "explanation": "Decoder-only architectures are autoregressive, meaning they predict the next token based on previous tokens, making them exceptionally well-suited for open-ended text generation tasks."}, {"topic": "Fundamentals of Generative AI", "question": "In the context of tokenization, how do subword tokenizers (like Byte-Pair Encoding) handle out-of-vocabulary (OOV) or rare words?", "type": "single", "options": ["They replace the word with an <UNK> (unknown) token.", "They break the rare word down into smaller, known subword units or characters.", "They skip the word entirely during inference.", "They trigger an automated fine-tuning job to learn the new word."], "correct": [1], "explanation": "Subword tokenizers mitigate the out-of-vocabulary problem by breaking down rare or unseen words into smaller subwords or individual characters that are present in the vocabulary."}, {"topic": "Fundamentals of Generative AI", "question": "Which of the following characteristics describe the concept of 'Emergent Abilities' in Large Language Models? (Select THREE.)", "type": "multi_3", "options": ["Abilities that are explicitly programmed into the model via rule-based systems.", "Abilities that are not present in smaller models but appear unpredictably in larger models.", "Abilities that are explicitly optimized during the pre-training loss function.", "Abilities such as complex arithmetic or logical reasoning that emerge at scale.", "Capabilities that arise purely from scaling up compute, data, and parameters without specific architectural changes for that task."], "correct": [1, 3, 4], "explanation": "Emergent abilities are capabilities (like few-shot reasoning or arithmetic) that are not present in smaller models but suddenly appear when a model reaches a certain scale of parameters, compute, and training data, without being explicitly trained for those specific tasks."}, {"topic": "Fundamentals of Generative AI", "question": "When configuring a generative model's sampling strategy, what does the 'Top-K' parameter specifically restrict?", "type": "single", "options": ["The maximum number of tokens the model can generate.", "The cumulative probability distribution of the next token.", "The vocabulary to the K most probable tokens for the next step.", "The number of prompt templates the model evaluates."], "correct": [2], "explanation": "Top-K restricts the model's selection pool for the next token to only the K most probable tokens, cutting off the long tail of less likely tokens to prevent nonsensical generation."}, {"topic": "Building Generative AI Applications", "question": "A developer is building a RAG solution using Knowledge Bases for Amazon Bedrock. They want to store their vector embeddings in an AWS-native, serverless database. Which service should they choose as the vector store?", "type": "single", "options": ["Amazon RDS for MySQL", "Amazon OpenSearch Serverless", "Amazon DynamoDB", "Amazon S3"], "correct": [1], "explanation": "Amazon OpenSearch Serverless provides a native, scalable vector engine that integrates seamlessly with Knowledge Bases for Amazon Bedrock as a serverless vector store."}, {"topic": "Building Generative AI Applications", "question": "A developer is using Agents for Amazon Bedrock to build a customer service assistant. The agent needs to interact with an external order management API. Which components MUST the developer configure for the Agent to successfully execute this task? (Select TWO.)", "type": "multi_2", "options": ["A dedicated Amazon EC2 instance to host the Agent.", "An Action Group with an OpenAPI schema defining the API parameters.", "An AWS Lambda function to execute the business logic of the API call.", "A custom Guardrail to encrypt the API payload.", "An Amazon SageMaker endpoint."], "correct": [1, 2], "explanation": "To enable Agents for Amazon Bedrock to interact with external systems, developers must configure Action Groups, which require an OpenAPI schema to define the API interface and an AWS Lambda function to actually execute the business logic."}, {"topic": "Building Generative AI Applications", "question": "When building a RAG application, which factors should be considered to optimize the document chunking strategy? (Select THREE.)", "type": "multi_3", "options": ["The maximum token limit of the embedding model.", "The expected length of the user's queries.", "The context window size of the generation model.", "The region where the Bedrock model is hosted.", "The overlap between adjacent chunks to preserve context."], "correct": [0, 2, 4], "explanation": "Optimal chunking requires considering the embedding model's token limit (to ensure the chunk fits), the generation model's context window (to ensure retrieved chunks fit in the prompt), and maintaining an overlap between chunks to avoid splitting critical context."}, {"topic": "Building Generative AI Applications", "question": "A company is using the Amazon Bedrock Converse API to build a multi-turn chat application. How should the developer manage the conversation history?", "type": "single", "options": ["Bedrock automatically stores the conversation history; the developer just passes a Session ID.", "The developer must maintain the message history locally or in a database and pass the entire message array in every API request.", "The developer must use Amazon S3 to store previous queries and pass the S3 URI to Bedrock.", "The Converse API uses a cache parameter to reference previous turns natively."], "correct": [1], "explanation": "Amazon Bedrock API calls are stateless. To maintain a multi-turn conversation, the application developer must manage the conversation state (history) and provide the relevant sequence of previous messages in the `messages` array for each request."}, {"topic": "Building Generative AI Applications", "question": "A developer is using LangChain with Amazon Bedrock to process extremely long legal documents that exceed the model's context window. The developer wants to summarize the entire document. Which LangChain chain type is MOST appropriate?", "type": "single", "options": ["StuffDocumentsChain", "MapReduceDocumentsChain", "LLMMathChain", "SQLDatabaseChain"], "correct": [1], "explanation": "MapReduceDocumentsChain handles large documents by splitting them into smaller chunks, summarizing each chunk individually (Map phase), and then combining those summaries into a final summary (Reduce phase), effectively bypassing context window limits."}, {"topic": "Building Generative AI Applications", "question": "Which of the following embedding models available via Amazon Bedrock natively support multimodal (text and image) embeddings? (Select TWO.)", "type": "multi_2", "options": ["Amazon Titan Text Embeddings v2", "Amazon Titan Multimodal Embeddings", "Cohere Embed English v3", "Cohere Embed Multilingual v3", "Anthropic Claude 3 Sonnet"], "correct": [1, 4], "explanation": "Amazon Titan Multimodal Embeddings explicitly supports generating embeddings for both text and images. While Claude 3 Sonnet is a multimodal generation model, Titan Multimodal is specifically designed to output vector embeddings for multiple modalities."}, {"topic": "Building Generative AI Applications", "question": "A developer needs to implement a solution where a generative AI model dynamically decides whether to query a database, search the web, or perform a mathematical calculation based on the user's prompt. What is the BEST architectural pattern for this?", "type": "single", "options": ["Standard Retrieval-Augmented Generation (RAG)", "ReAct (Reasoning and Acting) Agent framework", "Fine-tuning the model on mathematical and SQL data", "Prompt Chaining with static rules"], "correct": [1], "explanation": "The ReAct (Reasoning and Acting) framework allows LLMs to generate reasoning traces and task-specific actions sequentially. It enables the model to act as an 'Agent' that autonomously chooses which tools (web search, math, DB) to use to satisfy the prompt."}, {"topic": "Building Generative AI Applications", "question": "Which features are natively provided by Knowledge Bases for Amazon Bedrock? (Select THREE.)", "type": "multi_3", "options": ["Automated document chunking and vectorization.", "Integration with supported vector databases.", "Automatic parameter-efficient fine-tuning (PEFT) on ingested documents.", "Generation of final responses with source attribution (RetrieveAndGenerate API).", "Real-time automated web scraping of external sites."], "correct": [0, 1, 3], "explanation": "Knowledge Bases for Bedrock automates the heavy lifting of RAG: it handles chunking/vectorization of data from S3, integrates with vector DBs like OpenSearch, and provides the RetrieveAndGenerate API to return answers with source citations. It does not auto-fine-tune or web scrape natively."}, {"topic": "Building Generative AI Applications", "question": "When calling the Amazon Bedrock `InvokeModel` API, a developer receives a `ThrottlingException`. What is the recommended best practice to handle this exception in a robust application?", "type": "single", "options": ["Immediately switch to a different foundation model.", "Implement an exponential backoff and retry strategy in the application code.", "Increase the provisioned concurrency of the AWS Lambda function calling the API.", "Contact AWS support to whitelist the IP address."], "correct": [1], "explanation": "A ThrottlingException indicates the request rate has exceeded the quota. The standard best practice for handling API throttling in AWS applications is to implement an exponential backoff and retry mechanism."}, {"topic": "Building Generative AI Applications", "question": "A developer is using the Bedrock Converse API with Claude 3. They want the model to return structured data matching a specific JSON format. Which technique is most effective for ensuring the output perfectly matches the required JSON structure?", "type": "single", "options": ["Set the model's temperature to 1.0.", "Provide the JSON schema in the system prompt and prefill the assistant's response with an opening curly brace '{'.", "Use an embedding model instead of a generation model.", "Apply a custom Bedrock Guardrail to block non-JSON text."], "correct": [1], "explanation": "Providing clear instructions in the system prompt and using the 'assistant prefill' technique (giving the assistant the start of the JSON object, like '{') forces Claude to continue generating from that point, highly guaranteeing valid structured JSON output."}, {"topic": "Model Selection and Customization", "question": "A financial institution wants to adapt an existing foundation model on Amazon Bedrock to understand proprietary financial jargon. They have 10,000 internal research reports. Which customization method is MOST appropriate to teach the model this new domain-specific language?", "type": "single", "options": ["Retrieval-Augmented Generation (RAG)", "Continued Pre-training", "Prompt Engineering", "Fine-tuning with Instruction-Response pairs"], "correct": [1], "explanation": "Continued Pre-training uses large volumes of unlabeled domain-specific text (like research reports) to adapt a foundation model to a new vocabulary or domain. Instruction fine-tuning is for task behavior, and RAG is for retrieving facts."}, {"topic": "Model Selection and Customization", "question": "When considering model customization in Amazon Bedrock, which of the following statements about Provisioned Throughput is accurate?", "type": "single", "options": ["Provisioned Throughput is automatically managed and scaled to zero for custom models.", "Custom models in Amazon Bedrock require purchasing Provisioned Throughput to perform inference.", "Provisioned Throughput guarantees zero hallucinations.", "Provisioned Throughput is only available for embedding models."], "correct": [1], "explanation": "In Amazon Bedrock, once you customize a model (via fine-tuning or continued pre-training), you must purchase Provisioned Throughput (Model Units) to host and perform inference on that custom model."}, {"topic": "Model Selection and Customization", "question": "A team is evaluating whether to use Amazon Bedrock or Amazon SageMaker JumpStart to deploy an open-source model like Llama 3. Which scenarios would make SageMaker JumpStart the better choice? (Select TWO.)", "type": "multi_2", "options": ["The team wants a fully serverless API without managing infrastructure.", "The team requires root access to the underlying EC2 instances hosting the model.", "The team wants to implement custom, proprietary model weights they trained externally.", "The team wants to pay strictly on a per-token basis.", "The team requires the model to be natively integrated with Bedrock Agents."], "correct": [2, 3], "explanation": "SageMaker JumpStart is ideal when customers need deep control over the hosting infrastructure (instance types, VPCs) or want to bring entirely custom model weights trained externally. Bedrock is serverless and token-based for its base models."}, {"topic": "Model Selection and Customization", "question": "Which data format is typically required for providing a training dataset to an Amazon Bedrock Fine-Tuning job?", "type": "single", "options": ["CSV files containing raw text.", "JSONL (JSON Lines) files containing prompt and completion pairs.", "Parquet files with vectorized embeddings.", "A zip file of raw PDF documents."], "correct": [1], "explanation": "Fine-tuning jobs in Amazon Bedrock typically require data formatted in JSON Lines (JSONL), where each line is a separate JSON object representing a training example (e.g., prompt/completion or system/user/assistant roles)."}, {"topic": "Model Selection and Customization", "question": "A developer needs to choose a model for a real-time, low-latency chatbot. The queries are simple, and response speed and cost are the absolute highest priorities. Which model family member from Anthropic Claude 3 is BEST suited for this?", "type": "single", "options": ["Claude 3 Opus", "Claude 3 Sonnet", "Claude 3 Haiku", "Amazon Titan Image Generator"], "correct": [2], "explanation": "Claude 3 Haiku is Anthropic's fastest and most compact model, specifically designed for near-instant responsiveness and low cost, making it the perfect choice for simple queries prioritizing speed."}, {"topic": "Model Selection and Customization", "question": "A data science team is preparing a dataset for instruction fine-tuning. What are key best practices for this dataset to ensure a high-quality customized model? (Select THREE.)", "type": "multi_3", "options": ["Include a diverse set of examples covering various edge cases.", "Ensure the dataset contains at least 10 billion tokens.", "Maintain high data quality by removing toxic or biased examples.", "Format the data identically to how the model will be prompted during inference.", "Use only single-word responses for all training completions."], "correct": [0, 2, 3], "explanation": "Instruction fine-tuning requires high-quality, diverse data. The data should ideally be formatted exactly as the model will see it in production to teach it the correct structural behavior. Huge token counts (10B+) are for pre-training, not typical instruction fine-tuning."}, {"topic": "Model Selection and Customization", "question": "What is the primary benefit of using Parameter-Efficient Fine-Tuning (PEFT) techniques like LoRA (Low-Rank Adaptation) compared to full fine-tuning?", "type": "single", "options": ["PEFT prevents the model from hallucinating entirely.", "PEFT trains significantly faster and requires much less memory because it freezes the base model weights and only updates a small set of new parameters.", "PEFT allows the model to process multimodal data natively.", "PEFT automatically deploys the model to a serverless endpoint."], "correct": [1], "explanation": "PEFT techniques like LoRA dramatically reduce the computational and memory requirements of fine-tuning by freezing the massive base model weights and only training a tiny adapter module."}, {"topic": "Model Selection and Customization", "question": "An enterprise needs to evaluate multiple foundation models on a custom, proprietary task (e.g., summarizing specific internal memos). Which feature of Amazon Bedrock is designed to facilitate this comparison?", "type": "single", "options": ["Bedrock Guardrails", "Bedrock Model Evaluation (Automated and Human-based)", "Bedrock Knowledge Bases", "Provisioned Throughput"], "correct": [1], "explanation": "Amazon Bedrock Model Evaluation allows you to evaluate, compare, and select the best foundation models for your specific use cases using either automated metrics (like ROUGE, exact match) or human-in-the-loop evaluation pipelines."}, {"topic": "Model Selection and Customization", "question": "When deploying a custom model via SageMaker JumpStart, how can a developer ensure the inference endpoint scales to handle unpredictable spikes in traffic? (Select TWO.)", "type": "multi_2", "options": ["Configure an Auto Scaling policy on the SageMaker Endpoint.", "Use an AWS Lambda function to dynamically change the EC2 instance type.", "Enable Provisioned Concurrency on the JumpStart model.", "Set up an Application Auto Scaling target tracking policy based on SageMakerVariantInvocationsPerInstance.", "Configure Amazon CloudFront to cache all JumpStart inferences."], "correct": [0, 3], "explanation": "To handle traffic spikes on SageMaker endpoints, you must configure Application Auto Scaling with a policy (like target tracking) that monitors metrics such as SageMakerVariantInvocationsPerInstance and dynamically adjusts the instance count."}, {"topic": "Model Selection and Customization", "question": "A company wants to build an application that analyzes images of retail shelves and counts inventory. Which Amazon Bedrock model family should they select?", "type": "single", "options": ["Amazon Titan Text G1", "Anthropic Claude 3 (Sonnet or Opus)", "AI21 Labs Jurassic-2", "Cohere Command"], "correct": [1], "explanation": "Anthropic Claude 3 models (Haiku, Sonnet, Opus) are state-of-the-art multimodal models capable of processing and analyzing images, making them the correct choice for visual tasks like inventory counting on Bedrock. (Amazon Titan Image Generator generates images, it doesn't primarily analyze them)."}, {"topic": "Security, Privacy, and Governance", "question": "An organization has strict data privacy compliance requirements. They are concerned that data sent to Amazon Bedrock might be used by AWS. Which statement accurately describes Amazon Bedrock's data privacy posture?", "type": "single", "options": ["Customer data is completely private and is never used to train the base foundation models.", "Customer data is used to train base models only if the customer opts-in.", "AWS anonymizes the data before using it to train foundation models.", "Customer data is shared with third-party model providers like Anthropic and AI21."], "correct": [0], "explanation": "A core tenet of Amazon Bedrock's security posture is that customer prompts, responses, and custom fine-tuning data are kept strictly private within the customer's AWS environment and are never used to train the base foundation models or shared with third-party providers."}, {"topic": "Security, Privacy, and Governance", "question": "A developer wants to ensure that a generative AI application built on Amazon Bedrock never outputs company-specific confidential terms (e.g., 'Project Pegasus'). Which feature should they implement?", "type": "single", "options": ["AWS WAF (Web Application Firewall) custom rules", "Guardrails for Amazon Bedrock - Custom Word Filters", "IAM Resource Policies", "VPC Security Groups"], "correct": [1], "explanation": "Guardrails for Amazon Bedrock allows you to implement custom word filters (deny lists) that intercept the model's response and block or mask specific confidential terms or phrases before they reach the user."}, {"topic": "Security, Privacy, and Governance", "question": "Which of the following methods allows an application running on an Amazon EC2 instance in a private VPC to securely call the Amazon Bedrock API without the traffic traversing the public internet? (Select TWO.)", "type": "multi_2", "options": ["Create an AWS Site-to-Site VPN to the Bedrock service.", "Create an AWS PrivateLink (VPC Endpoint) for Amazon Bedrock.", "Ensure the EC2 instance has an Elastic IP address.", "Route traffic through a NAT Gateway.", "Configure the VPC Route Table to route Bedrock API traffic to the VPC Interface Endpoint."], "correct": [1, 4], "explanation": "To keep traffic completely private without traversing the public internet, you must create a VPC Interface Endpoint (AWS PrivateLink) for Amazon Bedrock and ensure your route tables/DNS are configured to route traffic to that endpoint."}, {"topic": "Security, Privacy, and Governance", "question": "A security administrator needs to restrict an IAM Role so it can ONLY invoke the 'Anthropic Claude 3 Sonnet' model and no other models in Amazon Bedrock. How should this be implemented?", "type": "single", "options": ["Attach an IAM policy with the action `bedrock:InvokeModel` and specify the exact foundation model ARN in the `Resource` block.", "Use an AWS KMS key that is only authorized for Claude 3.", "Configure a Bedrock Guardrail to block other models.", "Apply a tag to the IAM role that says `Model=Claude3`."], "correct": [0], "explanation": "IAM policies in AWS allow for fine-grained resource-level permissions. You can restrict an identity to specific models by scoping the `bedrock:InvokeModel` action to the specific Model ARN in the `Resource` section of the policy."}, {"topic": "Security, Privacy, and Governance", "question": "Which of the following scenarios can be managed using Guardrails for Amazon Bedrock? (Select THREE.)", "type": "multi_3", "options": ["Redacting Personally Identifiable Information (PII) from user prompts.", "Filtering out hateful, toxic, or sexually explicit content.", "Automatically scaling the provisioned throughput of a custom model.", "Preventing the model from discussing restricted topics (Topic avoidance).", "Encrypting data at rest within an S3 bucket."], "correct": [0, 1, 3], "explanation": "Guardrails for Bedrock is specifically designed for responsible AI. It handles content filtering (toxicity), PII redaction/masking, and topic avoidance based on natural language descriptions. It does not handle infrastructure scaling or S3 encryption."}, {"topic": "Security, Privacy, and Governance", "question": "A company is using Amazon Bedrock custom models. They want to ensure the training data stored in Amazon S3 and the customized model artifacts are encrypted using keys they control. Which service must be integrated?", "type": "single", "options": ["AWS Certificate Manager (ACM)", "AWS Secrets Manager", "AWS Key Management Service (AWS KMS)", "Amazon Macie"], "correct": [2], "explanation": "AWS KMS allows customers to create and manage cryptographic keys. Bedrock supports using Customer Managed Keys (CMKs) in KMS to encrypt custom model training data and the resulting model artifacts at rest."}, {"topic": "Security, Privacy, and Governance", "question": "How can a security operations center (SOC) audit all API calls made to Amazon Bedrock, such as `InvokeModel` or `CreateAgent`, for compliance and threat detection?", "type": "single", "options": ["By reviewing Amazon CloudWatch metrics.", "By enabling AWS CloudTrail logging.", "By checking the Amazon Bedrock console dashboard.", "By using Amazon Inspector."], "correct": [1], "explanation": "AWS CloudTrail records API calls made within an AWS account. Enabling CloudTrail logging captures details of all management and data events (like `InvokeModel` if data event logging is enabled) for Bedrock, providing a comprehensive audit trail."}, {"topic": "Security, Privacy, and Governance", "question": "A developer is configuring cross-account access to an Amazon Bedrock Knowledge Base. Account A hosts the Knowledge Base, and Account B hosts the application. What IAM configuration is required?", "type": "single", "options": ["Create an IAM user in Account A and embed the access keys in the application in Account B.", "Create an IAM role in Account A with permissions to access the Knowledge Base, and configure a trust policy allowing Account B to assume this role.", "Use AWS Resource Access Manager (RAM) to share the Bedrock foundation models.", "Disable IAM authentication on the Knowledge Base."], "correct": [1], "explanation": "The AWS best practice for cross-account access is to create an IAM role in the resource-owning account (Account A) and establish a trust relationship that allows identities from the consuming account (Account B) to assume the role (`sts:AssumeRole`)."}, {"topic": "Security, Privacy, and Governance", "question": "Which AWS service should be used in front of an Amazon API Gateway serving a generative AI application to protect against prompt injection attacks originating from malicious IP addresses?", "type": "single", "options": ["Amazon GuardDuty", "AWS WAF (Web Application Firewall)", "AWS Shield Standard", "Amazon Cognito"], "correct": [1], "explanation": "AWS WAF can be deployed on API Gateway to inspect incoming HTTP requests. You can configure rules to block malicious IPs, rate limit requests, and inspect payloads for specific attack patterns before they ever reach the Bedrock backend."}, {"topic": "Security, Privacy, and Governance", "question": "When configuring a Knowledge Base for Amazon Bedrock with an Amazon OpenSearch Serverless vector store, what data access policies are required for the Bedrock service role? (Select TWO.)", "type": "multi_2", "options": ["IAM permissions allowing the Bedrock role to perform `aoss:APIAccessAll` on the OpenSearch collection.", "An OpenSearch Serverless Data Access Policy granting the Bedrock role permissions to read/write to the specific index.", "An S3 bucket policy allowing public read access to the data.", "An IAM policy allowing the Bedrock role to create new IAM users.", "A KMS policy allowing OpenSearch to bypass encryption."], "correct": [0, 1], "explanation": "To integrate Bedrock Knowledge Bases with OpenSearch Serverless, the Bedrock IAM role must have IAM permissions to access the AOSS APIs, AND the OpenSearch Serverless collection must have a Data Access Policy explicitly granting that role permissions to interact with the index data."}, {"topic": "Optimization and Operations", "question": "An application using Amazon Bedrock is experiencing high latency. The developer notices the application waits for the entire model response to be generated before displaying anything to the user. Which API action should be implemented to improve the perceived performance (Time to First Token)?", "type": "single", "options": ["InvokeModel", "InvokeModelWithResponseStream", "StartModelInvocationJob", "RetrieveAndGenerate"], "correct": [1], "explanation": "The `InvokeModelWithResponseStream` API streams the model's output back to the application chunk-by-chunk as it is generated, drastically reducing the Time to First Token (TTFT) and improving the user experience."}, {"topic": "Optimization and Operations", "question": "A company needs to run a daily batch process that generates thousands of product descriptions using Amazon Bedrock. Real-time latency is not a concern, but cost and managing rate limits are. Which Bedrock feature is best suited for this task?", "type": "single", "options": ["Provisioned Throughput", "Batch Inference (StartModelInvocationJob)", "Agents for Amazon Bedrock", "Amazon API Gateway caching"], "correct": [1], "explanation": "Bedrock Batch Inference allows you to process large volumes of prompts asynchronously using data stored in S3. It is highly cost-effective and automatically handles concurrency and rate limiting without requiring real-time endpoints."}, {"topic": "Optimization and Operations", "question": "Which Amazon CloudWatch metric should an operations team monitor to understand the latency experienced by users when calling the `InvokeModel` API in Bedrock?", "type": "single", "options": ["Invocations", "InvocationLatency", "TokenCount", "ThrottledRequests"], "correct": [1], "explanation": "The `InvocationLatency` metric in CloudWatch specifically tracks the time it takes for Amazon Bedrock to process a request and return a response for the `InvokeModel` API."}, {"topic": "Optimization and Operations", "question": "To optimize the cost of running a generative AI application, a developer wants to reuse responses for identical user queries without invoking the Bedrock model again. Which architecture pattern best achieves this? (Select TWO.)", "type": "multi_2", "options": ["Implementing a semantic cache using Amazon DynamoDB or ElastiCache.", "Enabling Bedrock Batch Inference.", "Using an API Gateway cache configured with the exact query string.", "Increasing the model's temperature parameter.", "Using Provisioned Throughput with a 1-month commitment."], "correct": [0, 2], "explanation": "Caching identical or semantically similar queries prevents redundant model invocations, saving both cost and latency. This can be done via exact-match caching at the API Gateway level or semantic caching using databases like Redis/ElastiCache."}, {"topic": "Optimization and Operations", "question": "A custom foundation model deployed on Amazon Bedrock using Provisioned Throughput is experiencing dropped requests during peak hours. What is the most appropriate operational response?", "type": "single", "options": ["Decrease the number of Model Units.", "Purchase and allocate additional Model Units for the Provisioned Throughput.", "Switch from Provisioned Throughput to On-Demand.", "Delete the custom model and retrain it with more data."], "correct": [1], "explanation": "Provisioned Throughput capacity is measured in Model Units. If requests are being dropped due to lack of capacity during peak hours, you must scale up by allocating more Model Units to handle the increased concurrency."}, {"topic": "Optimization and Operations", "question": "When utilizing RAG, the latency of the retrieval step is critical. Which of the following vector search algorithms provided by vector databases offers the fastest approximate nearest neighbor search at scale, prioritizing speed over absolute accuracy?", "type": "single", "options": ["K-Nearest Neighbors (KNN) exact search", "Hierarchical Navigable Small World (HNSW)", "Cosine Similarity brute force", "Euclidean distance matrix"], "correct": [1], "explanation": "HNSW (Hierarchical Navigable Small World) is a highly optimized graph-based index for Approximate Nearest Neighbor (ANN) search. It offers extremely low latency and high scalability compared to exact search methods like KNN or brute force."}, {"topic": "Optimization and Operations", "question": "Which of the following strategies can effectively reduce the token consumption (and therefore cost) of a generative AI application? (Select THREE.)", "type": "multi_3", "options": ["Using a smaller, more efficient model (like Haiku instead of Opus) for simpler tasks.", "Implementing a precise chunking strategy to only retrieve the most relevant context in RAG.", "Prompting the model to return concise answers without unnecessary pleasantries.", "Always setting the temperature to 0.", "Using the `InvokeModelWithResponseStream` API."], "correct": [0, 1, 2], "explanation": "Using smaller models, sending less context (via better chunking), and instructing the model to generate shorter responses directly reduce input and output token consumption. Temperature and streaming affect randomness and UX, not total token count intrinsically."}, {"topic": "Optimization and Operations", "question": "A company uses an open-source Large Language Model deployed on an Amazon SageMaker real-time endpoint. They want to monitor the endpoint for data drift and model quality degradation over time. Which AWS service should they use?", "type": "single", "options": ["Amazon Macie", "Amazon SageMaker Model Monitor", "Amazon CloudWatch Logs Insights", "AWS CloudTrail"], "correct": [1], "explanation": "Amazon SageMaker Model Monitor continuously monitors the quality of Amazon SageMaker machine learning models in production, detecting data drift and deviations in model quality."}, {"topic": "Optimization and Operations", "question": "A generative AI application currently passes a massive 50-page document into the context window for every user question. The application is slow and expensive. What is the BEST architectural change to optimize this?", "type": "single", "options": ["Increase the Provisioned Throughput of the model.", "Switch to a model with a 200k context window.", "Implement a Retrieval-Augmented Generation (RAG) architecture to search and inject only relevant paragraphs.", "Compress the PDF using a standard ZIP algorithm before sending it to the model."], "correct": [2], "explanation": "Passing a massive document every time consumes huge amounts of tokens (high cost, high latency). Implementing RAG allows the application to pre-index the document and only retrieve/send the small, relevant text chunks needed to answer the specific query."}, {"topic": "Optimization and Operations", "question": "Foundation model providers occasionally deprecate older model versions. What is an operational best practice to handle model version deprecation in Amazon Bedrock? (Select TWO.)", "type": "multi_2", "options": ["Hardcode the model ARN in the application source code to prevent updates.", "Monitor AWS Health Dashboard and Bedrock release notes for deprecation notices.", "Implement automated integration tests to evaluate new model versions before updating alias/ARN references in production.", "Assume deprecated models will continue running indefinitely if you have an active Provisioned Throughput commitment.", "Always use the 'latest' alias in production to automatically upgrade without testing."], "correct": [1, 2], "explanation": "Providers will deprecate models. You must monitor AWS notifications for these events and have an automated testing pipeline to evaluate the performance of newer model versions before updating your application to point to the new ARNs."}];
-        const topics = ["Fundamentals of Generative AI", "Building Generative AI Applications", "Model Selection and Customization", "Security, Privacy, and Governance", "Optimization and Operations"];
-        
+        // Topic definitions
+        const topics = [
+            "Fundamentals of Generative AI",
+            "Building Generative AI Applications",
+            "Model Selection and Customization",
+            "Security, Privacy, and Governance",
+            "Optimization and Operations"
+        ];
+
+        // Question bank (50 questions)
+        const allQuestions = [
+  {
+    "topic": "Fundamentals of Generative AI",
+    "question": "A developer wants to use a generative AI model to translate highly technical medical text. Which approach will MOST likely yield the best results without altering the underlying model weights?",
+    "type": "single",
+    "options": [
+      "Providing the model with a large set of examples in the prompt (Few-shot prompting).",
+      "Increasing the temperature parameter to 1.0.",
+      "Applying a parameter-efficient fine-tuning (PEFT) technique.",
+      "Using the model's default settings with a simple zero-shot prompt."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Few-shot prompting provides the model with context and examples of the expected output format and domain-specific terminology, which significantly improves performance on specialized tasks without the need to update model weights."
+  },
+  {
+    "topic": "Fundamentals of Generative AI",
+    "question": "When generating responses with a large language model, a developer notices the output is repetitive and lacks creative phrasing. Which two parameters should the developer adjust to increase the variety and creativity of the generated text? (Select TWO.)",
+    "type": "multi_2",
+    "options": [
+      "Decrease the Top-K value.",
+      "Increase the Temperature.",
+      "Decrease the Top-P value.",
+      "Increase the Top-P value.",
+      "Decrease the Maximum Length."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "Temperature controls the randomness of predictions; higher values increase creativity. Top-P (nucleus sampling) controls the cumulative probability of token selection; higher values allow more diverse tokens to be considered. Adjusting these two will increase output variety."
+  },
+  {
+    "topic": "Fundamentals of Generative AI",
+    "question": "Which of the following techniques represent valid ways to ground a foundation model's responses in verifiable facts to reduce hallucinations? (Select THREE.)",
+    "type": "multi_3",
+    "options": [
+      "Retrieval-Augmented Generation (RAG)",
+      "Providing exact contextual documents inside the prompt",
+      "Decreasing the model's Top-K parameter to 1",
+      "Using an external tool or Agent to query a live database",
+      "Increasing the length penalty of the generation"
+    ],
+    "correct": [
+      0,
+      1,
+      3
+    ],
+    "explanation": "RAG, injecting contextual documents directly into the prompt, and using Agents/Tools to query live data are all proven mechanisms for grounding an LLM's response in factual data, thereby minimizing hallucinations. Altering Top-K or length penalty does not ground the model in facts."
+  },
+  {
+    "topic": "Fundamentals of Generative AI",
+    "question": "A data science team is comparing evaluation metrics for an abstractive summarization task. Which metric is MOST appropriate for measuring the overlap of n-grams between the model's summary and a human reference summary?",
+    "type": "single",
+    "options": [
+      "BLEU",
+      "ROUGE",
+      "Perplexity",
+      "F1 Score"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "ROUGE (Recall-Oriented Understudy for Gisting Evaluation) is the standard metric for evaluating summarization tasks, as it measures the overlap of n-grams between the generated text and a set of reference texts."
+  },
+  {
+    "topic": "Fundamentals of Generative AI",
+    "question": "What is the primary function of the 'attention mechanism' in modern transformer-based foundation models?",
+    "type": "single",
+    "options": [
+      "To compress the input data into a smaller latent space.",
+      "To weigh the importance of different words in the input sequence relative to each other.",
+      "To filter out biased or toxic language during inference.",
+      "To determine the optimal chunk size for RAG applications."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "The attention mechanism in transformers allows the model to look at other words in the input sequence (self-attention) to understand the context and relationships, weighing their importance when encoding or decoding representations."
+  },
+  {
+    "topic": "Fundamentals of Generative AI",
+    "question": "A developer is writing a prompt for a complex reasoning task. Instead of asking for the final answer immediately, the developer instructs the model to 'think step-by-step.' What is this prompting technique called?",
+    "type": "single",
+    "options": [
+      "Chain-of-Thought Prompting",
+      "Few-Shot Prompting",
+      "Zero-Shot Prompting",
+      "Contrastive Prompting"
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "Chain-of-Thought (CoT) prompting encourages the model to generate intermediate reasoning steps before arriving at the final answer, which significantly improves performance on complex logic and math tasks."
+  },
+  {
+    "topic": "Fundamentals of Generative AI",
+    "question": "Which of the following are primary advantages of using decoder-only transformer architectures (like GPT or Claude) compared to encoder-only architectures (like BERT)? (Select TWO.)",
+    "type": "multi_2",
+    "options": [
+      "They are better suited for open-ended text generation tasks.",
+      "They inherently require less training data to achieve the same accuracy.",
+      "They perform bidirectional context understanding out-of-the-box.",
+      "They excel at autoregressive next-token prediction.",
+      "They cannot be used for zero-shot tasks."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "Decoder-only architectures are autoregressive, meaning they predict the next token based on previous tokens, making them exceptionally well-suited for open-ended text generation tasks."
+  },
+  {
+    "topic": "Fundamentals of Generative AI",
+    "question": "In the context of tokenization, how do subword tokenizers (like Byte-Pair Encoding) handle out-of-vocabulary (OOV) or rare words?",
+    "type": "single",
+    "options": [
+      "They replace the word with an <UNK> (unknown) token.",
+      "They break the rare word down into smaller, known subword units or characters.",
+      "They skip the word entirely during inference.",
+      "They trigger an automated fine-tuning job to learn the new word."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Subword tokenizers mitigate the out-of-vocabulary problem by breaking down rare or unseen words into smaller subwords or individual characters that are present in the vocabulary."
+  },
+  {
+    "topic": "Fundamentals of Generative AI",
+    "question": "Which of the following characteristics describe the concept of 'Emergent Abilities' in Large Language Models? (Select THREE.)",
+    "type": "multi_3",
+    "options": [
+      "Abilities that are explicitly programmed into the model via rule-based systems.",
+      "Abilities that are not present in smaller models but appear unpredictably in larger models.",
+      "Abilities that are explicitly optimized during the pre-training loss function.",
+      "Abilities such as complex arithmetic or logical reasoning that emerge at scale.",
+      "Capabilities that arise purely from scaling up compute, data, and parameters without specific architectural changes for that task."
+    ],
+    "correct": [
+      1,
+      3,
+      4
+    ],
+    "explanation": "Emergent abilities are capabilities (like few-shot reasoning or arithmetic) that are not present in smaller models but suddenly appear when a model reaches a certain scale of parameters, compute, and training data, without being explicitly trained for those specific tasks."
+  },
+  {
+    "topic": "Fundamentals of Generative AI",
+    "question": "When configuring a generative model's sampling strategy, what does the 'Top-K' parameter specifically restrict?",
+    "type": "single",
+    "options": [
+      "The maximum number of tokens the model can generate.",
+      "The cumulative probability distribution of the next token.",
+      "The vocabulary to the K most probable tokens for the next step.",
+      "The number of prompt templates the model evaluates."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Top-K restricts the model's selection pool for the next token to only the K most probable tokens, cutting off the long tail of less likely tokens to prevent nonsensical generation."
+  },
+  {
+    "topic": "Building Generative AI Applications",
+    "question": "A developer is building a RAG solution using Knowledge Bases for Amazon Bedrock. They want to store their vector embeddings in an AWS-native, serverless database. Which service should they choose as the vector store?",
+    "type": "single",
+    "options": [
+      "Amazon RDS for MySQL",
+      "Amazon OpenSearch Serverless",
+      "Amazon DynamoDB",
+      "Amazon S3"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Amazon OpenSearch Serverless provides a native, scalable vector engine that integrates seamlessly with Knowledge Bases for Amazon Bedrock as a serverless vector store."
+  },
+  {
+    "topic": "Building Generative AI Applications",
+    "question": "A developer is using Agents for Amazon Bedrock to build a customer service assistant. The agent needs to interact with an external order management API. Which components MUST the developer configure for the Agent to successfully execute this task? (Select TWO.)",
+    "type": "multi_2",
+    "options": [
+      "A dedicated Amazon EC2 instance to host the Agent.",
+      "An Action Group with an OpenAPI schema defining the API parameters.",
+      "An AWS Lambda function to execute the business logic of the API call.",
+      "A custom Guardrail to encrypt the API payload.",
+      "An Amazon SageMaker endpoint."
+    ],
+    "correct": [
+      1,
+      2
+    ],
+    "explanation": "To enable Agents for Amazon Bedrock to interact with external systems, developers must configure Action Groups, which require an OpenAPI schema to define the API interface and an AWS Lambda function to actually execute the business logic."
+  },
+  {
+    "topic": "Building Generative AI Applications",
+    "question": "When building a RAG application, which factors should be considered to optimize the document chunking strategy? (Select THREE.)",
+    "type": "multi_3",
+    "options": [
+      "The maximum token limit of the embedding model.",
+      "The expected length of the user's queries.",
+      "The context window size of the generation model.",
+      "The region where the Bedrock model is hosted.",
+      "The overlap between adjacent chunks to preserve context."
+    ],
+    "correct": [
+      0,
+      2,
+      4
+    ],
+    "explanation": "Optimal chunking requires considering the embedding model's token limit (to ensure the chunk fits), the generation model's context window (to ensure retrieved chunks fit in the prompt), and maintaining an overlap between chunks to avoid splitting critical context."
+  },
+  {
+    "topic": "Building Generative AI Applications",
+    "question": "A company is using the Amazon Bedrock Converse API to build a multi-turn chat application. How should the developer manage the conversation history?",
+    "type": "single",
+    "options": [
+      "Bedrock automatically stores the conversation history; the developer just passes a Session ID.",
+      "The developer must maintain the message history locally or in a database and pass the entire message array in every API request.",
+      "The developer must use Amazon S3 to store previous queries and pass the S3 URI to Bedrock.",
+      "The Converse API uses a cache parameter to reference previous turns natively."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Amazon Bedrock API calls are stateless. To maintain a multi-turn conversation, the application developer must manage the conversation state (history) and provide the relevant sequence of previous messages in the `messages` array for each request."
+  },
+  {
+    "topic": "Building Generative AI Applications",
+    "question": "A developer is using LangChain with Amazon Bedrock to process extremely long legal documents that exceed the model's context window. The developer wants to summarize the entire document. Which LangChain chain type is MOST appropriate?",
+    "type": "single",
+    "options": [
+      "StuffDocumentsChain",
+      "MapReduceDocumentsChain",
+      "LLMMathChain",
+      "SQLDatabaseChain"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "MapReduceDocumentsChain handles large documents by splitting them into smaller chunks, summarizing each chunk individually (Map phase), and then combining those summaries into a final summary (Reduce phase), effectively bypassing context window limits."
+  },
+  {
+    "topic": "Building Generative AI Applications",
+    "question": "Which of the following embedding models available via Amazon Bedrock natively support multimodal (text and image) embeddings? (Select TWO.)",
+    "type": "multi_2",
+    "options": [
+      "Amazon Titan Text Embeddings v2",
+      "Amazon Titan Multimodal Embeddings",
+      "Cohere Embed English v3",
+      "Cohere Embed Multilingual v3",
+      "Anthropic Claude 3 Sonnet"
+    ],
+    "correct": [
+      1,
+      4
+    ],
+    "explanation": "Amazon Titan Multimodal Embeddings explicitly supports generating embeddings for both text and images. While Claude 3 Sonnet is a multimodal generation model, Titan Multimodal is specifically designed to output vector embeddings for multiple modalities."
+  },
+  {
+    "topic": "Building Generative AI Applications",
+    "question": "A developer needs to implement a solution where a generative AI model dynamically decides whether to query a database, search the web, or perform a mathematical calculation based on the user's prompt. What is the BEST architectural pattern for this?",
+    "type": "single",
+    "options": [
+      "Standard Retrieval-Augmented Generation (RAG)",
+      "ReAct (Reasoning and Acting) Agent framework",
+      "Fine-tuning the model on mathematical and SQL data",
+      "Prompt Chaining with static rules"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "The ReAct (Reasoning and Acting) framework allows LLMs to generate reasoning traces and task-specific actions sequentially. It enables the model to act as an 'Agent' that autonomously chooses which tools (web search, math, DB) to use to satisfy the prompt."
+  },
+  {
+    "topic": "Building Generative AI Applications",
+    "question": "Which features are natively provided by Knowledge Bases for Amazon Bedrock? (Select THREE.)",
+    "type": "multi_3",
+    "options": [
+      "Automated document chunking and vectorization.",
+      "Integration with supported vector databases.",
+      "Automatic parameter-efficient fine-tuning (PEFT) on ingested documents.",
+      "Generation of final responses with source attribution (RetrieveAndGenerate API).",
+      "Real-time automated web scraping of external sites."
+    ],
+    "correct": [
+      0,
+      1,
+      3
+    ],
+    "explanation": "Knowledge Bases for Bedrock automates the heavy lifting of RAG: it handles chunking/vectorization of data from S3, integrates with vector DBs like OpenSearch, and provides the RetrieveAndGenerate API to return answers with source citations. It does not auto-fine-tune or web scrape natively."
+  },
+  {
+    "topic": "Building Generative AI Applications",
+    "question": "When calling the Amazon Bedrock `InvokeModel` API, a developer receives a `ThrottlingException`. What is the recommended best practice to handle this exception in a robust application?",
+    "type": "single",
+    "options": [
+      "Immediately switch to a different foundation model.",
+      "Implement an exponential backoff and retry strategy in the application code.",
+      "Increase the provisioned concurrency of the AWS Lambda function calling the API.",
+      "Contact AWS support to whitelist the IP address."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "A ThrottlingException indicates the request rate has exceeded the quota. The standard best practice for handling API throttling in AWS applications is to implement an exponential backoff and retry mechanism."
+  },
+  {
+    "topic": "Building Generative AI Applications",
+    "question": "A developer is using the Bedrock Converse API with Claude 3. They want the model to return structured data matching a specific JSON format. Which technique is most effective for ensuring the output perfectly matches the required JSON structure?",
+    "type": "single",
+    "options": [
+      "Set the model's temperature to 1.0.",
+      "Provide the JSON schema in the system prompt and prefill the assistant's response with an opening curly brace '{'.",
+      "Use an embedding model instead of a generation model.",
+      "Apply a custom Bedrock Guardrail to block non-JSON text."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Providing clear instructions in the system prompt and using the 'assistant prefill' technique (giving the assistant the start of the JSON object, like '{') forces Claude to continue generating from that point, highly guaranteeing valid structured JSON output."
+  },
+  {
+    "topic": "Model Selection and Customization",
+    "question": "A financial institution wants to adapt an existing foundation model on Amazon Bedrock to understand proprietary financial jargon. They have 10,000 internal research reports. Which customization method is MOST appropriate to teach the model this new domain-specific language?",
+    "type": "single",
+    "options": [
+      "Retrieval-Augmented Generation (RAG)",
+      "Continued Pre-training",
+      "Prompt Engineering",
+      "Fine-tuning with Instruction-Response pairs"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Continued Pre-training uses large volumes of unlabeled domain-specific text (like research reports) to adapt a foundation model to a new vocabulary or domain. Instruction fine-tuning is for task behavior, and RAG is for retrieving facts."
+  },
+  {
+    "topic": "Model Selection and Customization",
+    "question": "When considering model customization in Amazon Bedrock, which of the following statements about Provisioned Throughput is accurate?",
+    "type": "single",
+    "options": [
+      "Provisioned Throughput is automatically managed and scaled to zero for custom models.",
+      "Custom models in Amazon Bedrock require purchasing Provisioned Throughput to perform inference.",
+      "Provisioned Throughput guarantees zero hallucinations.",
+      "Provisioned Throughput is only available for embedding models."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "In Amazon Bedrock, once you customize a model (via fine-tuning or continued pre-training), you must purchase Provisioned Throughput (Model Units) to host and perform inference on that custom model."
+  },
+  {
+    "topic": "Model Selection and Customization",
+    "question": "A team is evaluating whether to use Amazon Bedrock or Amazon SageMaker JumpStart to deploy an open-source model like Llama 3. Which scenarios would make SageMaker JumpStart the better choice? (Select TWO.)",
+    "type": "multi_2",
+    "options": [
+      "The team wants a fully serverless API without managing infrastructure.",
+      "The team requires root access to the underlying EC2 instances hosting the model.",
+      "The team wants to implement custom, proprietary model weights they trained externally.",
+      "The team wants to pay strictly on a per-token basis.",
+      "The team requires the model to be natively integrated with Bedrock Agents."
+    ],
+    "correct": [
+      2,
+      3
+    ],
+    "explanation": "SageMaker JumpStart is ideal when customers need deep control over the hosting infrastructure (instance types, VPCs) or want to bring entirely custom model weights trained externally. Bedrock is serverless and token-based for its base models."
+  },
+  {
+    "topic": "Model Selection and Customization",
+    "question": "Which data format is typically required for providing a training dataset to an Amazon Bedrock Fine-Tuning job?",
+    "type": "single",
+    "options": [
+      "CSV files containing raw text.",
+      "JSONL (JSON Lines) files containing prompt and completion pairs.",
+      "Parquet files with vectorized embeddings.",
+      "A zip file of raw PDF documents."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Fine-tuning jobs in Amazon Bedrock typically require data formatted in JSON Lines (JSONL), where each line is a separate JSON object representing a training example (e.g., prompt/completion or system/user/assistant roles)."
+  },
+  {
+    "topic": "Model Selection and Customization",
+    "question": "A developer needs to choose a model for a real-time, low-latency chatbot. The queries are simple, and response speed and cost are the absolute highest priorities. Which model family member from Anthropic Claude 3 is BEST suited for this?",
+    "type": "single",
+    "options": [
+      "Claude 3 Opus",
+      "Claude 3 Sonnet",
+      "Claude 3 Haiku",
+      "Amazon Titan Image Generator"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Claude 3 Haiku is Anthropic's fastest and most compact model, specifically designed for near-instant responsiveness and low cost, making it the perfect choice for simple queries prioritizing speed."
+  },
+  {
+    "topic": "Model Selection and Customization",
+    "question": "A data science team is preparing a dataset for instruction fine-tuning. What are key best practices for this dataset to ensure a high-quality customized model? (Select THREE.)",
+    "type": "multi_3",
+    "options": [
+      "Include a diverse set of examples covering various edge cases.",
+      "Ensure the dataset contains at least 10 billion tokens.",
+      "Maintain high data quality by removing toxic or biased examples.",
+      "Format the data identically to how the model will be prompted during inference.",
+      "Use only single-word responses for all training completions."
+    ],
+    "correct": [
+      0,
+      2,
+      3
+    ],
+    "explanation": "Instruction fine-tuning requires high-quality, diverse data. The data should ideally be formatted exactly as the model will see it in production to teach it the correct structural behavior. Huge token counts (10B+) are for pre-training, not typical instruction fine-tuning."
+  },
+  {
+    "topic": "Model Selection and Customization",
+    "question": "What is the primary benefit of using Parameter-Efficient Fine-Tuning (PEFT) techniques like LoRA (Low-Rank Adaptation) compared to full fine-tuning?",
+    "type": "single",
+    "options": [
+      "PEFT prevents the model from hallucinating entirely.",
+      "PEFT trains significantly faster and requires much less memory because it freezes the base model weights and only updates a small set of new parameters.",
+      "PEFT allows the model to process multimodal data natively.",
+      "PEFT automatically deploys the model to a serverless endpoint."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "PEFT techniques like LoRA dramatically reduce the computational and memory requirements of fine-tuning by freezing the massive base model weights and only training a tiny adapter module."
+  },
+  {
+    "topic": "Model Selection and Customization",
+    "question": "An enterprise needs to evaluate multiple foundation models on a custom, proprietary task (e.g., summarizing specific internal memos). Which feature of Amazon Bedrock is designed to facilitate this comparison?",
+    "type": "single",
+    "options": [
+      "Bedrock Guardrails",
+      "Bedrock Model Evaluation (Automated and Human-based)",
+      "Bedrock Knowledge Bases",
+      "Provisioned Throughput"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Amazon Bedrock Model Evaluation allows you to evaluate, compare, and select the best foundation models for your specific use cases using either automated metrics (like ROUGE, exact match) or human-in-the-loop evaluation pipelines."
+  },
+  {
+    "topic": "Model Selection and Customization",
+    "question": "When deploying a custom model via SageMaker JumpStart, how can a developer ensure the inference endpoint scales to handle unpredictable spikes in traffic? (Select TWO.)",
+    "type": "multi_2",
+    "options": [
+      "Configure an Auto Scaling policy on the SageMaker Endpoint.",
+      "Use an AWS Lambda function to dynamically change the EC2 instance type.",
+      "Enable Provisioned Concurrency on the JumpStart model.",
+      "Set up an Application Auto Scaling target tracking policy based on SageMakerVariantInvocationsPerInstance.",
+      "Configure Amazon CloudFront to cache all JumpStart inferences."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "To handle traffic spikes on SageMaker endpoints, you must configure Application Auto Scaling with a policy (like target tracking) that monitors metrics such as SageMakerVariantInvocationsPerInstance and dynamically adjusts the instance count."
+  },
+  {
+    "topic": "Model Selection and Customization",
+    "question": "A company wants to build an application that analyzes images of retail shelves and counts inventory. Which Amazon Bedrock model family should they select?",
+    "type": "single",
+    "options": [
+      "Amazon Titan Text G1",
+      "Anthropic Claude 3 (Sonnet or Opus)",
+      "AI21 Labs Jurassic-2",
+      "Cohere Command"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Anthropic Claude 3 models (Haiku, Sonnet, Opus) are state-of-the-art multimodal models capable of processing and analyzing images, making them the correct choice for visual tasks like inventory counting on Bedrock. (Amazon Titan Image Generator generates images, it doesn't primarily analyze them)."
+  },
+  {
+    "topic": "Security, Privacy, and Governance",
+    "question": "An organization has strict data privacy compliance requirements. They are concerned that data sent to Amazon Bedrock might be used by AWS. Which statement accurately describes Amazon Bedrock's data privacy posture?",
+    "type": "single",
+    "options": [
+      "Customer data is completely private and is never used to train the base foundation models.",
+      "Customer data is used to train base models only if the customer opts-in.",
+      "AWS anonymizes the data before using it to train foundation models.",
+      "Customer data is shared with third-party model providers like Anthropic and AI21."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "A core tenet of Amazon Bedrock's security posture is that customer prompts, responses, and custom fine-tuning data are kept strictly private within the customer's AWS environment and are never used to train the base foundation models or shared with third-party providers."
+  },
+  {
+    "topic": "Security, Privacy, and Governance",
+    "question": "A developer wants to ensure that a generative AI application built on Amazon Bedrock never outputs company-specific confidential terms (e.g., 'Project Pegasus'). Which feature should they implement?",
+    "type": "single",
+    "options": [
+      "AWS WAF (Web Application Firewall) custom rules",
+      "Guardrails for Amazon Bedrock - Custom Word Filters",
+      "IAM Resource Policies",
+      "VPC Security Groups"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Guardrails for Amazon Bedrock allows you to implement custom word filters (deny lists) that intercept the model's response and block or mask specific confidential terms or phrases before they reach the user."
+  },
+  {
+    "topic": "Security, Privacy, and Governance",
+    "question": "Which of the following methods allows an application running on an Amazon EC2 instance in a private VPC to securely call the Amazon Bedrock API without the traffic traversing the public internet? (Select TWO.)",
+    "type": "multi_2",
+    "options": [
+      "Create an AWS Site-to-Site VPN to the Bedrock service.",
+      "Create an AWS PrivateLink (VPC Endpoint) for Amazon Bedrock.",
+      "Ensure the EC2 instance has an Elastic IP address.",
+      "Route traffic through a NAT Gateway.",
+      "Configure the VPC Route Table to route Bedrock API traffic to the VPC Interface Endpoint."
+    ],
+    "correct": [
+      1,
+      4
+    ],
+    "explanation": "To keep traffic completely private without traversing the public internet, you must create a VPC Interface Endpoint (AWS PrivateLink) for Amazon Bedrock and ensure your route tables/DNS are configured to route traffic to that endpoint."
+  },
+  {
+    "topic": "Security, Privacy, and Governance",
+    "question": "A security administrator needs to restrict an IAM Role so it can ONLY invoke the 'Anthropic Claude 3 Sonnet' model and no other models in Amazon Bedrock. How should this be implemented?",
+    "type": "single",
+    "options": [
+      "Attach an IAM policy with the action `bedrock:InvokeModel` and specify the exact foundation model ARN in the `Resource` block.",
+      "Use an AWS KMS key that is only authorized for Claude 3.",
+      "Configure a Bedrock Guardrail to block other models.",
+      "Apply a tag to the IAM role that says `Model=Claude3`."
+    ],
+    "correct": [
+      0
+    ],
+    "explanation": "IAM policies in AWS allow for fine-grained resource-level permissions. You can restrict an identity to specific models by scoping the `bedrock:InvokeModel` action to the specific Model ARN in the `Resource` section of the policy."
+  },
+  {
+    "topic": "Security, Privacy, and Governance",
+    "question": "Which of the following scenarios can be managed using Guardrails for Amazon Bedrock? (Select THREE.)",
+    "type": "multi_3",
+    "options": [
+      "Redacting Personally Identifiable Information (PII) from user prompts.",
+      "Filtering out hateful, toxic, or sexually explicit content.",
+      "Automatically scaling the provisioned throughput of a custom model.",
+      "Preventing the model from discussing restricted topics (Topic avoidance).",
+      "Encrypting data at rest within an S3 bucket."
+    ],
+    "correct": [
+      0,
+      1,
+      3
+    ],
+    "explanation": "Guardrails for Bedrock is specifically designed for responsible AI. It handles content filtering (toxicity), PII redaction/masking, and topic avoidance based on natural language descriptions. It does not handle infrastructure scaling or S3 encryption."
+  },
+  {
+    "topic": "Security, Privacy, and Governance",
+    "question": "A company is using Amazon Bedrock custom models. They want to ensure the training data stored in Amazon S3 and the customized model artifacts are encrypted using keys they control. Which service must be integrated?",
+    "type": "single",
+    "options": [
+      "AWS Certificate Manager (ACM)",
+      "AWS Secrets Manager",
+      "AWS Key Management Service (AWS KMS)",
+      "Amazon Macie"
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "AWS KMS allows customers to create and manage cryptographic keys. Bedrock supports using Customer Managed Keys (CMKs) in KMS to encrypt custom model training data and the resulting model artifacts at rest."
+  },
+  {
+    "topic": "Security, Privacy, and Governance",
+    "question": "How can a security operations center (SOC) audit all API calls made to Amazon Bedrock, such as `InvokeModel` or `CreateAgent`, for compliance and threat detection?",
+    "type": "single",
+    "options": [
+      "By reviewing Amazon CloudWatch metrics.",
+      "By enabling AWS CloudTrail logging.",
+      "By checking the Amazon Bedrock console dashboard.",
+      "By using Amazon Inspector."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "AWS CloudTrail records API calls made within an AWS account. Enabling CloudTrail logging captures details of all management and data events (like `InvokeModel` if data event logging is enabled) for Bedrock, providing a comprehensive audit trail."
+  },
+  {
+    "topic": "Security, Privacy, and Governance",
+    "question": "A developer is configuring cross-account access to an Amazon Bedrock Knowledge Base. Account A hosts the Knowledge Base, and Account B hosts the application. What IAM configuration is required?",
+    "type": "single",
+    "options": [
+      "Create an IAM user in Account A and embed the access keys in the application in Account B.",
+      "Create an IAM role in Account A with permissions to access the Knowledge Base, and configure a trust policy allowing Account B to assume this role.",
+      "Use AWS Resource Access Manager (RAM) to share the Bedrock foundation models.",
+      "Disable IAM authentication on the Knowledge Base."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "The AWS best practice for cross-account access is to create an IAM role in the resource-owning account (Account A) and establish a trust relationship that allows identities from the consuming account (Account B) to assume the role (`sts:AssumeRole`)."
+  },
+  {
+    "topic": "Security, Privacy, and Governance",
+    "question": "Which AWS service should be used in front of an Amazon API Gateway serving a generative AI application to protect against prompt injection attacks originating from malicious IP addresses?",
+    "type": "single",
+    "options": [
+      "Amazon GuardDuty",
+      "AWS WAF (Web Application Firewall)",
+      "AWS Shield Standard",
+      "Amazon Cognito"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "AWS WAF can be deployed on API Gateway to inspect incoming HTTP requests. You can configure rules to block malicious IPs, rate limit requests, and inspect payloads for specific attack patterns before they ever reach the Bedrock backend."
+  },
+  {
+    "topic": "Security, Privacy, and Governance",
+    "question": "When configuring a Knowledge Base for Amazon Bedrock with an Amazon OpenSearch Serverless vector store, what data access policies are required for the Bedrock service role? (Select TWO.)",
+    "type": "multi_2",
+    "options": [
+      "IAM permissions allowing the Bedrock role to perform `aoss:APIAccessAll` on the OpenSearch collection.",
+      "An OpenSearch Serverless Data Access Policy granting the Bedrock role permissions to read/write to the specific index.",
+      "An S3 bucket policy allowing public read access to the data.",
+      "An IAM policy allowing the Bedrock role to create new IAM users.",
+      "A KMS policy allowing OpenSearch to bypass encryption."
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "To integrate Bedrock Knowledge Bases with OpenSearch Serverless, the Bedrock IAM role must have IAM permissions to access the AOSS APIs, AND the OpenSearch Serverless collection must have a Data Access Policy explicitly granting that role permissions to interact with the index data."
+  },
+  {
+    "topic": "Optimization and Operations",
+    "question": "An application using Amazon Bedrock is experiencing high latency. The developer notices the application waits for the entire model response to be generated before displaying anything to the user. Which API action should be implemented to improve the perceived performance (Time to First Token)?",
+    "type": "single",
+    "options": [
+      "InvokeModel",
+      "InvokeModelWithResponseStream",
+      "StartModelInvocationJob",
+      "RetrieveAndGenerate"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "The `InvokeModelWithResponseStream` API streams the model's output back to the application chunk-by-chunk as it is generated, drastically reducing the Time to First Token (TTFT) and improving the user experience."
+  },
+  {
+    "topic": "Optimization and Operations",
+    "question": "A company needs to run a daily batch process that generates thousands of product descriptions using Amazon Bedrock. Real-time latency is not a concern, but cost and managing rate limits are. Which Bedrock feature is best suited for this task?",
+    "type": "single",
+    "options": [
+      "Provisioned Throughput",
+      "Batch Inference (StartModelInvocationJob)",
+      "Agents for Amazon Bedrock",
+      "Amazon API Gateway caching"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Bedrock Batch Inference allows you to process large volumes of prompts asynchronously using data stored in S3. It is highly cost-effective and automatically handles concurrency and rate limiting without requiring real-time endpoints."
+  },
+  {
+    "topic": "Optimization and Operations",
+    "question": "Which Amazon CloudWatch metric should an operations team monitor to understand the latency experienced by users when calling the `InvokeModel` API in Bedrock?",
+    "type": "single",
+    "options": [
+      "Invocations",
+      "InvocationLatency",
+      "TokenCount",
+      "ThrottledRequests"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "The `InvocationLatency` metric in CloudWatch specifically tracks the time it takes for Amazon Bedrock to process a request and return a response for the `InvokeModel` API."
+  },
+  {
+    "topic": "Optimization and Operations",
+    "question": "To optimize the cost of running a generative AI application, a developer wants to reuse responses for identical user queries without invoking the Bedrock model again. Which architecture pattern best achieves this? (Select TWO.)",
+    "type": "multi_2",
+    "options": [
+      "Implementing a semantic cache using Amazon DynamoDB or ElastiCache.",
+      "Enabling Bedrock Batch Inference.",
+      "Using an API Gateway cache configured with the exact query string.",
+      "Increasing the model's temperature parameter.",
+      "Using Provisioned Throughput with a 1-month commitment."
+    ],
+    "correct": [
+      0,
+      2
+    ],
+    "explanation": "Caching identical or semantically similar queries prevents redundant model invocations, saving both cost and latency. This can be done via exact-match caching at the API Gateway level or semantic caching using databases like Redis/ElastiCache."
+  },
+  {
+    "topic": "Optimization and Operations",
+    "question": "A custom foundation model deployed on Amazon Bedrock using Provisioned Throughput is experiencing dropped requests during peak hours. What is the most appropriate operational response?",
+    "type": "single",
+    "options": [
+      "Decrease the number of Model Units.",
+      "Purchase and allocate additional Model Units for the Provisioned Throughput.",
+      "Switch from Provisioned Throughput to On-Demand.",
+      "Delete the custom model and retrain it with more data."
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Provisioned Throughput capacity is measured in Model Units. If requests are being dropped due to lack of capacity during peak hours, you must scale up by allocating more Model Units to handle the increased concurrency."
+  },
+  {
+    "topic": "Optimization and Operations",
+    "question": "When utilizing RAG, the latency of the retrieval step is critical. Which of the following vector search algorithms provided by vector databases offers the fastest approximate nearest neighbor search at scale, prioritizing speed over absolute accuracy?",
+    "type": "single",
+    "options": [
+      "K-Nearest Neighbors (KNN) exact search",
+      "Hierarchical Navigable Small World (HNSW)",
+      "Cosine Similarity brute force",
+      "Euclidean distance matrix"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "HNSW (Hierarchical Navigable Small World) is a highly optimized graph-based index for Approximate Nearest Neighbor (ANN) search. It offers extremely low latency and high scalability compared to exact search methods like KNN or brute force."
+  },
+  {
+    "topic": "Optimization and Operations",
+    "question": "Which of the following strategies can effectively reduce the token consumption (and therefore cost) of a generative AI application? (Select THREE.)",
+    "type": "multi_3",
+    "options": [
+      "Using a smaller, more efficient model (like Haiku instead of Opus) for simpler tasks.",
+      "Implementing a precise chunking strategy to only retrieve the most relevant context in RAG.",
+      "Prompting the model to return concise answers without unnecessary pleasantries.",
+      "Always setting the temperature to 0.",
+      "Using the `InvokeModelWithResponseStream` API."
+    ],
+    "correct": [
+      0,
+      1,
+      2
+    ],
+    "explanation": "Using smaller models, sending less context (via better chunking), and instructing the model to generate shorter responses directly reduce input and output token consumption. Temperature and streaming affect randomness and UX, not total token count intrinsically."
+  },
+  {
+    "topic": "Optimization and Operations",
+    "question": "A company uses an open-source Large Language Model deployed on an Amazon SageMaker real-time endpoint. They want to monitor the endpoint for data drift and model quality degradation over time. Which AWS service should they use?",
+    "type": "single",
+    "options": [
+      "Amazon Macie",
+      "Amazon SageMaker Model Monitor",
+      "Amazon CloudWatch Logs Insights",
+      "AWS CloudTrail"
+    ],
+    "correct": [
+      1
+    ],
+    "explanation": "Amazon SageMaker Model Monitor continuously monitors the quality of Amazon SageMaker machine learning models in production, detecting data drift and deviations in model quality."
+  },
+  {
+    "topic": "Optimization and Operations",
+    "question": "A generative AI application currently passes a massive 50-page document into the context window for every user question. The application is slow and expensive. What is the BEST architectural change to optimize this?",
+    "type": "single",
+    "options": [
+      "Increase the Provisioned Throughput of the model.",
+      "Switch to a model with a 200k context window.",
+      "Implement a Retrieval-Augmented Generation (RAG) architecture to search and inject only relevant paragraphs.",
+      "Compress the PDF using a standard ZIP algorithm before sending it to the model."
+    ],
+    "correct": [
+      2
+    ],
+    "explanation": "Passing a massive document every time consumes huge amounts of tokens (high cost, high latency). Implementing RAG allows the application to pre-index the document and only retrieve/send the small, relevant text chunks needed to answer the specific query."
+  },
+  {
+    "topic": "Optimization and Operations",
+    "question": "Foundation model providers occasionally deprecate older model versions. What is an operational best practice to handle model version deprecation in Amazon Bedrock? (Select TWO.)",
+    "type": "multi_2",
+    "options": [
+      "Hardcode the model ARN in the application source code to prevent updates.",
+      "Monitor AWS Health Dashboard and Bedrock release notes for deprecation notices.",
+      "Implement automated integration tests to evaluate new model versions before updating alias/ARN references in production.",
+      "Assume deprecated models will continue running indefinitely if you have an active Provisioned Throughput commitment.",
+      "Always use the 'latest' alias in production to automatically upgrade without testing."
+    ],
+    "correct": [
+      1,
+      2
+    ],
+    "explanation": "Providers will deprecate models. You must monitor AWS notifications for these events and have an automated testing pipeline to evaluate the performance of newer model versions before updating your application to point to the new ARNs."
+  }
+];
+
         // Group questions by topic
         const topicBanks = {};
         topics.forEach(t => topicBanks[t] = []);
@@ -469,93 +1264,3 @@
             const isCorrect = JSON.stringify(selectedVals) === JSON.stringify(correctVals);
             
             if (isCorrect) {
-                score++;
-            }
-
-            updateScoreboard(true);
-            showFeedback(isCorrect, q);
-            
-            // Highlight correct and incorrect in UI
-            const labels = document.querySelectorAll('.option-label');
-            labels.forEach((label, i) => {
-                const input = label.querySelector('input');
-                input.disabled = true; // disable all
-                if (q.correct.includes(i)) {
-                    label.style.backgroundColor = '#E9F5E6';
-                    label.style.borderColor = var(--correct-color);
-                    label.style.fontWeight = 'bold';
-                } else if (input.checked && !q.correct.includes(i)) {
-                    label.style.backgroundColor = '#FCEAE8';
-                    label.style.borderColor = var(--incorrect-color);
-                }
-            });
-        }
-
-        function updateScoreboard(answeredCurrent = false) {
-            let answered = currentIndex;
-            if (answeredCurrent) answered++;
-            
-            let pct = 0;
-            if (answered > 0) {
-                pct = Math.round((score / answered) * 100);
-            }
-            document.getElementById('scoreboard').innerText = `Score: ${score} / ${answered} (${pct}%)`;
-        }
-
-        function showFeedback(isCorrect, q) {
-            const container = document.getElementById('feedbackContainer');
-            const title = document.getElementById('feedbackTitle');
-            const exp = document.getElementById('feedbackExplanation');
-            
-            container.style.display = 'block';
-            container.className = 'feedback-container ' + (isCorrect ? 'feedback-correct' : 'feedback-incorrect');
-            
-            title.innerText = isCorrect ? 'Correct!' : 'Incorrect';
-            
-            let correctLetters = q.correct.map(idx => String.fromCharCode(65 + idx)).join(', ');
-            let explanationHTML = `<strong>Correct Answer: ${correctLetters}</strong><br><br>${q.explanation}`;
-            exp.innerHTML = explanationHTML;
-            
-            if (currentIndex === currentQuestions.length - 1) {
-                document.getElementById('nextBtn').innerText = 'Finish Quiz';
-            } else {
-                document.getElementById('nextBtn').innerText = 'Next Question';
-            }
-        }
-
-        function nextQuestion() {
-            if (currentIndex < currentQuestions.length - 1) {
-                currentIndex++;
-                renderQuestion();
-            } else {
-                showSummary();
-            }
-        }
-        
-        function showSummary() {
-            document.getElementById('quizContainer').style.display = 'none';
-            document.getElementById('summaryScreen').style.display = 'block';
-            
-            const pct = Math.round((score / currentQuestions.length) * 100);
-            document.getElementById('finalScoreCircle').innerText = `${pct}%`;
-            document.getElementById('finalScoreText').innerText = `You scored ${score} out of ${currentQuestions.length} correct.`;
-            
-            let color = 'var(--aws-navy)';
-            if (pct >= 80) color = 'var(--correct-color)';
-            if (pct < 65) color = 'var(--incorrect-color)';
-            document.getElementById('finalScoreCircle').style.borderColor = color;
-        }
-
-        function returnToMenu() {
-            document.getElementById('quizContainer').style.display = 'none';
-            document.getElementById('summaryScreen').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'grid';
-            document.getElementById('backBtn').style.display = 'none';
-        }
-
-        // Run on load
-        window.onload = initMenu;
-
-    </script>
-</body>
-</html>
