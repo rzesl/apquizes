@@ -1,131 +1,80 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PMP Exam Practice Suite</title>
+    <title>PMP Expert Level Simulator</title>
     <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #34495e;
-            --accent: #3498db;
+            --primary: #1a2a3a;
+            --secondary: #2c3e50;
+            --accent: #e67e22;
             --success: #27ae60;
-            --danger: #e74c3c;
-            --light: #ecf0f1;
+            --danger: #c0392b;
+            --light: #f4f4f4;
+            --text: #2c3e50;
         }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            background-color: #f4f7f6;
-            color: var(--primary);
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        h1, h2 { text-align: center; color: var(--primary); }
-        .menu-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        button {
-            padding: 12px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-        .btn-topic { background-color: var(--accent); color: white; }
-        .btn-mixed { background-color: var(--secondary); color: white; }
-        .btn-submit { background-color: var(--primary); color: white; margin-top: 20px; width: 100%; }
-        .btn-next { background-color: var(--success); color: white; margin-top: 20px; width: 100%; display: none; }
-        .btn-restart { background-color: #7f8c8d; color: white; margin-top: 20px; width: 100%; }
-
-        .quiz-section { display: none; }
-        .scoreboard {
-            background: var(--light);
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            font-weight: bold;
-        }
-        .question-box { margin-bottom: 20px; }
-        .options { list-style: none; padding: 0; }
-        .option-item {
-            padding: 10px;
-            margin: 5px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .option-item:hover { background-color: #f9f9f9; }
-        .selected { background-color: #d1ecf1 !important; border-color: #bee5eb; }
-        .correct { background-color: #d4edda !important; border-color: #c3e6cb; }
-        .wrong { background-color: #f8d7da !important; border-color: #f5c6cb; }
-        .explanation {
-            margin-top: 15px;
-            padding: 15px;
-            background-color: #e8f4fd;
-            border-left: 5px solid var(--accent);
-            display: none;
-        }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #dee2e6; color: var(--text); margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        h1 { color: var(--primary); text-align: center; border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 30px 0; }
+        button { padding: 15px; font-size: 16px; font-weight: 600; cursor: pointer; border: none; border-radius: 6px; transition: all 0.2s; }
+        .btn-topic { background-color: var(--secondary); color: white; }
+        .btn-mixed { background-color: var(--primary); color: white; }
+        button:hover { opacity: 0.9; transform: translateY(-2px); }
+        .scoreboard { display: flex; justify-content: space-between; background: var(--primary); color: white; padding: 15px; border-radius: 6px; margin-bottom: 25px; font-family: monospace; }
+        .question-box { font-size: 18px; line-height: 1.6; margin-bottom: 25px; }
+        .options-list { display: flex; flex-direction: column; gap: 12px; }
+        .option-item { padding: 15px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: background 0.2s; position: relative; }
+        .option-item:hover { background-color: #f8f9fa; border-color: var(--accent); }
+        .selected { border-color: var(--accent); background-color: #fff4e6; }
+        .correct { background-color: #d4edda !important; border-color: #28a745 !important; color: #155724; }
+        .wrong { background-color: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; }
+        .explanation { margin-top: 20px; padding: 20px; background-color: #e3f2fd; border-left: 6px solid #2196f3; display: none; }
+        .btn-submit { background-color: var(--accent); color: white; width: 100%; margin-top: 20px; }
+        .btn-next { background-color: var(--success); color: white; width: 100%; margin-top: 20px; display: none; }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div class="container" id="main-container">
+<div class="container">
     <div id="home-screen">
-        <h1>PMP® Exam Practice Simulator</h1>
-        <p>Select a topic-specific quiz (10 questions) or a full mixed-mode simulation (45 questions).</p>
+        <h1>PMP® Extreme Challenge Simulator</h1>
+        <p style="text-align:center; color: #666;">Expert-level scenarios focusing on "Best Action," situational ambiguity, and hybrid integration.</p>
         
-        <h3>Topic Domains</h3>
         <div class="menu-grid">
-            <button class="btn-topic" onclick="startQuiz('people')">Domain I: People</button>
-            <button class="btn-topic" onclick="startQuiz('process')">Domain II: Process</button>
-            <button class="btn-topic" onclick="startQuiz('business')">Domain III: Business Environment</button>
-            <button class="btn-topic" onclick="startQuiz('agile')">Agile & Hybrid Mindset</button>
+            <button class="btn-topic" onclick="startQuiz('people')">Domain I: People (Expert)</button>
+            <button class="btn-topic" onclick="startQuiz('process')">Domain II: Process (Expert)</button>
+            <button class="btn-topic" onclick="startQuiz('business')">Domain III: Business (Expert)</button>
+            <button class="btn-topic" onclick="startQuiz('agile')">Agile/Hybrid (Expert)</button>
         </div>
-
-        <h3>Mixed Simulations</h3>
-        <div class="menu-grid">
-            <button class="btn-mixed" onclick="startQuiz('mixed1')">Full Simulation 1</button>
-            <button class="btn-mixed" onclick="startQuiz('mixed2')">Full Simulation 2</button>
-            <button class="btn-mixed" onclick="startQuiz('mixed3')">Full Simulation 3</button>
+        <div class="menu-grid" style="margin-top:0">
+            <button class="btn-mixed" onclick="startQuiz('mixed1')">Hard Simulation A (45 Qs)</button>
+            <button class="btn-mixed" onclick="startQuiz('mixed2')">Hard Simulation B (45 Qs)</button>
+            <button class="btn-mixed" onclick="startQuiz('mixed3')">Hard Simulation C (45 Qs)</button>
         </div>
     </div>
 
-    <div id="quiz-screen" class="quiz-section">
+    <div id="quiz-screen" class="hidden">
         <div class="scoreboard">
-            <span id="progress">Question 1/10</span>
-            <span id="score-display">Score: 0 (0%)</span>
+            <span id="progress">Q: 1/10</span>
+            <span id="score-display">Correct: 0 (0%)</span>
         </div>
-        <div id="question-container">
-            <h3 id="question-text"></h3>
-            <p id="instruction-text" style="font-style: italic; color: #666;"></p>
-            <div id="options-list"></div>
+        <div class="question-box">
+            <div id="question-text"></div>
+            <div id="instruction-text" style="font-size:14px; margin-top:10px; color:var(--accent); font-weight:bold;"></div>
         </div>
+        <div id="options-list" class="options-list"></div>
         <div id="explanation-box" class="explanation"></div>
-        <button id="submit-btn" class="btn-submit" onclick="checkAnswer()">Submit Answer</button>
-        <button id="next-btn" class="btn-next" onclick="nextQuestion()">Next Question</button>
+        <button id="submit-btn" class="btn-submit" onclick="checkAnswer()">Evaluate Selection</button>
+        <button id="next-btn" class="btn-next" onclick="nextQuestion()">Proceed to Next Question</button>
     </div>
 
-    <div id="result-screen" class="quiz-section">
-        <h2>Quiz Complete!</h2>
-        <div id="final-score" style="font-size: 24px; text-align: center; margin: 20px 0;"></div>
-        <button class="btn-restart" onclick="showHome()">Return to Menu</button>
+    <div id="result-screen" class="hidden">
+        <h2 style="text-align:center">Performance Summary</h2>
+        <div id="final-score" style="font-size: 32px; text-align: center; margin: 30px 0; font-weight:bold;"></div>
+        <button class="btn-topic" style="width:100%" onclick="location.reload()">Reset Simulator</button>
     </div>
 </div>
 
@@ -133,307 +82,486 @@
 const quizData = {
     people: [
         {
-            q: "A key stakeholder is consistently skipped in communications, leading to delays. The project manager discovers the stakeholder was not included in the original stakeholder engagement plan. What should the project manager do first?",
-            options: ["Update the stakeholder engagement plan", "Perform a stakeholder analysis", "Apologize and add them to the email list", "Review the communications management plan"],
+            q: "A high-performing agile team member is consistently aggressive during retrospectives, causing other members to withhold feedback. This individual’s technical contributions are critical to the project's success. What is the most effective way for the project manager to handle this situation?",
+            options: [
+                "Address the behavior in the next retrospective by setting ground rules to ensure a safe environment for all.",
+                "Speak with the individual privately to provide feedback on their communication style and its impact on the team.",
+                "Discuss the behavior with the entire team to see if they feel the same way before taking action.",
+                "Document the behavior and report it to functional management as a performance issue."
+            ],
             answer: [1],
             type: "single",
-            explanation: "Before updating plans (Step 1) or adding them to lists, you must perform a stakeholder analysis to understand their influence, interest, and impact to tailor the engagement correctly."
+            explanation: "In the 'People' domain, private one-on-one coaching (Emotional Intelligence) is the first step for behavioral issues. Publicly addressing it or reporting it immediately skips the necessary step of direct interpersonal management."
         },
         {
-            q: "A team member's performance has dropped significantly over the last two sprints. Which two actions are most appropriate for the project manager? (Pick 2)",
-            options: ["Discuss the performance privately with the individual", "Report the drop to the functional manager immediately", "Wait for the retrospective to bring it up to the team", "Collaborate with the team member to identify root causes", "Assign a mentor to watch the team member's work"],
-            answer: [0, 3],
+            q: "The project manager of a cross-functional team discovers that two departments have conflicting priorities regarding the project's main deliverable. This conflict is threatening the project timeline. Which two actions should the project manager take? (Pick 2)",
+            options: [
+                "Escalate the conflict to the project sponsor for a final decision.",
+                "Facilitate a meeting between the department heads to find a win-win solution.",
+                "Prioritize the requirements of the department that provides more funding.",
+                "Analyze the impact of each department’s priorities on the project objectives.",
+                "Request the PMO to mediate the dispute between the departments."
+            ],
+            answer: [1, 3],
             type: "multiple",
             count: 2,
-            explanation: "Private discussion and collaborative problem-solving are core to the 'People' domain and emotional intelligence in PMP."
+            explanation: "Expert PMs perform analysis first to understand impacts, then facilitate collaboration (win-win) before ever escalating or choosing favorites based on power/funding."
         },
         {
-            q: "During a project meeting, two senior developers have a heated disagreement regarding the technical architecture. What should the project manager do?",
-            options: ["Make the final decision to keep the project moving", "Facilitate a discussion to reach a consensus", "Refer the conflict to the sponsor", "Ask the developers to resolve it outside of project hours"],
-            answer: [1],
-            type: "single",
-            explanation: "Problem-solving (Collaborating) is the preferred conflict resolution technique in PMP. The PM should facilitate consensus."
-        },
-        {
-            q: "A project team is struggling with a high-stress environment and tight deadlines. What leadership style should the project manager adopt to support the team?",
-            options: ["Laissez-faire", "Transactional", "Servant Leadership", "Autocratic"],
+            q: "A project manager is leading a global virtual team. During a video conference, they notice that team members from one specific region rarely participate and often stay on mute. What should the project manager do?",
+            options: [
+                "Directly call on those team members to ensure their input is heard.",
+                "Send an email after the meeting asking for their specific feedback.",
+                "Review the cultural norms and communication preferences of that region.",
+                "Discuss the lack of participation with their regional manager."
+            ],
             answer: [2],
             type: "single",
-            explanation: "Servant leadership focuses on supporting the team, removing roadblocks, and fostering an environment of trust, which is ideal for high-stress situations."
+            explanation: "Directly calling on individuals in a group setting can be intimidating or culturally insensitive. Investigating the root cause (cultural norms) allows the PM to adapt their style effectively."
         },
         {
-            q: "A stakeholder has expressed dissatisfaction with the project's progress. What should the project manager do to manage this stakeholder's expectations?",
-            options: ["Invite them to all team meetings", "Update the communications management plan", "Increase the frequency of status reports", "Meet with the stakeholder to understand their concerns"],
-            answer: [3],
+            q: "A key stakeholder who was previously supportive of the project has suddenly become critical and is blocking progress. The project manager suspects personal reasons but has no proof. What is the best action?",
+            options: [
+                "Invite the stakeholder to lunch to build a personal relationship and uncover the issue.",
+                "Review the stakeholder engagement plan and update it to reflect the change.",
+                "Schedule a formal meeting to review the stakeholder’s concerns against the project requirements.",
+                "Ask the project sponsor to speak with the stakeholder."
+            ],
+            answer: [2],
             type: "single",
-            explanation: "Engaging directly with the stakeholder to understand their concerns is the first step in managing expectations."
+            explanation: "PMP 'Best' answers focus on professional alignment. A formal meeting to address concerns against requirements forces the stakeholder to stick to project-related issues rather than personal ones."
         },
         {
-            q: "The project manager is leading a global team. What is the most significant challenge they might face?",
-            options: ["Language barriers", "Time zone differences", "Cultural diversity", "All of the above"],
-            answer: [3],
-            type: "single",
-            explanation: "All of these are significant challenges when leading global teams and must be addressed in the management plan."
-        },
-        {
-            q: "A team member is consistently meeting their deadlines but the quality of their work is poor. What should the project manager do?",
-            options: ["Reprimand the team member publicly", "Discuss the quality issues with the team member privately", "Assign their work to someone else", "Ignore the issue as long as deadlines are met"],
-            answer: [1],
-            type: "single",
-            explanation: "Constructive feedback should always be given privately to address performance or quality issues."
-        },
-        {
-            q: "What are the three most important components of emotional intelligence for a project manager? (Pick 3)",
-            options: ["Self-awareness", "Technical expertise", "Social skills", "Self-regulation", "Strict adherence to rules"],
-            answer: [0, 2, 3],
+            q: "A project manager is assigned to a team that is currently in the 'Storming' stage of development. The team is missing deadlines and arguing over roles. What three actions should the PM take? (Pick 3)",
+            options: [
+                "Re-establish the project’s goals and vision with the team.",
+                "Implement a strict reward and punishment system for deadlines.",
+                "Clearly define roles and responsibilities using a RACI chart.",
+                "Encourage the team to resolve conflicts independently to foster growth.",
+                "Increase the frequency of team-building activities.",
+                "Facilitate a workshop to develop team ground rules (Social Contract)."
+            ],
+            answer: [0, 2, 5],
             type: "multiple",
             count: 3,
-            explanation: "Self-awareness, social skills, and self-regulation are key pillars of emotional intelligence according to Goleman."
+            explanation: "In Storming, the PM needs to provide structure: realigning vision, clarifying roles (RACI), and establishing behavioral norms (Ground Rules)."
         },
         {
-            q: "A project manager is delegating tasks to a new team member. What is the best way to ensure they understand their responsibilities?",
-            options: ["Provide a detailed manual", "Have a one-on-one meeting to clarify roles", "Email them a list of tasks", "Assume they will figure it out"],
+            q: "During a hybrid project, the functional manager pulls a critical resource to work on an emergency operational issue. This will delay the agile team's sprint. How should the PM respond?",
+            options: [
+                "Escalate to the sponsor that the functional manager is violating the resource management plan.",
+                "Negotiate with the functional manager to see if the work can be shared or postponed.",
+                "Inform the product owner that the sprint goal will not be met.",
+                "Ask the team to work overtime to compensate for the lost resource."
+            ],
             answer: [1],
             type: "single",
-            explanation: "One-on-one communication ensures clarity and allows for questions, fostering a better understanding of roles."
+            explanation: "Negotiation is the primary conflict resolution tool. The PM must try to find a middle ground before escalating or admitting defeat to the PO."
         },
         {
-            q: "A conflict arises between the project team and a vendor. What is the project manager's primary role in resolving this?",
-            options: ["Siding with the team", "Escalating to legal", "Facilitating a resolution that meets project goals", "Replacing the vendor"],
+            q: "A senior executive asks a team member for a small change that 'shouldn't take long.' The team member performs the work. What should the PM do when they find out?",
+            options: [
+                "Reprimand the team member for performing unauthorized work.",
+                "Submit a retroactive change request to the Change Control Board (CCB).",
+                "Educate both the executive and the team member on the change management process.",
+                "Ignore it since it was a small change and didn't impact the budget."
+            ],
             answer: [2],
             type: "single",
-            explanation: "The project manager should act as a facilitator to find a resolution that keeps the project on track."
+            explanation: "This is scope creep. The PM's role is to ensure processes are followed. Education prevents future occurrences, which is more effective than just punishment or paperwork."
+        },
+        {
+            q: "A project manager notice high turnover in the development team. Exit interviews suggest that the team feels their contributions aren't valued. What should the PM implement first?",
+            options: [
+                "A formal 'Employee of the Month' program.",
+                "A recognition and rewards plan tailored to individual preferences.",
+                "A significant salary increase for the remaining members.",
+                "More frequent social events and happy hours."
+            ],
+            answer: [1],
+            type: "single",
+            explanation: "The PMBOK emphasizes that recognition and rewards must be appropriate and meaningful to the individuals. Generic programs often fail; tailored ones succeed."
+        },
+        {
+            q: "An agile team is struggling to meet their velocity because the Product Owner (PO) is rarely available to answer questions. What is the PM's best course of action?",
+            options: [
+                "Act as the proxy Product Owner to keep the team moving.",
+                "Escalate the PO's lack of availability to the steering committee.",
+                "Coach the PO on the importance of their role and the impact of their absence.",
+                "Cancel the current sprint and wait for the PO to become available."
+            ],
+            answer: [2],
+            type: "single",
+            explanation: "As a servant leader/Scrum Master, the PM's role is to coach stakeholders on agile values. Proxing for the PO is a 'bad' practice that masks the underlying problem."
+        },
+        {
+            q: "A team member is consistently late to the daily stand-up. The rest of the team is becoming frustrated. What is the best action?",
+            options: [
+                "Wait for the team to address it during the Sprint Retrospective.",
+                "Speak to the individual privately to understand the reason for the lateness.",
+                "Update the team charter to include a penalty for lateness.",
+                "Lock the door so the individual cannot join once the meeting starts."
+            ],
+            answer: [0],
+            type: "single",
+            explanation: "In Agile, self-organizing teams should address internal behavioral issues during the Retrospective. The PM facilitates the environment but the team owns their norms."
         }
     ],
     process: [
         {
-            q: "The project manager is about to start a new project. Which document is the most important to secure official authorization for the project?",
-            options: ["Project Management Plan", "Project Charter", "Business Case", "Work Breakdown Structure"],
-            answer: [1],
-            type: "single",
-            explanation: "The Project Charter is the document that formally authorizes the existence of a project and provides the project manager with the authority to apply organizational resources to project activities."
-        },
-        {
-            q: "During the execution phase, the project manager notices a significant deviation from the schedule. What is the first action they should take?",
-            options: ["Compress the schedule", "Submit a change request", "Analyze the cause of the delay", "Inform the sponsor"],
-            answer: [2],
-            type: "single",
-            explanation: "Before taking corrective action, the project manager must first understand the root cause of the deviation."
-        },
-        {
-            q: "Which of the following is a key tool for managing project quality?",
-            options: ["Gantt Chart", "Risk Register", "Control Charts", "Stakeholder Matrix"],
-            answer: [2],
-            type: "single",
-            explanation: "Control charts are used to determine whether a process is stable or has predictable performance."
-        },
-        {
-            q: "A project manager is using a Work Breakdown Structure (WBS). What is the primary benefit of this tool?",
-            options: ["Showing the project schedule", "Defining the project scope into manageable components", "Identifying project risks", "Assigning resources to tasks"],
-            answer: [1],
-            type: "single",
-            explanation: "The WBS is a hierarchical decomposition of the total scope of work to be carried out by the project team."
-        },
-        {
-            q: "In which process group is the project's success or failure formally determined?",
-            options: ["Executing", "Monitoring and Controlling", "Closing", "Planning"],
-            answer: [2],
-            type: "single",
-            explanation: "The Closing process group includes the activities necessary to formally terminate a project or phase."
-        },
-        {
-            q: "What is the primary purpose of the risk register?",
-            options: ["To list all project team members", "To track identified risks and their mitigation plans", "To record project expenses", "To outline the project schedule"],
-            answer: [1],
-            type: "single",
-            explanation: "The risk register is a living document that captures details of all identified risks, their analysis, and response plans."
-        },
-        {
-            q: "A change request has been approved. What should the project manager do next?",
-            options: ["Update the project management plan", "Inform the team and implement the change", "Re-evaluate the project charter", "Archive the request"],
+            q: "A project is 60% complete with a CPI of 0.85 and an SPI of 1.1. The sponsor is concerned about the budget and asks for a forecast of the total cost at completion. Which formula should the PM use if they believe the remaining work will be performed at the current rate?",
+            options: [
+                "BAC / CPI",
+                "AC + (BAC - EV)",
+                "AC + [(BAC - EV) / (CPI * SPI)]",
+                "AC + Estimate to Complete (ETC)"
+            ],
             answer: [0],
             type: "single",
-            explanation: "Once a change request is approved, the project management plan and other relevant documents must be updated to reflect the change."
+            explanation: "If current variances (CPI) are expected to continue, EAC = BAC / CPI is the standard forecast formula."
         },
         {
-            q: "What are the two most common types of schedule compression techniques? (Pick 2)",
-            options: ["Crashing", "Fast tracking", "Resource leveling", "Scope reduction", "Delaying milestones"],
-            answer: [0, 1],
-            type: "multiple",
-            count: 2,
-            explanation: "Crashing (adding resources) and Fast Tracking (performing activities in parallel) are the primary schedule compression methods."
-        },
-        {
-            q: "The project manager is using a Delphi technique for estimating. What is the main characteristic of this method?",
-            options: ["It involves group discussion", "It is based on anonymous expert opinions", "It uses historical data", "It is a top-down approach"],
+            q: "A project manager is managing a complex project with multiple vendors. One vendor reports a delay that will impact the critical path. What should the PM do first?",
+            options: [
+                "Invoke the penalty clause in the vendor's contract.",
+                "Perform a 'what-if' scenario analysis to determine the impact.",
+                "Update the project schedule and notify stakeholders.",
+                "Request a meeting with all vendors to discuss the delay."
+            ],
             answer: [1],
             type: "single",
-            explanation: "The Delphi technique uses a series of questionnaires to collect anonymous expert opinions to reach a consensus."
+            explanation: "Always analyze the impact before taking action. Knowing 'how much' it impacts the critical path is required before updating schedules or penalizing."
         },
         {
-            q: "Which document defines how the project will be executed, monitored, and controlled?",
-            options: ["Scope Statement", "Project Charter", "Project Management Plan", "Communications Plan"],
+            q: "In a predictive project, the CCB has approved a change that adds scope but does not increase budget. What is the most likely result?",
+            options: [
+                "Project quality will decrease.",
+                "Project risk will increase.",
+                "The project will finish early.",
+                "The schedule must be compressed."
+            ],
+            answer: [1],
+            type: "single",
+            explanation: "Adding scope without adding resources (budget) forces the team to do more with less, which inherently increases project risk and potentially impacts quality/schedule."
+        },
+        {
+            q: "A PM is using a Pareto Diagram to analyze quality issues. They find that 80% of the defects are caused by 20% of the issues. What should they do next?",
+            options: [
+                "Fix all defects immediately.",
+                "Focus corrective actions on the top 20% of the issues.",
+                "Perform a root cause analysis on the remaining 80% of issues.",
+                "Discard the minor issues to save time."
+            ],
+            answer: [1],
+            type: "single",
+            explanation: "The purpose of a Pareto Chart is to prioritize. Focusing on the 'vital few' (20%) yields the greatest improvement."
+        },
+        {
+            q: "The project manager is finalizing the project's lessons learned. Who should be involved in this process?",
+            options: [
+                "Only the project manager and the project sponsor.",
+                "The project manager and the core project team.",
+                "All relevant stakeholders including the project team and customers.",
+                "Only the functional managers."
+            ],
             answer: [2],
             type: "single",
-            explanation: "The Project Management Plan is the primary document that guides the execution and control of the project."
+            explanation: "Lessons learned should be comprehensive, requiring input from all key stakeholders to be truly effective."
+        },
+        {
+            q: "A PM is transitioning a project from a predictive to an agile approach. Which three process changes are most critical? (Pick 3)",
+            options: [
+                "Move from a fixed schedule to a product backlog.",
+                "Replace the CCB with a Product Owner.",
+                "Change from monthly status reports to daily stand-ups.",
+                "Eliminate the project charter.",
+                "Replace the WBS with a detailed project plan.",
+                "Transition from 'push' communication to 'pull' communication."
+            ],
+            answer: [0, 1, 2],
+            type: "multiple",
+            count: 3,
+            explanation: "Backlogs, Product Owners (as decision makers), and Daily Stand-ups are the core procedural shifts in an agile transition."
+        },
+        {
+            q: "The project is in the closing phase. The customer refuses to sign off on the final deliverable, claiming it doesn't meet a requirement that was not in the original scope but was discussed verbally. What should the PM do?",
+            options: [
+                "Add the requirement and complete the work to ensure customer satisfaction.",
+                "Refer to the approved scope statement and requirements traceability matrix.",
+                "File a legal claim for breach of contract.",
+                "Ask the sponsor to intervene."
+            ],
+            answer: [1],
+            type: "single",
+            explanation: "Official documentation (Scope Statement/RTM) is the only valid basis for project acceptance. Verbal discussions do not override approved baselines."
+        },
+        {
+            q: "A PM is calculating the Three-Point Estimate (PERT) for an activity. Optimistic = 10 days, Pessimistic = 30 days, Most Likely = 14 days. What is the expected duration?",
+            options: ["14 days", "18 days", "16 days", "20 days"],
+            answer: [2],
+            type: "single",
+            explanation: "PERT Formula: (O + 4M + P) / 6. (10 + 4*14 + 30) / 6 = (10 + 56 + 30) / 6 = 96 / 6 = 16."
+        },
+        {
+            q: "What is the primary difference between Quality Assurance (QA) and Quality Control (QC)?",
+            options: [
+                "QA is focused on the process; QC is focused on the product.",
+                "QC is focused on the process; QA is focused on the product.",
+                "QA is done at the end; QC is done throughout.",
+                "There is no difference; they are the same thing."
+            ],
+            answer: [0],
+            type: "single",
+            explanation: "QA ensures the processes are being followed correctly (preventative), while QC inspects the final outputs to ensure they meet standards (detective)."
+        },
+        {
+            q: "A PM is managing a project with a 'Fixed Price Incentive Fee' (FPIF) contract. The actual cost is higher than the target cost but lower than the ceiling price. How is the final price determined?",
+            options: [
+                "The price is capped at the target cost.",
+                "The price is the actual cost plus the target fee.",
+                "The price is the actual cost plus a portion of the fee based on the share ratio.",
+                "The price is the ceiling price."
+            ],
+            answer: [2],
+            type: "single",
+            explanation: "In FPIF, if the cost is between target and ceiling, the final price = Actual Cost + [Target Fee + (Target Cost - Actual Cost) * Seller Share]."
         }
     ],
     business: [
         {
-            q: "A project manager is leading a project that must comply with new government regulations. What is the most critical first step?",
-            options: ["Conduct a compliance audit", "Identify the regulatory requirements", "Hire a legal consultant", "Inform the project sponsor of potential delays"],
+            q: "A project manager is assigned to a project that is already in progress. They discover the project is no longer aligned with the company's new strategic direction. What is the most appropriate action?",
+            options: [
+                "Continue the project as planned since it has already started.",
+                "Inform the project sponsor and recommend a review of the business case.",
+                "Adjust the project's scope to align with the new strategy without telling the sponsor.",
+                "Immediately terminate the project to save costs."
+            ],
             answer: [1],
             type: "single",
-            explanation: "Identifying the specific regulatory requirements is the first step in ensuring project compliance."
+            explanation: "Projects must provide business value. If alignment is lost, the sponsor must review the business case to decide whether to pivot, continue, or kill the project."
         },
         {
-            q: "The organization is moving from a functional structure to a matrix structure. How will this affect the project manager's authority?",
-            options: ["Authority will decrease", "Authority will increase", "Authority will remain the same", "The project manager role will be eliminated"],
-            answer: [1],
-            type: "single",
-            explanation: "In a matrix structure, project managers typically have more authority over resources and project decisions than in a functional structure."
-        },
-        {
-            q: "A project is being initiated in a highly volatile market. What should the project manager prioritize to ensure the project remains relevant?",
-            options: ["A fixed-price contract", "A rigid project plan", "Continuous value delivery and assessment", "Long-term planning"],
-            answer: [2],
-            type: "single",
-            explanation: "In volatile markets, delivering value incrementally allows the project to adapt to changing conditions and remain relevant."
-        },
-        {
-            q: "What are the three components of the 'Triple Constraint' in project management? (Pick 3)",
-            options: ["Scope", "Cost", "Risk", "Time", "Quality"],
-            answer: [0, 1, 3],
+            q: "Which three factors are external Environmental Enterprise Factors (EEFs)? (Pick 3)",
+            options: [
+                "Government regulations",
+                "Organizational culture",
+                "Market conditions",
+                "Internal communication channels",
+                "Commercial databases",
+                "Project management templates"
+            ],
+            answer: [0, 2, 4],
             type: "multiple",
             count: 3,
-            explanation: "The traditional 'Triple Constraint' consists of Scope, Cost, and Time."
+            explanation: "Regulations, market conditions, and external databases are external EEFs. Culture and communication channels are internal EEFs. Templates are OPAs."
         },
         {
-            q: "A project manager is evaluating the benefits of a project. Which metric is most commonly used to determine the project's financial viability?",
-            options: ["ROI (Return on Investment)", "CPI (Cost Performance Index)", "SPI (Schedule Performance Index)", "WBS (Work Breakdown Structure)"],
+            q: "A project manager is working in a strong matrix organization. Who has the most authority over the project budget?",
+            options: ["The Project Manager", "The Functional Manager", "The Project Sponsor", "The PMO Director"],
             answer: [0],
             type: "single",
-            explanation: "ROI is a key financial metric used to evaluate the efficiency or profitability of an investment."
+            explanation: "In a strong matrix, the project manager has high to almost total authority, including control of the budget."
         },
         {
-            q: "What is the primary purpose of a business case?",
-            options: ["To provide technical specifications", "To justify the investment in the project", "To outline the project schedule", "To list the project team members"],
+            q: "A project has a Benefit-Cost Ratio (BCR) of 1.8. What does this mean?",
+            options: [
+                "The project will lose 80 cents for every dollar spent.",
+                "The project will return $1.80 for every $1.00 spent.",
+                "The project's costs are 1.8 times higher than its benefits.",
+                "The project is 80% over budget."
+            ],
             answer: [1],
             type: "single",
-            explanation: "A business case documents the economic feasibility of a project and justifies why it should be undertaken."
+            explanation: "BCR > 1 means the benefits outweigh the costs. Specifically, a 1.8 ratio means $1.80 in benefit for every $1 spent."
         },
         {
-            q: "Which of the following is an example of an Environmental Enterprise Factor (EEF)?",
-            options: ["Company procedures", "Organizational culture", "Historical project files", "Templates for project plans"],
-            answer: [1],
-            type: "single",
-            explanation: "Organizational culture is an external or internal factor that can influence the project and is considered an EEF."
-        },
-        {
-            q: "A project manager is assessing the impact of a change on the project's business value. What is the most important consideration?",
-            options: ["The cost of the change", "The effect on the project schedule", "Alignment with organizational strategic goals", "The team's workload"],
+            q: "What is the primary role of the Project Management Office (PMO) in a 'Directive' style?",
+            options: [
+                "Providing templates and best practices.",
+                "Offering support and training to project managers.",
+                "Taking control of the projects and managing them directly.",
+                "Reviewing projects for compliance with standards."
+            ],
             answer: [2],
             type: "single",
-            explanation: "Any project change should be evaluated against how well it aligns with the organization's overall strategic objectives."
+            explanation: "Directive PMOs provide a high level of control by directly managing the projects."
         },
         {
-            q: "What is the role of the Project Management Office (PMO) in an organization?",
-            options: ["To manage all project activities", "To provide support and standards for project management", "To make financial decisions for the company", "To hire project managers"],
+            q: "A company is deciding between Project A (NPV = $100k, 12 months) and Project B (NPV = $120k, 18 months). Which project should they choose based solely on financial viability?",
+            options: ["Project A", "Project B", "Neither, they should look at IRR", "Both, if they have the resources"],
             answer: [1],
             type: "single",
-            explanation: "The PMO standardizes project-related governance processes and facilitates the sharing of resources, methodologies, and tools."
+            explanation: "When choosing based on NPV, always pick the project with the highest NPV regardless of time, as NPV already accounts for the time value of money."
         },
         {
-            q: "A company is considering a project with a Net Present Value (NPV) of $50,000. Should they proceed?",
-            options: ["Yes, if the NPV is positive", "No, if the NPV is positive", "Only if the IRR is also high", "Only if the project is short-term"],
-            answer: [0],
+            q: "What is 'Opportunity Cost' in project selection?",
+            options: [
+                "The total cost of the chosen project.",
+                "The value of the project not chosen.",
+                "The risk of a project failing.",
+                "The cost of entering a new market."
+            ],
+            answer: [1],
             type: "single",
-            explanation: "A positive NPV indicates that the project is expected to generate value for the organization, so it should generally be considered."
+            explanation: "Opportunity cost is the benefit given up by choosing one project over another."
+        },
+        {
+            q: "A project manager is analyzing the 'Internal Rate of Return' (IRR). Which statement is true?",
+            options: [
+                "A lower IRR is better.",
+                "A higher IRR is better.",
+                "IRR should always be 100%.",
+                "IRR is not used for project selection."
+            ],
+            answer: [1],
+            type: "single",
+            explanation: "IRR represents the expected annual growth rate of an investment. Therefore, a higher IRR is more desirable."
+        },
+        {
+            q: "Which document defines the reason for the project and how it will provide value?",
+            options: ["Project Charter", "Project Management Plan", "Business Case", "Benefits Management Plan"],
+            answer: [2],
+            type: "single",
+            explanation: "The Business Case provides the justification for the project and explains the business value it is expected to deliver."
+        },
+        {
+            q: "A project manager is conducting a SWOT analysis. What does the 'W' stand for?",
+            options: ["Wealth", "Workload", "Weaknesses", "Warrants"],
+            answer: [2],
+            type: "single",
+            explanation: "SWOT stands for Strengths, Weaknesses, Opportunities, and Threats."
         }
     ],
     agile: [
         {
-            q: "In an Agile project, who is primarily responsible for prioritizing the product backlog?",
-            options: ["The Scrum Master", "The Project Manager", "The Product Owner", "The Development Team"],
+            q: "An agile team is experiencing 'Scope Creep' within their sprints. What is the most likely cause?",
+            options: [
+                "The Product Owner is adding stories mid-sprint.",
+                "The 'Definition of Done' is not clearly defined.",
+                "The team is 'Gold Plating' the deliverables.",
+                "The sprint retrospective is not identifying the issue."
+            ],
+            answer: [0],
+            type: "single",
+            explanation: "Mid-sprint changes are the primary cause of scope creep in Agile. The PO should wait until the next sprint planning to introduce new work."
+        },
+        {
+            q: "In Scrum, who is responsible for determining how many story points the team can take on in a sprint?",
+            options: ["The Scrum Master", "The Product Owner", "The Development Team", "The Project Manager"],
             answer: [2],
             type: "single",
-            explanation: "The Product Owner is responsible for maximizing the value of the product and managing the product backlog, including prioritization."
+            explanation: "The team is self-organizing and owns their capacity. Only they can decide how much work they can realistically commit to."
         },
         {
-            q: "What is the purpose of a Daily Stand-up meeting?",
-            options: ["To provide a detailed status report", "To identify and remove roadblocks", "To plan the entire sprint", "To discuss technical details"],
-            answer: [1],
-            type: "single",
-            explanation: "The Daily Stand-up is a short meeting for the team to synchronize activities and identify any impediments."
-        },
-        {
-            q: "Which Agile framework uses a 'Sprint' as its primary timebox?",
-            options: ["Kanban", "Scrum", "Lean", "XP (Extreme Programming)"],
-            answer: [1],
-            type: "single",
-            explanation: "Scrum uses fixed-length iterations called Sprints to deliver increments of the product."
-        },
-        {
-            q: "What are the three pillars of Scrum? (Pick 3)",
-            options: ["Transparency", "Inspection", "Speed", "Adaptation", "Quality"],
-            answer: [0, 1, 3],
-            type: "multiple",
-            count: 3,
-            explanation: "The three pillars of Scrum are Transparency, Inspection, and Adaptation."
-        },
-        {
-            q: "A team is using a Kanban board. What is the primary purpose of 'Work in Progress' (WIP) limits?",
-            options: ["To speed up the work", "To limit the number of tasks in progress and identify bottlenecks", "To assign tasks to specific team members", "To track the total project budget"],
-            answer: [1],
-            type: "single",
-            explanation: "WIP limits help teams focus on completing work before starting new tasks, which helps reveal flow issues and bottlenecks."
-        },
-        {
-            q: "In Agile, what does 'Definition of Done' (DoD) mean?",
-            options: ["The project is complete", "A task is ready for testing", "A shared understanding of what it takes for an increment to be releasable", "The end of a sprint"],
-            answer: [2],
-            type: "single",
-            explanation: "DoD is a clear set of criteria that must be met for a work item to be considered finished and ready for release."
-        },
-        {
-            q: "Which document serves as the high-level roadmap for an Agile project?",
-            options: ["Sprint Backlog", "Product Backlog", "Product Roadmap", "Project Charter"],
-            answer: [2],
-            type: "single",
-            explanation: "A Product Roadmap provides a high-level view of how the product is expected to evolve over time."
-        },
-        {
-            q: "A team is transitioning from Waterfall to Agile. What is the most likely challenge they will face?",
-            options: ["Learning new tools", "A cultural shift towards self-organization", "Managing project costs", "Defining the project scope"],
-            answer: [1],
-            type: "single",
-            explanation: "The shift from a command-and-control mindset to a self-organizing, collaborative culture is often the hardest part of an Agile transition."
-        },
-        {
-            q: "What is the role of the Scrum Master?",
-            options: ["To manage the project budget", "To act as a servant-leader and facilitate Scrum processes", "To assign tasks to the development team", "To represent the customer's interests"],
-            answer: [1],
-            type: "single",
-            explanation: "The Scrum Master helps everyone understand Scrum theory and practice and removes obstacles for the team."
-        },
-        {
-            q: "What are two key characteristics of an Agile project? (Pick 2)",
-            options: ["Iterative development", "Rigid planning", "Customer collaboration", "Strict hierarchical structure", "Long-term fixed requirements"],
+            q: "What are the two primary purposes of a 'Sprint Review'? (Pick 2)",
+            options: [
+                "To demonstrate the increment to stakeholders.",
+                "To discuss team internal issues and improvements.",
+                "To collect feedback and update the product backlog.",
+                "To plan the tasks for the next sprint.",
+                "To finalize the 'Definition of Done'."
+            ],
             answer: [0, 2],
             type: "multiple",
             count: 2,
-            explanation: "Agile emphasizes iterative delivery and continuous collaboration with stakeholders/customers."
+            explanation: "The Review is about the product: showing progress and gathering feedback to inform future work. The Retrospective is about the process/team."
+        },
+        {
+            q: "An agile team uses a Burndown Chart. The line is consistently above the ideal trend line. What does this indicate?",
+            options: [
+                "The team is ahead of schedule.",
+                "The team is behind schedule.",
+                "The team has completed more work than planned.",
+                "The team's velocity is increasing."
+            ],
+            answer: [1],
+            type: "single",
+            explanation: "In a Burndown chart, 'Above the line' means more work remains than planned for that point in time (behind schedule)."
+        },
+        {
+            q: "What is 'Minimum Viable Product' (MVP)?",
+            options: [
+                "The cheapest version of a product.",
+                "A product with the smallest set of features that provides value and allows for learning.",
+                "A prototype used for internal testing only.",
+                "The final version of the product before it is retired."
+            ],
+            answer: [1],
+            type: "single",
+            explanation: "MVP focuses on delivering enough value to satisfy early adopters and provide a feedback loop for future development."
+        },
+        {
+            q: "Which three ceremonies are standard in Scrum? (Pick 3)",
+            options: [
+                "Daily Stand-up",
+                "Sprint Planning",
+                "Risk Review",
+                "Sprint Retrospective",
+                "Change Control Board",
+                "Status Report Meeting"
+            ],
+            answer: [0, 1, 3],
+            type: "multiple",
+            count: 3,
+            explanation: "Daily Stand-up, Sprint Planning, and Retrospectives are three of the five standard Scrum events."
+        },
+        {
+            q: "What is the primary benefit of 'Pair Programming' in XP?",
+            options: [
+                "It gets the work done twice as fast.",
+                "It improves quality through continuous code review.",
+                "It allows one person to take a break while the other works.",
+                "It reduces the need for documentation."
+            ],
+            answer: [1],
+            type: "single",
+            explanation: "Pair programming increases code quality and facilitates knowledge sharing, even though it may seem slower initially."
+        },
+        {
+            q: "A team is using a 'Pull System' in Kanban. What does this mean?",
+            options: [
+                "Managers 'pull' tasks and assign them to team members.",
+                "Team members 'pull' work only when they have capacity.",
+                "The customer 'pulls' the final deliverable whenever they want.",
+                "The Product Owner 'pulls' stories from the backlog."
+            ],
+            answer: [1],
+            type: "single",
+            explanation: "A pull system prevents overproduction and ensures that work is only started when there is resources available to complete it."
+        },
+        {
+            q: "What is the 'Scrum of Scrums' used for?",
+            options: [
+                "A meeting for all Scrum Masters to complain.",
+                "To coordinate between multiple agile teams working on the same product.",
+                "A training session for new agile teams.",
+                "A way to replace the project manager."
+            ],
+            answer: [1],
+            type: "single",
+            explanation: "Scrum of Scrums is a scaling technique to ensure alignment and manage dependencies across multiple teams."
+        },
+        {
+            q: "An agile team is struggling with technical debt. When is the best time to address this?",
+            options: [
+                "During a dedicated 'Hardening' sprint.",
+                "Continuously as part of every sprint.",
+                "At the very end of the project.",
+                "Only if the customer complains about bugs."
+            ],
+            answer: [1],
+            type: "single",
+            explanation: "Agile promotes sustainable development. Addressing technical debt incrementally prevents it from becoming a major blocker later."
         }
     ],
     mixed1: [], mixed2: [], mixed3: []
 };
 
-// Generate mixed quizzes by pulling from the pools
+// Generate mixed quizzes
 const pools = ['people', 'process', 'business', 'agile'];
 for(let m=1; m<=3; m++) {
     let pool = [];
     pools.forEach(p => pool = pool.concat(quizData[p]));
-    // Shuffle and take 45 (for this demo, we'll repeat or take available)
     quizData[`mixed${m}`] = pool.sort(() => 0.5 - Math.random()).slice(0, 45);
 }
 
@@ -446,32 +574,32 @@ function startQuiz(topic) {
     currentQuiz = quizData[topic];
     currentIndex = 0;
     score = 0;
-    document.getElementById('home-screen').style.display = 'none';
-    document.getElementById('quiz-screen').style.display = 'block';
-    document.getElementById('result-screen').style.display = 'none';
+    document.getElementById('home-screen').classList.add('hidden');
+    document.getElementById('quiz-screen').classList.remove('hidden');
+    document.getElementById('result-screen').classList.add('hidden');
     showQuestion();
 }
 
 function showQuestion() {
     const q = currentQuiz[currentIndex];
     selectedOptions = [];
-    document.getElementById('progress').innerText = `Question ${currentIndex + 1}/${currentQuiz.length}`;
+    document.getElementById('progress').innerText = `Q: ${currentIndex + 1}/${currentQuiz.length}`;
     updateScoreboard();
     
     document.getElementById('question-text').innerText = q.q;
     
-    let instr = "Select the best answer.";
-    if(q.type === 'multiple') instr = `Select the best ${q.count} answers.`;
+    let instr = "Select the single BEST action.";
+    if(q.type === 'multiple') instr = `Select the BEST ${q.count} actions. This is a multi-select question.`;
     document.getElementById('instruction-text').innerText = instr;
 
     const list = document.getElementById('options-list');
     list.innerHTML = '';
     q.options.forEach((opt, idx) => {
-        const li = document.createElement('div');
-        li.className = 'option-item';
-        li.innerText = opt;
-        li.onclick = () => selectOption(idx, li);
-        list.appendChild(li);
+        const div = document.createElement('div');
+        div.className = 'option-item';
+        div.innerText = opt;
+        div.onclick = () => selectOption(idx, div);
+        list.appendChild(div);
     });
 
     document.getElementById('explanation-box').style.display = 'none';
@@ -489,47 +617,35 @@ function selectOption(idx, element) {
         if(selectedOptions.includes(idx)) {
             selectedOptions = selectedOptions.filter(i => i !== idx);
             element.classList.remove('selected');
-        } else {
-            if(selectedOptions.length < q.count) {
-                selectedOptions.push(idx);
-                element.classList.add('selected');
-            }
+        } else if(selectedOptions.length < q.count) {
+            selectedOptions.push(idx);
+            element.classList.add('selected');
         }
     }
 }
 
 function checkAnswer() {
     const q = currentQuiz[currentIndex];
-    if(selectedOptions.length === 0) {
-        alert("Please select an answer.");
-        return;
-    }
-    if(q.type === 'multiple' && selectedOptions.length !== q.count) {
-        alert(`Please select exactly ${q.count} answers.`);
+    if(selectedOptions.length === 0 || (q.type === 'multiple' && selectedOptions.length !== q.count)) {
+        alert(`Please select ${q.type === 'multiple' ? q.count : 'an'} answer(s).`);
         return;
     }
 
     const items = document.getElementsByClassName('option-item');
-    let isCorrect = false;
-    
-    // Check if sorted answers match
     const sortedSelected = [...selectedOptions].sort();
     const sortedAnswers = [...q.answer].sort();
-    isCorrect = JSON.stringify(sortedSelected) === JSON.stringify(sortedAnswers);
+    const isCorrect = JSON.stringify(sortedSelected) === JSON.stringify(sortedAnswers);
 
-    if(isCorrect) {
-        score++;
-        selectedOptions.forEach(idx => items[idx].classList.add('correct'));
-    } else {
-        selectedOptions.forEach(idx => {
-            if(q.answer.includes(idx)) items[idx].classList.add('correct');
-            else items[idx].classList.add('wrong');
-        });
-        q.answer.forEach(idx => items[idx].classList.add('correct'));
-    }
+    if(isCorrect) score++;
+
+    // Visual feedback
+    Array.from(items).forEach((item, idx) => {
+        if(q.answer.includes(idx)) item.classList.add('correct');
+        else if(selectedOptions.includes(idx)) item.classList.add('wrong');
+    });
 
     const exp = document.getElementById('explanation-box');
-    exp.innerHTML = `<strong>${isCorrect ? 'Correct!' : 'Incorrect.'}</strong><br>${q.explanation}`;
+    exp.innerHTML = `<strong>Result: ${isCorrect ? 'CORRECT' : 'INCORRECT'}</strong><hr>${q.explanation}`;
     exp.style.display = 'block';
 
     document.getElementById('submit-btn').style.display = 'none';
@@ -538,8 +654,8 @@ function checkAnswer() {
 }
 
 function updateScoreboard() {
-    const percent = currentIndex === 0 ? 0 : Math.round((score / currentIndex) * 100);
-    document.getElementById('score-display').innerText = `Score: ${score} (${percent}%)`;
+    const percent = currentIndex === 0 ? 0 : Math.round((score / (currentIndex + 1)) * 100);
+    document.getElementById('score-display').innerText = `Correct: ${score} (${percent}%)`;
 }
 
 function nextQuestion() {
@@ -552,16 +668,10 @@ function nextQuestion() {
 }
 
 function showResults() {
-    document.getElementById('quiz-screen').style.display = 'none';
-    document.getElementById('result-screen').style.display = 'block';
+    document.getElementById('quiz-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
     const percent = Math.round((score / currentQuiz.length) * 100);
-    document.getElementById('final-score').innerText = `You scored ${score} out of ${currentQuiz.length} (${percent}%)`;
-}
-
-function showHome() {
-    document.getElementById('home-screen').style.display = 'block';
-    document.getElementById('quiz-screen').style.display = 'none';
-    document.getElementById('result-screen').style.display = 'none';
+    document.getElementById('final-score').innerText = `${percent}% (${score}/${currentQuiz.length})`;
 }
 </script>
 
