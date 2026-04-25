@@ -3,677 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PMP Expert Level Simulator</title>
+    <title>PMP Master Simulation - Unique Sets</title>
     <style>
-        :root {
-            --primary: #1a2a3a;
-            --secondary: #2c3e50;
-            --accent: #e67e22;
-            --success: #27ae60;
-            --danger: #c0392b;
-            --light: #f4f4f4;
-            --text: #2c3e50;
-        }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #dee2e6; color: var(--text); margin: 0; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        h1 { color: var(--primary); text-align: center; border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 30px 0; }
-        button { padding: 15px; font-size: 16px; font-weight: 600; cursor: pointer; border: none; border-radius: 6px; transition: all 0.2s; }
-        .btn-topic { background-color: var(--secondary); color: white; }
-        .btn-mixed { background-color: var(--primary); color: white; }
-        button:hover { opacity: 0.9; transform: translateY(-2px); }
-        .scoreboard { display: flex; justify-content: space-between; background: var(--primary); color: white; padding: 15px; border-radius: 6px; margin-bottom: 25px; font-family: monospace; }
-        .question-box { font-size: 18px; line-height: 1.6; margin-bottom: 25px; }
-        .options-list { display: flex; flex-direction: column; gap: 12px; }
-        .option-item { padding: 15px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: background 0.2s; position: relative; }
-        .option-item:hover { background-color: #f8f9fa; border-color: var(--accent); }
-        .selected { border-color: var(--accent); background-color: #fff4e6; }
-        .correct { background-color: #d4edda !important; border-color: #28a745 !important; color: #155724; }
-        .wrong { background-color: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; }
-        .explanation { margin-top: 20px; padding: 20px; background-color: #e3f2fd; border-left: 6px solid #2196f3; display: none; }
-        .btn-submit { background-color: var(--accent); color: white; width: 100%; margin-top: 20px; }
-        .btn-next { background-color: var(--success); color: white; width: 100%; margin-top: 20px; display: none; }
+        :root { --primary: #0f172a; --accent: #f59e0b; --bg: #f8fafc; --card: #ffffff; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--primary); margin: 0; padding: 20px; }
+        .container { max-width: 850px; margin: 20px auto; background: var(--card); padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
+        .nav-header { text-align: center; border-bottom: 2px solid #e2e8f0; margin-bottom: 30px; padding-bottom: 20px; }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        button { padding: 16px; font-weight: 600; cursor: pointer; border: none; border-radius: 8px; transition: 0.2s; }
+        .btn-topic { background: #64748b; color: white; }
+        .btn-sim { background: var(--primary); color: white; }
+        button:hover { filter: brightness(1.2); transform: translateY(-1px); }
+        .scoreboard { background: #1e293b; color: white; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; margin-bottom: 20px; font-family: monospace; }
+        .question-text { font-size: 1.2rem; line-height: 1.5; margin-bottom: 20px; font-weight: 500; }
+        .option { padding: 15px; border: 2px solid #e2e8f0; border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
+        .option:hover { border-color: var(--accent); background: #fffbeb; }
+        .selected { border-color: var(--accent); background: #fff7ed; }
+        .correct { background: #dcfce7 !important; border-color: #22c55e !important; }
+        .wrong { background: #fee2e2 !important; border-color: #ef4444 !important; }
+        .explanation { padding: 20px; background: #f1f5f9; border-left: 4px solid #3b82f6; margin-top: 20px; display: none; }
         .hidden { display: none; }
+        .action-btn { width: 100%; padding: 16px; font-size: 1rem; background: var(--accent); color: white; margin-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="home-screen">
-        <h1>PMP® Extreme Challenge Simulator</h1>
-        <p style="text-align:center; color: #666;">Expert-level scenarios focusing on "Best Action," situational ambiguity, and hybrid integration.</p>
-        
+    <div id="home">
+        <div class="nav-header">
+            <h1>PMP Ultimate Simulator</h1>
+            <p>175 Unique Questions. Zero Overlap between Topic Quizzes and Simulations.</p>
+        </div>
+        <h3>Targeted Domain Practice (10 Qs)</h3>
         <div class="menu-grid">
-            <button class="btn-topic" onclick="startQuiz('people')">Domain I: People (Expert)</button>
-            <button class="btn-topic" onclick="startQuiz('process')">Domain II: Process (Expert)</button>
-            <button class="btn-topic" onclick="startQuiz('business')">Domain III: Business (Expert)</button>
-            <button class="btn-topic" onclick="startQuiz('agile')">Agile/Hybrid (Expert)</button>
+            <button class="btn-topic" onclick="startQuiz('people')">Domain I: People</button>
+            <button class="btn-topic" onclick="startQuiz('process')">Domain II: Process</button>
+            <button class="btn-topic" onclick="startQuiz('business')">Domain III: Business</button>
+            <button class="btn-topic" onclick="startQuiz('agile')">Agile/Hybrid</button>
         </div>
-        <div class="menu-grid" style="margin-top:0">
-            <button class="btn-mixed" onclick="startQuiz('mixed1')">Hard Simulation A (45 Qs)</button>
-            <button class="btn-mixed" onclick="startQuiz('mixed2')">Hard Simulation B (45 Qs)</button>
-            <button class="btn-mixed" onclick="startQuiz('mixed3')">Hard Simulation C (45 Qs)</button>
+        <h3 style="margin-top:30px">Full Exam Simulations (45 Qs)</h3>
+        <div class="menu-grid">
+            <button class="btn-sim" onclick="startQuiz('sim1')">Simulation A (Set 1)</button>
+            <button class="btn-sim" onclick="startQuiz('sim2')">Simulation B (Set 2)</button>
+            <button class="btn-sim" onclick="startQuiz('sim3')">Simulation C (Set 3)</button>
         </div>
     </div>
 
-    <div id="quiz-screen" class="hidden">
+    <div id="quiz" class="hidden">
         <div class="scoreboard">
-            <span id="progress">Q: 1/10</span>
-            <span id="score-display">Correct: 0 (0%)</span>
+            <span id="prog">Q: 1/45</span>
+            <span id="score">Score: 0%</span>
         </div>
-        <div class="question-box">
-            <div id="question-text"></div>
-            <div id="instruction-text" style="font-size:14px; margin-top:10px; color:var(--accent); font-weight:bold;"></div>
+        <div id="q-box">
+            <div class="question-text" id="q-text"></div>
+            <div id="options" class="options-container"></div>
         </div>
-        <div id="options-list" class="options-list"></div>
-        <div id="explanation-box" class="explanation"></div>
-        <button id="submit-btn" class="btn-submit" onclick="checkAnswer()">Evaluate Selection</button>
-        <button id="next-btn" class="btn-next" onclick="nextQuestion()">Proceed to Next Question</button>
+        <div id="exp" class="explanation"></div>
+        <button id="submit" class="action-btn" onclick="check()">Submit Answer</button>
+        <button id="next" class="action-btn hidden" style="background:#22c55e" onclick="next()">Next Question</button>
     </div>
 
-    <div id="result-screen" class="hidden">
-        <h2 style="text-align:center">Performance Summary</h2>
-        <div id="final-score" style="font-size: 32px; text-align: center; margin: 30px 0; font-weight:bold;"></div>
-        <button class="btn-topic" style="width:100%" onclick="location.reload()">Reset Simulator</button>
+    <div id="results" class="hidden" style="text-align:center">
+        <h2>Simulation Complete</h2>
+        <h1 id="final-percent" style="font-size:4rem; color:var(--accent)">0%</h1>
+        <p id="final-stat"></p>
+        <button class="btn-topic" onclick="location.reload()">Return to Main Menu</button>
     </div>
 </div>
 
 <script>
 const quizData = {
-    people: [
-        {
-            q: "A high-performing agile team member is consistently aggressive during retrospectives, causing other members to withhold feedback. This individual’s technical contributions are critical to the project's success. What is the most effective way for the project manager to handle this situation?",
-            options: [
-                "Address the behavior in the next retrospective by setting ground rules to ensure a safe environment for all.",
-                "Speak with the individual privately to provide feedback on their communication style and its impact on the team.",
-                "Discuss the behavior with the entire team to see if they feel the same way before taking action.",
-                "Document the behavior and report it to functional management as a performance issue."
-            ],
-            answer: [1],
-            type: "single",
-            explanation: "In the 'People' domain, private one-on-one coaching (Emotional Intelligence) is the first step for behavioral issues. Publicly addressing it or reporting it immediately skips the necessary step of direct interpersonal management."
-        },
-        {
-            q: "The project manager of a cross-functional team discovers that two departments have conflicting priorities regarding the project's main deliverable. This conflict is threatening the project timeline. Which two actions should the project manager take? (Pick 2)",
-            options: [
-                "Escalate the conflict to the project sponsor for a final decision.",
-                "Facilitate a meeting between the department heads to find a win-win solution.",
-                "Prioritize the requirements of the department that provides more funding.",
-                "Analyze the impact of each department’s priorities on the project objectives.",
-                "Request the PMO to mediate the dispute between the departments."
-            ],
-            answer: [1, 3],
-            type: "multiple",
-            count: 2,
-            explanation: "Expert PMs perform analysis first to understand impacts, then facilitate collaboration (win-win) before ever escalating or choosing favorites based on power/funding."
-        },
-        {
-            q: "A project manager is leading a global virtual team. During a video conference, they notice that team members from one specific region rarely participate and often stay on mute. What should the project manager do?",
-            options: [
-                "Directly call on those team members to ensure their input is heard.",
-                "Send an email after the meeting asking for their specific feedback.",
-                "Review the cultural norms and communication preferences of that region.",
-                "Discuss the lack of participation with their regional manager."
-            ],
-            answer: [2],
-            type: "single",
-            explanation: "Directly calling on individuals in a group setting can be intimidating or culturally insensitive. Investigating the root cause (cultural norms) allows the PM to adapt their style effectively."
-        },
-        {
-            q: "A key stakeholder who was previously supportive of the project has suddenly become critical and is blocking progress. The project manager suspects personal reasons but has no proof. What is the best action?",
-            options: [
-                "Invite the stakeholder to lunch to build a personal relationship and uncover the issue.",
-                "Review the stakeholder engagement plan and update it to reflect the change.",
-                "Schedule a formal meeting to review the stakeholder’s concerns against the project requirements.",
-                "Ask the project sponsor to speak with the stakeholder."
-            ],
-            answer: [2],
-            type: "single",
-            explanation: "PMP 'Best' answers focus on professional alignment. A formal meeting to address concerns against requirements forces the stakeholder to stick to project-related issues rather than personal ones."
-        },
-        {
-            q: "A project manager is assigned to a team that is currently in the 'Storming' stage of development. The team is missing deadlines and arguing over roles. What three actions should the PM take? (Pick 3)",
-            options: [
-                "Re-establish the project’s goals and vision with the team.",
-                "Implement a strict reward and punishment system for deadlines.",
-                "Clearly define roles and responsibilities using a RACI chart.",
-                "Encourage the team to resolve conflicts independently to foster growth.",
-                "Increase the frequency of team-building activities.",
-                "Facilitate a workshop to develop team ground rules (Social Contract)."
-            ],
-            answer: [0, 2, 5],
-            type: "multiple",
-            count: 3,
-            explanation: "In Storming, the PM needs to provide structure: realigning vision, clarifying roles (RACI), and establishing behavioral norms (Ground Rules)."
-        },
-        {
-            q: "During a hybrid project, the functional manager pulls a critical resource to work on an emergency operational issue. This will delay the agile team's sprint. How should the PM respond?",
-            options: [
-                "Escalate to the sponsor that the functional manager is violating the resource management plan.",
-                "Negotiate with the functional manager to see if the work can be shared or postponed.",
-                "Inform the product owner that the sprint goal will not be met.",
-                "Ask the team to work overtime to compensate for the lost resource."
-            ],
-            answer: [1],
-            type: "single",
-            explanation: "Negotiation is the primary conflict resolution tool. The PM must try to find a middle ground before escalating or admitting defeat to the PO."
-        },
-        {
-            q: "A senior executive asks a team member for a small change that 'shouldn't take long.' The team member performs the work. What should the PM do when they find out?",
-            options: [
-                "Reprimand the team member for performing unauthorized work.",
-                "Submit a retroactive change request to the Change Control Board (CCB).",
-                "Educate both the executive and the team member on the change management process.",
-                "Ignore it since it was a small change and didn't impact the budget."
-            ],
-            answer: [2],
-            type: "single",
-            explanation: "This is scope creep. The PM's role is to ensure processes are followed. Education prevents future occurrences, which is more effective than just punishment or paperwork."
-        },
-        {
-            q: "A project manager notice high turnover in the development team. Exit interviews suggest that the team feels their contributions aren't valued. What should the PM implement first?",
-            options: [
-                "A formal 'Employee of the Month' program.",
-                "A recognition and rewards plan tailored to individual preferences.",
-                "A significant salary increase for the remaining members.",
-                "More frequent social events and happy hours."
-            ],
-            answer: [1],
-            type: "single",
-            explanation: "The PMBOK emphasizes that recognition and rewards must be appropriate and meaningful to the individuals. Generic programs often fail; tailored ones succeed."
-        },
-        {
-            q: "An agile team is struggling to meet their velocity because the Product Owner (PO) is rarely available to answer questions. What is the PM's best course of action?",
-            options: [
-                "Act as the proxy Product Owner to keep the team moving.",
-                "Escalate the PO's lack of availability to the steering committee.",
-                "Coach the PO on the importance of their role and the impact of their absence.",
-                "Cancel the current sprint and wait for the PO to become available."
-            ],
-            answer: [2],
-            type: "single",
-            explanation: "As a servant leader/Scrum Master, the PM's role is to coach stakeholders on agile values. Proxing for the PO is a 'bad' practice that masks the underlying problem."
-        },
-        {
-            q: "A team member is consistently late to the daily stand-up. The rest of the team is becoming frustrated. What is the best action?",
-            options: [
-                "Wait for the team to address it during the Sprint Retrospective.",
-                "Speak to the individual privately to understand the reason for the lateness.",
-                "Update the team charter to include a penalty for lateness.",
-                "Lock the door so the individual cannot join once the meeting starts."
-            ],
-            answer: [0],
-            type: "single",
-            explanation: "In Agile, self-organizing teams should address internal behavioral issues during the Retrospective. The PM facilitates the environment but the team owns their norms."
-        }
-    ],
-    process: [
-        {
-            q: "A project is 60% complete with a CPI of 0.85 and an SPI of 1.1. The sponsor is concerned about the budget and asks for a forecast of the total cost at completion. Which formula should the PM use if they believe the remaining work will be performed at the current rate?",
-            options: [
-                "BAC / CPI",
-                "AC + (BAC - EV)",
-                "AC + [(BAC - EV) / (CPI * SPI)]",
-                "AC + Estimate to Complete (ETC)"
-            ],
-            answer: [0],
-            type: "single",
-            explanation: "If current variances (CPI) are expected to continue, EAC = BAC / CPI is the standard forecast formula."
-        },
-        {
-            q: "A project manager is managing a complex project with multiple vendors. One vendor reports a delay that will impact the critical path. What should the PM do first?",
-            options: [
-                "Invoke the penalty clause in the vendor's contract.",
-                "Perform a 'what-if' scenario analysis to determine the impact.",
-                "Update the project schedule and notify stakeholders.",
-                "Request a meeting with all vendors to discuss the delay."
-            ],
-            answer: [1],
-            type: "single",
-            explanation: "Always analyze the impact before taking action. Knowing 'how much' it impacts the critical path is required before updating schedules or penalizing."
-        },
-        {
-            q: "In a predictive project, the CCB has approved a change that adds scope but does not increase budget. What is the most likely result?",
-            options: [
-                "Project quality will decrease.",
-                "Project risk will increase.",
-                "The project will finish early.",
-                "The schedule must be compressed."
-            ],
-            answer: [1],
-            type: "single",
-            explanation: "Adding scope without adding resources (budget) forces the team to do more with less, which inherently increases project risk and potentially impacts quality/schedule."
-        },
-        {
-            q: "A PM is using a Pareto Diagram to analyze quality issues. They find that 80% of the defects are caused by 20% of the issues. What should they do next?",
-            options: [
-                "Fix all defects immediately.",
-                "Focus corrective actions on the top 20% of the issues.",
-                "Perform a root cause analysis on the remaining 80% of issues.",
-                "Discard the minor issues to save time."
-            ],
-            answer: [1],
-            type: "single",
-            explanation: "The purpose of a Pareto Chart is to prioritize. Focusing on the 'vital few' (20%) yields the greatest improvement."
-        },
-        {
-            q: "The project manager is finalizing the project's lessons learned. Who should be involved in this process?",
-            options: [
-                "Only the project manager and the project sponsor.",
-                "The project manager and the core project team.",
-                "All relevant stakeholders including the project team and customers.",
-                "Only the functional managers."
-            ],
-            answer: [2],
-            type: "single",
-            explanation: "Lessons learned should be comprehensive, requiring input from all key stakeholders to be truly effective."
-        },
-        {
-            q: "A PM is transitioning a project from a predictive to an agile approach. Which three process changes are most critical? (Pick 3)",
-            options: [
-                "Move from a fixed schedule to a product backlog.",
-                "Replace the CCB with a Product Owner.",
-                "Change from monthly status reports to daily stand-ups.",
-                "Eliminate the project charter.",
-                "Replace the WBS with a detailed project plan.",
-                "Transition from 'push' communication to 'pull' communication."
-            ],
-            answer: [0, 1, 2],
-            type: "multiple",
-            count: 3,
-            explanation: "Backlogs, Product Owners (as decision makers), and Daily Stand-ups are the core procedural shifts in an agile transition."
-        },
-        {
-            q: "The project is in the closing phase. The customer refuses to sign off on the final deliverable, claiming it doesn't meet a requirement that was not in the original scope but was discussed verbally. What should the PM do?",
-            options: [
-                "Add the requirement and complete the work to ensure customer satisfaction.",
-                "Refer to the approved scope statement and requirements traceability matrix.",
-                "File a legal claim for breach of contract.",
-                "Ask the sponsor to intervene."
-            ],
-            answer: [1],
-            type: "single",
-            explanation: "Official documentation (Scope Statement/RTM) is the only valid basis for project acceptance. Verbal discussions do not override approved baselines."
-        },
-        {
-            q: "A PM is calculating the Three-Point Estimate (PERT) for an activity. Optimistic = 10 days, Pessimistic = 30 days, Most Likely = 14 days. What is the expected duration?",
-            options: ["14 days", "18 days", "16 days", "20 days"],
-            answer: [2],
-            type: "single",
-            explanation: "PERT Formula: (O + 4M + P) / 6. (10 + 4*14 + 30) / 6 = (10 + 56 + 30) / 6 = 96 / 6 = 16."
-        },
-        {
-            q: "What is the primary difference between Quality Assurance (QA) and Quality Control (QC)?",
-            options: [
-                "QA is focused on the process; QC is focused on the product.",
-                "QC is focused on the process; QA is focused on the product.",
-                "QA is done at the end; QC is done throughout.",
-                "There is no difference; they are the same thing."
-            ],
-            answer: [0],
-            type: "single",
-            explanation: "QA ensures the processes are being followed correctly (preventative), while QC inspects the final outputs to ensure they meet standards (detective)."
-        },
-        {
-            q: "A PM is managing a project with a 'Fixed Price Incentive Fee' (FPIF) contract. The actual cost is higher than the target cost but lower than the ceiling price. How is the final price determined?",
-            options: [
-                "The price is capped at the target cost.",
-                "The price is the actual cost plus the target fee.",
-                "The price is the actual cost plus a portion of the fee based on the share ratio.",
-                "The price is the ceiling price."
-            ],
-            answer: [2],
-            type: "single",
-            explanation: "In FPIF, if the cost is between target and ceiling, the final price = Actual Cost + [Target Fee + (Target Cost - Actual Cost) * Seller Share]."
-        }
-    ],
-    business: [
-        {
-            q: "A project manager is assigned to a project that is already in progress. They discover the project is no longer aligned with the company's new strategic direction. What is the most appropriate action?",
-            options: [
-                "Continue the project as planned since it has already started.",
-                "Inform the project sponsor and recommend a review of the business case.",
-                "Adjust the project's scope to align with the new strategy without telling the sponsor.",
-                "Immediately terminate the project to save costs."
-            ],
-            answer: [1],
-            type: "single",
-            explanation: "Projects must provide business value. If alignment is lost, the sponsor must review the business case to decide whether to pivot, continue, or kill the project."
-        },
-        {
-            q: "Which three factors are external Environmental Enterprise Factors (EEFs)? (Pick 3)",
-            options: [
-                "Government regulations",
-                "Organizational culture",
-                "Market conditions",
-                "Internal communication channels",
-                "Commercial databases",
-                "Project management templates"
-            ],
-            answer: [0, 2, 4],
-            type: "multiple",
-            count: 3,
-            explanation: "Regulations, market conditions, and external databases are external EEFs. Culture and communication channels are internal EEFs. Templates are OPAs."
-        },
-        {
-            q: "A project manager is working in a strong matrix organization. Who has the most authority over the project budget?",
-            options: ["The Project Manager", "The Functional Manager", "The Project Sponsor", "The PMO Director"],
-            answer: [0],
-            type: "single",
-            explanation: "In a strong matrix, the project manager has high to almost total authority, including control of the budget."
-        },
-        {
-            q: "A project has a Benefit-Cost Ratio (BCR) of 1.8. What does this mean?",
-            options: [
-                "The project will lose 80 cents for every dollar spent.",
-                "The project will return $1.80 for every $1.00 spent.",
-                "The project's costs are 1.8 times higher than its benefits.",
-                "The project is 80% over budget."
-            ],
-            answer: [1],
-            type: "single",
-            explanation: "BCR > 1 means the benefits outweigh the costs. Specifically, a 1.8 ratio means $1.80 in benefit for every $1 spent."
-        },
-        {
-            q: "What is the primary role of the Project Management Office (PMO) in a 'Directive' style?",
-            options: [
-                "Providing templates and best practices.",
-                "Offering support and training to project managers.",
-                "Taking control of the projects and managing them directly.",
-                "Reviewing projects for compliance with standards."
-            ],
-            answer: [2],
-            type: "single",
-            explanation: "Directive PMOs provide a high level of control by directly managing the projects."
-        },
-        {
-            q: "A company is deciding between Project A (NPV = $100k, 12 months) and Project B (NPV = $120k, 18 months). Which project should they choose based solely on financial viability?",
-            options: ["Project A", "Project B", "Neither, they should look at IRR", "Both, if they have the resources"],
-            answer: [1],
-            type: "single",
-            explanation: "When choosing based on NPV, always pick the project with the highest NPV regardless of time, as NPV already accounts for the time value of money."
-        },
-        {
-            q: "What is 'Opportunity Cost' in project selection?",
-            options: [
-                "The total cost of the chosen project.",
-                "The value of the project not chosen.",
-                "The risk of a project failing.",
-                "The cost of entering a new market."
-            ],
-            answer: [1],
-            type: "single",
-            explanation: "Opportunity cost is the benefit given up by choosing one project over another."
-        },
-        {
-            q: "A project manager is analyzing the 'Internal Rate of Return' (IRR). Which statement is true?",
-            options: [
-                "A lower IRR is better.",
-                "A higher IRR is better.",
-                "IRR should always be 100%.",
-                "IRR is not used for project selection."
-            ],
-            answer: [1],
-            type: "single",
-            explanation: "IRR represents the expected annual growth rate of an investment. Therefore, a higher IRR is more desirable."
-        },
-        {
-            q: "Which document defines the reason for the project and how it will provide value?",
-            options: ["Project Charter", "Project Management Plan", "Business Case", "Benefits Management Plan"],
-            answer: [2],
-            type: "single",
-            explanation: "The Business Case provides the justification for the project and explains the business value it is expected to deliver."
-        },
-        {
-            q: "A project manager is conducting a SWOT analysis. What does the 'W' stand for?",
-            options: ["Wealth", "Workload", "Weaknesses", "Warrants"],
-            answer: [2],
-            type: "single",
-            explanation: "SWOT stands for Strengths, Weaknesses, Opportunities, and Threats."
-        }
-    ],
-    agile: [
-        {
-            q: "An agile team is experiencing 'Scope Creep' within their sprints. What is the most likely cause?",
-            options: [
-                "The Product Owner is adding stories mid-sprint.",
-                "The 'Definition of Done' is not clearly defined.",
-                "The team is 'Gold Plating' the deliverables.",
-                "The sprint retrospective is not identifying the issue."
-            ],
-            answer: [0],
-            type: "single",
-            explanation: "Mid-sprint changes are the primary cause of scope creep in Agile. The PO should wait until the next sprint planning to introduce new work."
-        },
-        {
-            q: "In Scrum, who is responsible for determining how many story points the team can take on in a sprint?",
-            options: ["The Scrum Master", "The Product Owner", "The Development Team", "The Project Manager"],
-            answer: [2],
-            type: "single",
-            explanation: "The team is self-organizing and owns their capacity. Only they can decide how much work they can realistically commit to."
-        },
-        {
-            q: "What are the two primary purposes of a 'Sprint Review'? (Pick 2)",
-            options: [
-                "To demonstrate the increment to stakeholders.",
-                "To discuss team internal issues and improvements.",
-                "To collect feedback and update the product backlog.",
-                "To plan the tasks for the next sprint.",
-                "To finalize the 'Definition of Done'."
-            ],
-            answer: [0, 2],
-            type: "multiple",
-            count: 2,
-            explanation: "The Review is about the product: showing progress and gathering feedback to inform future work. The Retrospective is about the process/team."
-        },
-        {
-            q: "An agile team uses a Burndown Chart. The line is consistently above the ideal trend line. What does this indicate?",
-            options: [
-                "The team is ahead of schedule.",
-                "The team is behind schedule.",
-                "The team has completed more work than planned.",
-                "The team's velocity is increasing."
-            ],
-            answer: [1],
-            type: "single",
-            explanation: "In a Burndown chart, 'Above the line' means more work remains than planned for that point in time (behind schedule)."
-        },
-        {
-            q: "What is 'Minimum Viable Product' (MVP)?",
-            options: [
-                "The cheapest version of a product.",
-                "A product with the smallest set of features that provides value and allows for learning.",
-                "A prototype used for internal testing only.",
-                "The final version of the product before it is retired."
-            ],
-            answer: [1],
-            type: "single",
-            explanation: "MVP focuses on delivering enough value to satisfy early adopters and provide a feedback loop for future development."
-        },
-        {
-            q: "Which three ceremonies are standard in Scrum? (Pick 3)",
-            options: [
-                "Daily Stand-up",
-                "Sprint Planning",
-                "Risk Review",
-                "Sprint Retrospective",
-                "Change Control Board",
-                "Status Report Meeting"
-            ],
-            answer: [0, 1, 3],
-            type: "multiple",
-            count: 3,
-            explanation: "Daily Stand-up, Sprint Planning, and Retrospectives are three of the five standard Scrum events."
-        },
-        {
-            q: "What is the primary benefit of 'Pair Programming' in XP?",
-            options: [
-                "It gets the work done twice as fast.",
-                "It improves quality through continuous code review.",
-                "It allows one person to take a break while the other works.",
-                "It reduces the need for documentation."
-            ],
-            answer: [1],
-            type: "single",
-            explanation: "Pair programming increases code quality and facilitates knowledge sharing, even though it may seem slower initially."
-        },
-        {
-            q: "A team is using a 'Pull System' in Kanban. What does this mean?",
-            options: [
-                "Managers 'pull' tasks and assign them to team members.",
-                "Team members 'pull' work only when they have capacity.",
-                "The customer 'pulls' the final deliverable whenever they want.",
-                "The Product Owner 'pulls' stories from the backlog."
-            ],
-            answer: [1],
-            type: "single",
-            explanation: "A pull system prevents overproduction and ensures that work is only started when there is resources available to complete it."
-        },
-        {
-            q: "What is the 'Scrum of Scrums' used for?",
-            options: [
-                "A meeting for all Scrum Masters to complain.",
-                "To coordinate between multiple agile teams working on the same product.",
-                "A training session for new agile teams.",
-                "A way to replace the project manager."
-            ],
-            answer: [1],
-            type: "single",
-            explanation: "Scrum of Scrums is a scaling technique to ensure alignment and manage dependencies across multiple teams."
-        },
-        {
-            q: "An agile team is struggling with technical debt. When is the best time to address this?",
-            options: [
-                "During a dedicated 'Hardening' sprint.",
-                "Continuously as part of every sprint.",
-                "At the very end of the project.",
-                "Only if the customer complains about bugs."
-            ],
-            answer: [1],
-            type: "single",
-            explanation: "Agile promotes sustainable development. Addressing technical debt incrementally prevents it from becoming a major blocker later."
-        }
-    ],
-    mixed1: [], mixed2: [], mixed3: []
+    people: [{'q': 'People Scenario 0: A conflict arises between the UX Designer and the customer regarding UI standards. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 1: A conflict arises between the Architect and the customer regarding technical debt. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 2: A conflict arises between the Lead Dev and the customer regarding technical debt. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 3: A conflict arises between the UX Designer and the customer regarding UI standards. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 4: A conflict arises between the UX Designer and the customer regarding feature priority. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 5: A conflict arises between the UX Designer and the customer regarding UI standards. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 6: A conflict arises between the UX Designer and the customer regarding feature priority. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 7: A conflict arises between the Architect and the customer regarding technical debt. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 8: A conflict arises between the Lead Dev and the customer regarding feature priority. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 9: A conflict arises between the Lead Dev and the customer regarding feature priority. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}],
+    process: [{'q': "Process Scenario 0: The project's EV is 296, AC is 216, and PV is 273. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': "Process Scenario 1: The project's EV is 118, AC is 136, and PV is 201. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': "Process Scenario 2: The project's EV is 189, AC is 135, and PV is 217. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': "Process Scenario 3: The project's EV is 269, AC is 158, and PV is 232. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': "Process Scenario 4: The project's EV is 467, AC is 130, and PV is 496. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': "Process Scenario 5: The project's EV is 490, AC is 104, and PV is 324. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': "Process Scenario 6: The project's EV is 220, AC is 183, and PV is 198. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': "Process Scenario 7: The project's EV is 453, AC is 100, and PV is 355. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': "Process Scenario 8: The project's EV is 202, AC is 169, and PV is 113. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': "Process Scenario 9: The project's EV is 468, AC is 144, and PV is 484. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}],
+    business: [{'q': 'Business Scenario 0: A new regulation in the EU region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Business Scenario 1: A new regulation in the North America region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Business Scenario 2: A new regulation in the North America region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Business Scenario 3: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Business Scenario 4: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Business Scenario 5: A new regulation in the EU region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Business Scenario 6: A new regulation in the EU region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Business Scenario 7: A new regulation in the North America region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Business Scenario 8: A new regulation in the EU region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Business Scenario 9: A new regulation in the EU region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}],
+    agile: [{'q': 'Agile Scenario 0: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates technical debt. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Agile Scenario 1: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates too many meetings. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Agile Scenario 2: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates too many meetings. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Agile Scenario 3: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates unclear stories. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Agile Scenario 4: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates technical debt. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Agile Scenario 5: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates technical debt. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Agile Scenario 6: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates technical debt. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Agile Scenario 7: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates too many meetings. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Agile Scenario 8: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates too many meetings. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Agile Scenario 9: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates too many meetings. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}],
+    sim1: [{'q': 'People Scenario 38: A conflict arises between the UX Designer and the customer regarding feature priority. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': "Process Scenario 19: The project's EV is 440, AC is 414, and PV is 270. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Business Scenario 40: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'People Scenario 27: A conflict arises between the Lead Dev and the customer regarding technical debt. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'Agile Scenario 35: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates unclear stories. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': "Process Scenario 39: The project's EV is 129, AC is 369, and PV is 286. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Agile Scenario 25: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates unclear stories. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'People Scenario 33: A conflict arises between the Architect and the customer regarding technical debt. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'Agile Scenario 22: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates unclear stories. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': "Process Scenario 35: The project's EV is 195, AC is 404, and PV is 195. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Business Scenario 42: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'People Scenario 15: A conflict arises between the Architect and the customer regarding feature priority. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 14: A conflict arises between the UX Designer and the customer regarding feature priority. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 13: A conflict arises between the UX Designer and the customer regarding UI standards. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 41: A conflict arises between the Lead Dev and the customer regarding feature priority. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'Business Scenario 44: A new regulation in the North America region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': "Process Scenario 25: The project's EV is 367, AC is 106, and PV is 171. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': "Process Scenario 32: The project's EV is 451, AC is 338, and PV is 401. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Agile Scenario 40: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates too many meetings. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Business Scenario 12: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Agile Scenario 12: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates technical debt. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': "Process Scenario 22: The project's EV is 434, AC is 220, and PV is 304. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Agile Scenario 11: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates too many meetings. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Business Scenario 19: A new regulation in the EU region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Agile Scenario 24: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates technical debt. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': "Process Scenario 24: The project's EV is 259, AC is 370, and PV is 230. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Agile Scenario 39: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates too many meetings. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': "Process Scenario 20: The project's EV is 265, AC is 222, and PV is 494. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': "Process Scenario 40: The project's EV is 231, AC is 145, and PV is 295. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Business Scenario 38: A new regulation in the North America region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Agile Scenario 42: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates unclear stories. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'People Scenario 26: A conflict arises between the Architect and the customer regarding UI standards. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': "Process Scenario 34: The project's EV is 414, AC is 384, and PV is 169. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'People Scenario 12: A conflict arises between the Architect and the customer regarding UI standards. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'Agile Scenario 23: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates technical debt. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Agile Scenario 21: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates technical debt. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': "Process Scenario 11: The project's EV is 279, AC is 196, and PV is 440. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Business Scenario 37: A new regulation in the EU region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Business Scenario 20: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': "Process Scenario 14: The project's EV is 497, AC is 123, and PV is 287. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'People Scenario 21: A conflict arises between the UX Designer and the customer regarding technical debt. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 20: A conflict arises between the UX Designer and the customer regarding feature priority. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 17: A conflict arises between the Lead Dev and the customer regarding technical debt. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'Business Scenario 13: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'People Scenario 36: A conflict arises between the Architect and the customer regarding technical debt. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}],
+    sim2: [{'q': 'Agile Scenario 34: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates unclear stories. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Business Scenario 15: A new regulation in the North America region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'People Scenario 29: A conflict arises between the UX Designer and the customer regarding technical debt. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'Agile Scenario 13: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates too many meetings. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Agile Scenario 27: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates too many meetings. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': "Process Scenario 18: The project's EV is 179, AC is 282, and PV is 152. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': "Process Scenario 30: The project's EV is 433, AC is 285, and PV is 350. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Agile Scenario 20: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates too many meetings. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': "Process Scenario 17: The project's EV is 472, AC is 499, and PV is 245. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': "Process Scenario 13: The project's EV is 490, AC is 295, and PV is 235. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'People Scenario 31: A conflict arises between the UX Designer and the customer regarding technical debt. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': "Process Scenario 42: The project's EV is 388, AC is 452, and PV is 193. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Agile Scenario 31: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates technical debt. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'People Scenario 25: A conflict arises between the Architect and the customer regarding UI standards. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'Business Scenario 36: A new regulation in the North America region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'People Scenario 16: A conflict arises between the UX Designer and the customer regarding technical debt. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 44: A conflict arises between the Lead Dev and the customer regarding feature priority. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 11: A conflict arises between the Lead Dev and the customer regarding feature priority. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'Business Scenario 14: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': "Process Scenario 16: The project's EV is 212, AC is 289, and PV is 234. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': "Process Scenario 23: The project's EV is 489, AC is 166, and PV is 410. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'People Scenario 18: A conflict arises between the Architect and the customer regarding feature priority. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'Agile Scenario 43: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates too many meetings. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Business Scenario 39: A new regulation in the EU region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Business Scenario 17: A new regulation in the North America region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'People Scenario 10: A conflict arises between the Lead Dev and the customer regarding technical debt. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 22: A conflict arises between the Architect and the customer regarding UI standards. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': "Process Scenario 28: The project's EV is 263, AC is 299, and PV is 311. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Agile Scenario 29: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates unclear stories. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Business Scenario 22: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Business Scenario 34: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': "Process Scenario 36: The project's EV is 392, AC is 488, and PV is 267. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Agile Scenario 18: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates technical debt. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Agile Scenario 26: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates too many meetings. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': "Process Scenario 37: The project's EV is 372, AC is 131, and PV is 400. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Business Scenario 35: A new regulation in the North America region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'People Scenario 34: A conflict arises between the Architect and the customer regarding UI standards. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 28: A conflict arises between the UX Designer and the customer regarding UI standards. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'Agile Scenario 33: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates too many meetings. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Business Scenario 29: A new regulation in the North America region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': "Process Scenario 44: The project's EV is 213, AC is 149, and PV is 228. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Business Scenario 31: A new regulation in the EU region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Agile Scenario 15: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates technical debt. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Agile Scenario 19: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates unclear stories. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': "Process Scenario 27: The project's EV is 428, AC is 219, and PV is 183. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}],
+    sim3: [{'q': 'Agile Scenario 37: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates technical debt. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Agile Scenario 30: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates too many meetings. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': "Process Scenario 38: The project's EV is 387, AC is 455, and PV is 298. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Business Scenario 27: A new regulation in the North America region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Agile Scenario 36: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates technical debt. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': "Process Scenario 21: The project's EV is 353, AC is 500, and PV is 114. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': "Process Scenario 15: The project's EV is 163, AC is 410, and PV is 129. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Agile Scenario 32: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates unclear stories. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'People Scenario 39: A conflict arises between the Architect and the customer regarding technical debt. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 32: A conflict arises between the UX Designer and the customer regarding technical debt. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'Business Scenario 28: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'People Scenario 19: A conflict arises between the Architect and the customer regarding feature priority. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'Business Scenario 10: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'People Scenario 37: A conflict arises between the UX Designer and the customer regarding technical debt. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': "Process Scenario 26: The project's EV is 196, AC is 226, and PV is 121. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Business Scenario 41: A new regulation in the North America region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Business Scenario 32: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Agile Scenario 41: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates unclear stories. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'People Scenario 24: A conflict arises between the Lead Dev and the customer regarding UI standards. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 43: A conflict arises between the Architect and the customer regarding feature priority. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': "Process Scenario 33: The project's EV is 448, AC is 121, and PV is 410. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Business Scenario 25: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': "Process Scenario 10: The project's EV is 267, AC is 102, and PV is 115. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Business Scenario 23: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': "Process Scenario 12: The project's EV is 475, AC is 434, and PV is 470. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Agile Scenario 10: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates technical debt. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Business Scenario 30: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': "Process Scenario 29: The project's EV is 400, AC is 358, and PV is 424. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Agile Scenario 16: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates technical debt. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Business Scenario 33: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': "Process Scenario 41: The project's EV is 214, AC is 459, and PV is 131. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'People Scenario 35: A conflict arises between the UX Designer and the customer regarding UI standards. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 23: A conflict arises between the UX Designer and the customer regarding UI standards. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'Business Scenario 16: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Business Scenario 11: A new regulation in the APAC region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Agile Scenario 28: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates technical debt. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'Agile Scenario 17: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates unclear stories. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'People Scenario 42: A conflict arises between the Architect and the customer regarding technical debt. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': "Process Scenario 31: The project's EV is 133, AC is 470, and PV is 494. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': "Process Scenario 43: The project's EV is 330, AC is 225, and PV is 323. The customer wants to add scope. What is the impact on the BAC?", 'options': ['BAC remains the same but risk increases', 'BAC must be re-baselined', 'The EAC will now equal the BAC', 'The TCPI will drop'], 'answer': [1], 'type': 'single', 'explanation': 'Significant scope changes require a re-baseline of the project budget and plan.'}, {'q': 'Business Scenario 21: A new regulation in the EU region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}, {'q': 'Agile Scenario 44: The team velocity has dropped for 3 consecutive sprints. The retrospective indicates unclear stories. Action?', 'options': ['The team should self-organize to fix it', 'PM should increase pressure', 'Scrum Master assigns more tasks', 'Remove the low performers'], 'answer': [0], 'type': 'single', 'explanation': 'Self-organizing teams are responsible for their own internal performance improvements.'}, {'q': 'People Scenario 40: A conflict arises between the UX Designer and the customer regarding feature priority. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'People Scenario 30: A conflict arises between the UX Designer and the customer regarding UI standards. What should the PM do first?', 'options': ['Facilitate a consensus meeting', 'Escalate to the Sponsor', 'Refer to the RACI chart', 'Update the Risk Register'], 'answer': [0], 'type': 'single', 'explanation': 'Collaborative problem solving is always the preferred first step in the People domain.'}, {'q': 'Business Scenario 43: A new regulation in the North America region changes the data privacy requirements mid-project. What is the most proactive move?', 'options': ['Submit a change request immediately', 'Conduct a compliance impact assessment', 'Ask legal to handle it', 'Stop the project'], 'answer': [1], 'type': 'single', 'explanation': 'Assessment of the external environment impact is the first step in the Business domain.'}]
 };
 
-// Generate mixed quizzes
-const pools = ['people', 'process', 'business', 'agile'];
-for(let m=1; m<=3; m++) {
-    let pool = [];
-    pools.forEach(p => pool = pool.concat(quizData[p]));
-    quizData[`mixed${m}`] = pool.sort(() => 0.5 - Math.random()).slice(0, 45);
-}
-
-let currentQuiz = [];
-let currentIndex = 0;
+let currentSet = [];
+let idx = 0;
 let score = 0;
-let selectedOptions = [];
+let selections = [];
 
-function startQuiz(topic) {
-    currentQuiz = quizData[topic];
-    currentIndex = 0;
-    score = 0;
-    document.getElementById('home-screen').classList.add('hidden');
-    document.getElementById('quiz-screen').classList.remove('hidden');
-    document.getElementById('result-screen').classList.add('hidden');
-    showQuestion();
+function startQuiz(key) {
+    currentSet = quizData[key];
+    idx = 0; score = 0;
+    document.getElementById('home').classList.add('hidden');
+    document.getElementById('quiz').classList.remove('hidden');
+    showQ();
 }
 
-function showQuestion() {
-    const q = currentQuiz[currentIndex];
-    selectedOptions = [];
-    document.getElementById('progress').innerText = `Q: ${currentIndex + 1}/${currentQuiz.length}`;
-    updateScoreboard();
+function showQ() {
+    const q = currentSet[idx];
+    selections = [];
+    document.getElementById('prog').innerText = `Q: ${idx + 1}/${currentSet.length}`;
+    document.getElementById('q-text').innerText = q.q;
+    const optBox = document.getElementById('options');
+    optBox.innerHTML = '';
     
-    document.getElementById('question-text').innerText = q.q;
-    
-    let instr = "Select the single BEST action.";
-    if(q.type === 'multiple') instr = `Select the BEST ${q.count} actions. This is a multi-select question.`;
-    document.getElementById('instruction-text').innerText = instr;
-
-    const list = document.getElementById('options-list');
-    list.innerHTML = '';
-    q.options.forEach((opt, idx) => {
+    q.options.forEach((opt, i) => {
         const div = document.createElement('div');
-        div.className = 'option-item';
+        div.className = 'option';
         div.innerText = opt;
-        div.onclick = () => selectOption(idx, div);
-        list.appendChild(div);
+        div.onclick = () => {
+            if(q.type === 'single') {
+                selections = [i];
+                Array.from(optBox.children).forEach(c => c.classList.remove('selected'));
+                div.classList.add('selected');
+            } else {
+                if(selections.includes(i)) selections = selections.filter(x => x !== i);
+                else if(selections.length < (q.count || 2)) selections.push(i);
+                div.classList.toggle('selected');
+            }
+        };
+        optBox.appendChild(div);
     });
-
-    document.getElementById('explanation-box').style.display = 'none';
-    document.getElementById('submit-btn').style.display = 'block';
-    document.getElementById('next-btn').style.display = 'none';
+    
+    document.getElementById('exp').classList.add('hidden');
+    document.getElementById('submit').classList.remove('hidden');
+    document.getElementById('next').classList.add('hidden');
 }
 
-function selectOption(idx, element) {
-    const q = currentQuiz[currentIndex];
-    if(q.type === 'single') {
-        selectedOptions = [idx];
-        Array.from(document.getElementsByClassName('option-item')).forEach(el => el.classList.remove('selected'));
-        element.classList.add('selected');
-    } else {
-        if(selectedOptions.includes(idx)) {
-            selectedOptions = selectedOptions.filter(i => i !== idx);
-            element.classList.remove('selected');
-        } else if(selectedOptions.length < q.count) {
-            selectedOptions.push(idx);
-            element.classList.add('selected');
-        }
-    }
-}
-
-function checkAnswer() {
-    const q = currentQuiz[currentIndex];
-    if(selectedOptions.length === 0 || (q.type === 'multiple' && selectedOptions.length !== q.count)) {
-        alert(`Please select ${q.type === 'multiple' ? q.count : 'an'} answer(s).`);
-        return;
-    }
-
-    const items = document.getElementsByClassName('option-item');
-    const sortedSelected = [...selectedOptions].sort();
-    const sortedAnswers = [...q.answer].sort();
-    const isCorrect = JSON.stringify(sortedSelected) === JSON.stringify(sortedAnswers);
-
+function check() {
+    if(selections.length === 0) return alert("Select an answer");
+    const q = currentSet[idx];
+    const isCorrect = JSON.stringify(selections.sort()) === JSON.stringify(q.answer.sort());
     if(isCorrect) score++;
-
-    // Visual feedback
-    Array.from(items).forEach((item, idx) => {
-        if(q.answer.includes(idx)) item.classList.add('correct');
-        else if(selectedOptions.includes(idx)) item.classList.add('wrong');
-    });
-
-    const exp = document.getElementById('explanation-box');
-    exp.innerHTML = `<strong>Result: ${isCorrect ? 'CORRECT' : 'INCORRECT'}</strong><hr>${q.explanation}`;
-    exp.style.display = 'block';
-
-    document.getElementById('submit-btn').style.display = 'none';
-    document.getElementById('next-btn').style.display = 'block';
-    updateScoreboard();
+    
+    const opts = document.getElementById('options').children;
+    q.answer.forEach(i => opts[i].classList.add('correct'));
+    selections.forEach(i => { if(!q.answer.includes(i)) opts[i].classList.add('wrong'); });
+    
+    const exp = document.getElementById('explanation');
+    document.getElementById('exp').innerHTML = `<strong>${isCorrect ? 'Correct' : 'Incorrect'}</strong><br>${q.explanation}`;
+    document.getElementById('exp').classList.remove('hidden');
+    document.getElementById('submit').classList.add('hidden');
+    document.getElementById('next').classList.remove('hidden');
+    
+    document.getElementById('score').innerText = `Score: ${Math.round((score/(idx+1))*100)}%`;
 }
 
-function updateScoreboard() {
-    const percent = currentIndex === 0 ? 0 : Math.round((score / (currentIndex + 1)) * 100);
-    document.getElementById('score-display').innerText = `Correct: ${score} (${percent}%)`;
-}
-
-function nextQuestion() {
-    currentIndex++;
-    if(currentIndex < currentQuiz.length) {
-        showQuestion();
-    } else {
-        showResults();
+function next() {
+    idx++;
+    if(idx < currentSet.length) showQ();
+    else {
+        document.getElementById('quiz').classList.add('hidden');
+        document.getElementById('results').classList.remove('hidden');
+        document.getElementById('final-percent').innerText = Math.round((score/currentSet.length)*100) + '%';
+        document.getElementById('final-stat').innerText = `Correct Answers: ${score} / ${currentSet.length}`;
     }
-}
-
-function showResults() {
-    document.getElementById('quiz-screen').classList.add('hidden');
-    document.getElementById('result-screen').classList.remove('hidden');
-    const percent = Math.round((score / currentQuiz.length) * 100);
-    document.getElementById('final-score').innerText = `${percent}% (${score}/${currentQuiz.length})`;
 }
 </script>
-
 </body>
 </html>
