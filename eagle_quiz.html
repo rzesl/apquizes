@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eagle Scout Project Quiz: Zoe Ireland</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+        .correct {
+            background-color: #10b981 !important;
+            color: white;
+            border-color: #059669;
+        }
+        .incorrect {
+            background-color: #ef4444 !important;
+            color: white;
+            border-color: #dc2626;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen py-8 px-4">
+    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+        <!-- Header -->
+        <div class="bg-blue-800 text-white p-6 text-center">
+            <h1 class="text-2xl font-bold uppercase tracking-wide">Zoe Ireland's Eagle Project Quiz</h1>
+            <p class="mt-2 opacity-90 text-sm">Testing knowledge on the Potomac Church Picnic Table Restoration</p>
+        </div>
+
+        <!-- Scoreboard -->
+        <div class="bg-blue-50 border-b border-blue-100 p-4 flex justify-between items-center text-sm font-semibold">
+            <div id="progress-text">Question: 1 / 30</div>
+            <div id="score-text">Current Score: 0%</div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div class="p-6">
+            <div id="quiz-area">
+                <div id="question-text" class="text-lg font-medium text-gray-800 mb-6 leading-relaxed">
+                    <!-- Question goes here -->
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Buttons go here -->
+                </div>
+
+                <div id="feedback-area" class="mt-6 p-4 rounded-lg hidden">
+                    <p id="feedback-msg" class="font-bold"></p>
+                    <p id="correct-ans-msg" class="text-sm mt-1"></p>
+                    <button id="next-btn" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold transition">
+                        Next Question
+                    </button>
+                </div>
+            </div>
+
+            <!-- Final Results (Hidden initially) -->
+            <div id="results-area" class="hidden text-center py-10">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Quiz Complete!</h2>
+                <div class="text-6xl font-extrabold text-blue-600 mb-6" id="final-score-display">0%</div>
+                <p id="results-summary" class="text-gray-600 mb-8"></p>
+                <button onclick="location.reload()" class="bg-blue-800 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-900 transition">
+                    Restart Quiz
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                q: "What was the official name of Zoe Ireland's Eagle Scout Service Project?",
+                a: "Potomac Church Picnic Table Restoration",
+                o: ["Maryland Park Bench Refurbishment", "Scout Troop 773G Service Initiative", "Community Woodworking Workshop"]
+            },
+            {
+                q: "Who was the beneficiary organization for this project?",
+                a: "Potomac United Methodist Church",
+                o: ["Winston Churchill High School", "Potomac Glen Gators Swim Team", "Montgomery County Parks Department"]
+            },
+            {
+                q: "What type of wood was used to rebuild the table tops and benches?",
+                a: "Premium Douglas Fir",
+                o: ["Pressure Treated Pine", "Western Red Cedar", "White Oak"]
+            },
+            {
+                q: "What specific dimension of lumber was used for the table benches?",
+                a: "$2\\times10$",
+                o: ["$2\\times8$", "$4\\times4$", "$1\\times12$"]
+            },
+            {
+                q: "How many picnic tables were restored in total?",
+                a: "Two",
+                o: ["One", "Three", "Five"]
+            },
+            {
+                q: "What was the Senior Pastor's name who approved the project report?",
+                a: "Rev. Dr. Laura Blauvelt",
+                o: ["Julie Williamson", "Michelle Colacicco", "Yvonne Peters-Washington"]
+            },
+            {
+                q: "How did Zoe primarily fund the project?",
+                a: "Tutoring a middle school student",
+                o: ["Hosting a neighborhood car wash", "A scouting popcorn fundraiser", "Selling custom wood carvings"]
+            },
+            {
+                q: "What was the total number of hours worked on the project (including planning and execution)?",
+                a: "76",
+                o: ["50", "102", "30"]
+            },
+            {
+                q: "Which oil-based paint brand was used for the galvanized steel frames?",
+                a: "Rustoleum",
+                o: ["Sherwin Williams", "Behr", "Benjamin Moore"]
+            },
+            {
+                q: "What type of sealer was applied to the Douglas Fir wood?",
+                a: "Spar Urethane",
+                o: ["Linseed Oil", "Beeswax Polish", "Shellac"]
+            },
+            {
+                q: "Zoe served as President of which high school club?",
+                a: "UMTTR (Suicide Prevention)",
+                o: ["Potomac Glen Gators", "Red Cross Youth", "High Adventure Crew"]
+            },
+            {
+                q: "Why did Zoe decide to wipe down the frames instead of wire brushing them?",
+                a: "Concerns about lead in the zinc coating",
+                o: ["To save time on the first day", "Lack of available wire brush tools", "The frames were too fragile to brush"]
+            },
+            {
+                q: "What was the total amount spent on the project?",
+                a: "$464.10$",
+                o: ["$375.00$", "$512.72$", "$400.00$"]
+            },
+            {
+                q: "Which specific hardware was used to attach the wood to the frames?",
+                a: "Galvanized carriage bolts",
+                o: ["Stainless steel wood screws", "Industrial wood glue", "Brass hex nuts"]
+            },
+            {
+                q: "Zoe's career ambition is to become a...",
+                a: "Nurse Practitioner",
+                o: ["Professional Scout Leader", "Mechanical Engineer", "Environmental Scientist"]
+            },
+            {
+                q: "On which date was the project execution completed?",
+                a: "March 22, 2026",
+                o: ["April 19, 2026", "February 7, 2026", "July 9, 2022"]
+            },
+            {
+                q: "Where were the wood boards stored to dry and sealed?",
+                a: "Zoe's basement",
+                o: ["Potomac Church parking lot", "Home Depot warehouse", "Troop 773G storage unit"]
+            },
+            {
+                q: "Who was designated as the project coach?",
+                a: "Russel Sanders",
+                o: ["Julie Williamson", "Lawrence McNiece", "Alex Dale"]
+            },
+            {
+                q: "What award did Zoe receive in 2022 from the Potomac Glen Gators?",
+                a: "Coaches Cup",
+                o: ["Eagle Palm", "Principal's List", "AP Scholar"]
+            },
+            {
+                q: "How much did Zoe earn per week from tutoring?",
+                a: "$25$",
+                o: ["$15$", "$40$", "$10$"]
+            },
+            {
+                q: "What lunch was provided to the project helpers on Saturday?",
+                a: "Sushi",
+                o: ["Pizza", "Bagels", "Hot Dogs"]
+            },
+            {
+                q: "What is the unit number of Zoe's scout troop?",
+                a: "773G",
+                o: ["077", "82", "10620"]
+            },
+            {
+                q: "What difficulty was encountered when aligning the drilled holes?",
+                a: "The surface where they worked was not level",
+                o: ["The wood was too hard to drill", "The drill bits were the wrong size", "The metal frames were bent"]
+            },
+            {
+                q: "How many merit badges did Zoe earn as listed on her application?",
+                a: "21",
+                o: ["13", "30", "18"]
+            },
+            {
+                q: "What was the length of the table tops and benches?",
+                a: "Approximately 6 feet",
+                o: ["8 feet", "4 feet", "10 feet"]
+            },
+            {
+                q: "Zoe is Wilderness First Aid Certified for which 2026 high adventure?",
+                a: "Philmont",
+                o: ["Seabase", "Northern Tier", "Bechtel Summit"]
+            },
+            {
+                q: "Who was the unit leader (Scoutmaster) who signed the workbook?",
+                a: "Julie Williamson",
+                o: ["Michelle Colacicco", "Laura Blauvelt", "Sharee Wharton"]
+            },
+            {
+                q: "Which specific grocery item was purchased from 'Bagel Grinds'?",
+                a: "Bagels",
+                o: ["Donuts", "Sushi", "Lemonade"]
+            },
+            {
+                q: "According to the project report, what was the most rewarding part of being the leader?",
+                a: "Seeing patrons use the tables during the market",
+                o: ["Earning the Eagle Scout rank", "Finishing under the original budget", "Learning how to use a belt sander"]
+            },
+            {
+                q: "What is the primary purpose of the Eagle project, according to the workbook?",
+                a: "To learn or demonstrate leadership skills",
+                o: ["To provide free labor to churches", "To learn professional woodworking", "To fundraise for local charities"]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let answered = false;
+
+        const questionEl = document.getElementById('question-text');
+        const gridEl = document.getElementById('options-grid');
+        const feedbackEl = document.getElementById('feedback-area');
+        const feedbackMsg = document.getElementById('feedback-msg');
+        const correctAnsMsg = document.getElementById('correct-ans-msg');
+        const nextBtn = document.getElementById('next-btn');
+        const progressEl = document.getElementById('progress-text');
+        const scoreEl = document.getElementById('score-text');
+
+        function initQuiz() {
+            renderQuestion();
+        }
+
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        function renderQuestion() {
+            answered = false;
+            const data = quizData[currentQuestion];
+            progressEl.innerText = `Question: ${currentQuestion + 1} / ${quizData.length}`;
+            updateScoreboard();
+
+            questionEl.innerHTML = data.q;
+            gridEl.innerHTML = '';
+            feedbackEl.classList.add('hidden');
+
+            const allOptions = [data.a, ...data.o];
+            shuffle(allOptions);
+
+            const labels = ['A', 'B', 'C', 'D'];
+            allOptions.forEach((option, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 font-medium flex items-center";
+                btn.innerHTML = `<span class="bg-gray-100 text-gray-600 w-8 h-8 rounded-full flex items-center justify-center mr-3 font-bold text-xs">${labels[idx]}</span> ${option}`;
+                btn.onclick = () => handleAnswer(option, btn);
+                gridEl.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(selected, btn) {
+            if (answered) return;
+            answered = true;
+
+            const correct = quizData[currentQuestion].a;
+            const isCorrect = selected === correct;
+
+            if (isCorrect) {
+                score++;
+                btn.classList.add('correct');
+                feedbackMsg.innerText = "Correct!";
+                feedbackMsg.className = "font-bold text-green-600";
+                correctAnsMsg.innerText = "";
+                feedbackEl.classList.add('bg-green-50');
+                feedbackEl.classList.remove('bg-red-50');
+            } else {
+                btn.classList.add('incorrect');
+                feedbackMsg.innerText = "Incorrect.";
+                feedbackMsg.className = "font-bold text-red-600";
+                correctAnsMsg.innerHTML = `The correct answer was: <span class="font-bold">${correct}</span>`;
+                feedbackEl.classList.add('bg-red-50');
+                feedbackEl.classList.remove('bg-green-50');
+
+                // Highlight the correct one
+                Array.from(gridEl.children).forEach(child => {
+                    if (child.innerText.includes(correct)) {
+                        child.classList.add('border-green-500');
+                    }
+                });
+            }
+
+            Array.from(gridEl.children).forEach(b => b.disabled = true);
+            feedbackEl.classList.remove('hidden');
+            updateScoreboard();
+        }
+
+        function updateScoreboard() {
+            const attempted = answered ? currentQuestion + 1 : currentQuestion;
+            if (attempted === 0) {
+                scoreEl.innerText = "Current Score: 0%";
+            } else {
+                const percentage = Math.round((score / attempted) * 100);
+                scoreEl.innerText = `Current Score: ${percentage}%`;
+            }
+        }
+
+        nextBtn.onclick = () => {
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                renderQuestion();
+            } else {
+                showFinalResults();
+            }
+        };
+
+        function showFinalResults() {
+            document.getElementById('quiz-area').classList.add('hidden');
+            const resultsArea = document.getElementById('results-area');
+            const finalScoreEl = document.getElementById('final-score-display');
+            const summaryEl = document.getElementById('results-summary');
+
+            resultsArea.classList.remove('hidden');
+            const finalPercentage = Math.round((score / quizData.length) * 100);
+            finalScoreEl.innerText = `${finalPercentage}%`;
+            
+            summaryEl.innerText = `You got ${score} out of ${quizData.length} questions correct. ${
+                finalPercentage >= 80 ? "Excellent work, Scout!" : 
+                finalPercentage >= 60 ? "Good job! Keep reviewing the workbook." : 
+                "Keep studying those project details!"
+            }`;
+        }
+
+        initQuiz();
+    </script>
+</body>
+</html>
